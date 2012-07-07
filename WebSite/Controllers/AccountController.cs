@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using DotNetOpenAuth.OpenId;
+using DotNetOpenAuth.OpenId.RelyingParty;
 using WebSite.Models;
+using DotNetOpenAuth.Messaging;
 
 namespace WebSite.Controllers
 {
@@ -12,6 +17,10 @@ namespace WebSite.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Helper class used to perform OpenId authentication.
+        /// </summary>
+        private static OpenIdRelyingParty OpenIdAuthenticator = new OpenIdRelyingParty();
 
         //
         // GET: /Account/Login
@@ -52,6 +61,78 @@ namespace WebSite.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult OpenIdAuthenticate(IdentityProvider identityProvider, string returnUrl)
+        {
+            IAuthenticationResponse authenticationResponse = OpenIdAuthenticator.GetResponse();
+
+            if (authenticationResponse == null)
+            {
+                // The user is just starting the authentication process
+
+                // Obtain the link of the identity provider
+                string identityProviderUri = this.GetIdentityProviderUri(identityProvider);
+                Identifier id;
+
+                // Try obtaining an OpenID identifier for the provider
+                if (Identifier.TryParse(identityProviderUri, out id))
+                {
+                    try
+                    {
+                        // Forward the user to the provider
+                        return OpenIdAuthenticator.CreateRequest(id).RedirectingResponse.AsActionResult();
+                    }
+                    catch (ProtocolException protocolException)
+                    {
+                        ViewData["Message"] = protocolException.Message;
+
+                        return View("Login");
+                    }
+                }
+            }
+            else
+            {
+                // We are getting the response from the identity provider
+                switch (authenticationResponse.Status)
+                {
+                    case AuthenticationStatus.Authenticated:
+                        // Store the authentication result
+                        FormsAuthentication.SetAuthCookie(authenticationResponse.ClaimedIdentifier, false);
+
+                        if (!string.IsNullOrEmpty(returnUrl))
+                        {
+                            return this.Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            // TODO: forward to home page
+                            return this.RedirectToAction("Index", "Home");
+                        }
+                    case AuthenticationStatus.Canceled:
+                        ViewData["Message"] = "Authentication process cancelled at provider. Please try again.";
+                        return View("Login");
+                    case AuthenticationStatus.Failed:
+                        ViewData["Message"] = authenticationResponse.Exception.Message;
+                        return View("Login");
+                }
+            }
+
+            // Should not get to here ever. This is just to make the compiler happy
+            return new EmptyResult();
+        }
+
+        private string GetIdentityProviderUri(IdentityProvider identityProvider)
+        {
+            NameValueCollection providers = ConfigurationManager.GetSection("identityProviders") as NameValueCollection;
+
+            if (providers != null)
+            {
+                return providers[((int)identityProvider).ToString()];
+            }
+
+            return string.Empty;
         }
 
         //

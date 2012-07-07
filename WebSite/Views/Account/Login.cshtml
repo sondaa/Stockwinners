@@ -32,6 +32,8 @@
     </fieldset>
     <p>
         @Html.ActionLink("Register", "Register") if you don't have an account.
+        @Html.ActionLink("Google", "OpenIdAuthenticate", new { identityProvider = WebSite.Models.IdentityProvider.Google})
+        @Html.ActionLink("Yahoo", "OpenIdAuthenticate", new { identityProvider = WebSite.Models.IdentityProvider.Yahoo})
     </p>
 }
 

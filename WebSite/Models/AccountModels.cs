@@ -60,4 +60,14 @@ namespace WebSite.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
+
+    public enum IdentityProvider
+    {
+        Stockwinners = 1,
+        Facebook = 2,
+        Google = 3,
+        Yahoo = 4,
+        Twitter = 5,
+        LinkedIn = 6
+    }
 }

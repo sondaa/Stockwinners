@@ -70,4 +70,13 @@ namespace WebSite.Models
         Twitter = 5,
         LinkedIn = 6
     }
+
+    public class UserIdentity
+    {
+        public IdentityProvider IdentityProvider { get; set; }
+        public string UserID { get; set; }
+        public string EmailAddress { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
 }

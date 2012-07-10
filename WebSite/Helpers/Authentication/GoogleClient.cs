@@ -32,18 +32,18 @@ namespace WebSite.Helpers.Authentication
         {
         }
 
-        protected override UserIdentity HandleResponseStream(Stream responseStream)
+        protected override LoggedInUserIdentity HandleResponseStream(Stream responseStream)
         {
             using (var streamReader = new StreamReader(responseStream))
             {
                 JObject parsedJson = JsonConvert.DeserializeObject(streamReader.ReadToEnd()) as JObject;
 
-                return new UserIdentity()
+                return new LoggedInUserIdentity()
                 {
                     EmailAddress = (string)parsedJson["email"],
                     FirstName = (string)parsedJson["given_name"],
                     LastName = (string)parsedJson["family_name"],
-                    Id = (string)parsedJson["id"],
+                    IdentityProviderIssuedId = (string)parsedJson["id"],
                     IdentityProvider = IdentityProvider.Google
                 };
             }

@@ -28,18 +28,18 @@ namespace WebSite.Helpers.Authentication
         {
         }
 
-        protected override Models.UserIdentity HandleResponseStream(System.IO.Stream responseStream)
+        protected override Models.LoggedInUserIdentity HandleResponseStream(System.IO.Stream responseStream)
         {
             using (StreamReader reader = new StreamReader(responseStream))
             {
                 JObject parsedJson = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
 
-                return new Models.UserIdentity()
+                return new Models.LoggedInUserIdentity()
                 {
                     EmailAddress = (string)parsedJson["email"],
                     FirstName = (string)parsedJson["first_name"],
                     LastName = (string)parsedJson["last_name"],
-                    Id = (string)parsedJson["id"],
+                    IdentityProviderIssuedId = (string)parsedJson["id"],
                     IdentityProvider = Models.IdentityProvider.Facebook
                 };
             }

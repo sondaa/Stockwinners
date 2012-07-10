@@ -11,6 +11,7 @@ using DotNetOpenAuth.OpenId.RelyingParty;
 using WebSite.Models;
 using DotNetOpenAuth.Messaging;
 using WebSite.Helpers.Authentication;
+using WebSite.Database;
 
 namespace WebSite.Controllers
 {
@@ -37,19 +38,12 @@ namespace WebSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (Membership.ValidateUser(model.Email, model.Password))
+                if (!Url.IsLocalUrl(returnUrl))
                 {
-                    FormsAuthentication.SetAuthCookie(model.Email, model.RememberMe);
-                    if (Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    returnUrl = null;
                 }
-                else
+
+                if (!Authentication.AuthenticateOrRedirectStockwinnersMember(model.Email, model.Password, model.RememberMe))
                 {
                     ModelState.AddModelError("", "The user name or password provided is incorrect.");
                 }
@@ -87,18 +81,36 @@ namespace WebSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Attempt to register the user
-                MembershipCreateStatus createStatus;
-                Membership.CreateUser(model.Email, model.Password, model.Email, passwordQuestion: null, passwordAnswer: null, isApproved: true, providerUserKey: null, status: out createStatus);
+                // Attempt to register the user by adding a record to the asp.net membership and also one to our own database to store first and last names.
+                using (DatabaseContext db = new DatabaseContext())
+                {
+                    StockwinnersMember newMember = db.StockwinnersMembers.Add(new StockwinnersMember()
+                    {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName
+                    });
 
-                if (createStatus == MembershipCreateStatus.Success)
-                {
-                    FormsAuthentication.SetAuthCookie(model.Email, createPersistentCookie: false);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
+                    MembershipCreateStatus createStatus;
+                    Membership.CreateUser(model.Email, model.Password, model.Email, passwordQuestion: null, passwordAnswer: null, isApproved: true, providerUserKey: newMember.MemberId, status: out createStatus);
+
+                    if (createStatus == MembershipCreateStatus.Success)
+                    {
+                        Authentication.SetCurrentUser(new LoggedInUserIdentity()
+                        {
+                            FirstName = model.FirstName,
+                            LastName = model.LastName,
+                            EmailAddress = model.Email,
+                            IdentityProvider = IdentityProvider.Stockwinners,
+                            IdentityProviderIssuedId = newMember.MemberId.ToString()
+                        });
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", ErrorCodeToString(createStatus));
+                    }
+
                 }
             }
 
@@ -122,7 +134,6 @@ namespace WebSite.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 // ChangePassword will throw an exception rather
                 // than return false in certain failure scenarios.
                 bool changePasswordSucceeded;

@@ -141,13 +141,15 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Authentication\AuthenticationClientFactory.cs" />
-    <Compile Include="Helpers\Authentication\AuthorizationClient.cs" />
+    <Compile Include="Helpers\Authentication\AuthenticationClient.cs" />
     <Compile Include="Helpers\Authentication\FacebookClient.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\ProductModels.cs" />
-    <Compile Include="Models\SubscriptionModels.cs" />
-    <Compile Include="Models\UserModels.cs" />
+    <Compile Include="Models\Accounts.cs" />
+    <Compile Include="Models\Addresses.cs" />
+    <Compile Include="Models\Countries.cs" />
+    <Compile Include="Models\CreditCards.cs" />
+    <Compile Include="Models\Subscriptions.cs" />
+    <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

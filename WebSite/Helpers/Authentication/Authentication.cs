@@ -7,6 +7,7 @@ using WebSite.Models;
 using Newtonsoft.Json;
 using System.Security.Principal;
 using DotNetOpenAuth.OAuth2;
+using WebSite.Database;
 
 namespace WebSite.Helpers.Authentication
 {
@@ -19,11 +20,11 @@ namespace WebSite.Helpers.Authentication
         public static void AuthenticateOrRedirect(IdentityProvider identityProvider, HttpResponseBase httpResponse, string returnUrl)
         {
             // Get user information from the identitiy provider
-            UserIdentity userIdentity = Authentication.GetUserIdentity(identityProvider, returnUrl);
+            LoggedInUserIdentity userIdentity = Authentication.GetUserIdentity(identityProvider, returnUrl);
 
             if (userIdentity != null)
             {
-                Authentication.SetCurrentUser(userIdentity, httpResponse);
+                Authentication.SetCurrentUser(userIdentity);
 
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
@@ -42,25 +43,47 @@ namespace WebSite.Helpers.Authentication
         /// <param name="emailAddress"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password)
+        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password, bool rememberUser = false)
         {
             if (Membership.ValidateUser(emailAddress, password))
             {
+                MembershipUser user = Membership.GetUser(emailAddress);
 
+                // Lookup the Stockwinners member to locate first and last names
+                using (DatabaseContext db = new DatabaseContext())
+                {
+                    StockwinnersMember member = (from m in db.StockwinnersMembers where m.MemberId == (int)user.ProviderUserKey select m).First();
+
+                    if (member != null)
+                    {
+                        Authentication.SetCurrentUser(new LoggedInUserIdentity()
+                        {
+                            FirstName = member.FirstName,
+                            LastName = member.LastName,
+                            EmailAddress = user.Email,
+                            IdentityProvider = IdentityProvider.Stockwinners,
+                            IdentityProviderIssuedId = member.MemberId.ToString()
+                        });
+                    }
+                    else
+                    {
+                        //TODO Log Error
+                    }
+                }
             }
 
             // Membership validation failed
             return false;
         }
 
-        public static UserIdentity GetCurrentUserIdentity()
+        public static LoggedInUserIdentity GetCurrentUserIdentity()
         {
             // Extract the current cookie, decrypt it and extract the user identity out of it.
             HttpCookie cookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
 
             if (cookie != null)
             {
-                return JsonConvert.DeserializeObject<UserIdentity>(FormsAuthentication.Decrypt(cookie.Value).UserData);
+                return JsonConvert.DeserializeObject<LoggedInUserIdentity>(FormsAuthentication.Decrypt(cookie.Value).UserData);
             }
 
             return null;
@@ -68,7 +91,7 @@ namespace WebSite.Helpers.Authentication
 
         public static void SignOut()
         {
-            UserIdentity currentUser = Authentication.GetCurrentUserIdentity();
+            LoggedInUserIdentity currentUser = Authentication.GetCurrentUserIdentity();
 
             // If the current user is not a stockwinners user, delete their third party authorization state
             if (currentUser != null && currentUser.IdentityProvider != IdentityProvider.Stockwinners)
@@ -85,19 +108,24 @@ namespace WebSite.Helpers.Authentication
             FormsAuthentication.SignOut();
         }
 
-        private static void SetCurrentUser(UserIdentity userIdentity, HttpResponseBase httpResponse)
+        public static void SetCurrentUser(LoggedInUserIdentity userIdentity, bool rememberUser = false)
         {
             // Ensure the user exists in our own system
-            Authentication.EnsureUserExists(userIdentity);
-
-            // Create a customized authentication cookie
-            Authentication.SetAuthenticationCookie(userIdentity, httpResponse);
+            if (Authentication.EnsureUserExists(userIdentity))
+            {
+                // Create a customized authentication cookie
+                Authentication.SetAuthenticationCookie(userIdentity);
+            }
+            else
+            {
+                // TODO: The user is banned. Somehow let them know.
+            }
         }
 
-        private static void SetAuthenticationCookie(UserIdentity userIdentity, HttpResponseBase httpResponse)
+        private static void SetAuthenticationCookie(LoggedInUserIdentity userIdentity, bool rememberUser = false)
         {
             // Get or create current authentication cookie
-            HttpCookie cookie = FormsAuthentication.GetAuthCookie(userIdentity.FirstName, false);
+            HttpCookie cookie = FormsAuthentication.GetAuthCookie(userIdentity.FirstName, rememberUser);
             FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
 
             // Append user information to the cookie
@@ -109,16 +137,83 @@ namespace WebSite.Helpers.Authentication
             cookie.Value = FormsAuthentication.Encrypt(ticketWithUserData);
 
             // Set the cookie as the current cookie
-            httpResponse.Cookies.Add(cookie);
+            HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
-        private static void EnsureUserExists(UserIdentity userIdentity)
+        /// <summary>
+        /// Returns false if the user already exists and is banned, otherwise returns true.
+        /// </summary>
+        /// <param name="userIdentity"></param>
+        /// <returns></returns>
+        private static bool EnsureUserExists(LoggedInUserIdentity userIdentity)
         {
-            // TODO
-            return;
+            bool isAccepted = true;
+
+            using (DatabaseContext database = new DatabaseContext())
+            {
+                var existingUser = (from user in database.Users
+                                   where user.IdentityProvider == userIdentity.IdentityProvider && user.IdentityProviderIssuedUserId == userIdentity.IdentityProviderIssuedId
+                                   select user).First();
+
+                if (existingUser == null)
+                {
+                    // No user exists, check to see if another account with the same email exists and if so mark the trial date of the duplicate account
+                    // and also its subscription. 
+                    // Use the trial date to ensure users with the same email can't cheat the system by logging into multiple providers. Further, use the
+                    // subscription so that if a user by mistake uses another of its identity providers, he/she still gets his subscription
+                    DateTime trialEndDate = DateTime.UtcNow.AddDays(14);
+                    Subscription subscription = null;
+                    int subscriptionId = 0;
+
+                    var existingUserWithSameEmail = (from user in database.Users
+                                                     where user.EmailAddress == userIdentity.EmailAddress
+                                                     select user).First();
+
+                    if (existingUserWithSameEmail != null)
+                    {
+                        trialEndDate = existingUserWithSameEmail.TrialExpiryDate;
+                        subscription = existingUserWithSameEmail.Subscription;
+                        subscriptionId = existingUserWithSameEmail.SubscriptionId;
+                    }
+
+                    // Create new user account
+                    User newUser = new User()
+                    {
+                        FirstName = userIdentity.FirstName,
+                        LastName = userIdentity.LastName,
+                        EmailAddress = userIdentity.EmailAddress,
+                        IdentityProvider = userIdentity.IdentityProvider,
+                        IdentityProviderIssuedUserId = userIdentity.IdentityProviderIssuedId,
+                        TrialExpiryDate = trialEndDate,
+                        SignUpDate = DateTime.UtcNow,
+                        LastLoginDate = DateTime.UtcNow,
+                        IsBanned = false
+                    };
+
+                    if (subscriptionId != 0)
+                    {
+                        newUser.SubscriptionId = subscriptionId;
+                        newUser.Subscription = subscription;
+                    }
+
+                    database.Users.Add(newUser);
+
+                    //TODO: Send welcome email to user
+                }
+                else
+                {
+                    // The user already exists! Ensure he/she is not banned and also update last logon date
+                    existingUser.LastLoginDate = DateTime.UtcNow;
+                    isAccepted = !existingUser.IsBanned;
+                }
+                
+                database.SaveChanges();
+            }
+
+            return isAccepted;
         }
 
-        private static UserIdentity GetUserIdentity(IdentityProvider identityProvider, string returnUrl)
+        private static LoggedInUserIdentity GetUserIdentity(IdentityProvider identityProvider, string returnUrl)
         {
             return AuthenticationClientFactory.Instance.GetAuthenticationClient(identityProvider).GetUserIdentity(returnUrl);
         }

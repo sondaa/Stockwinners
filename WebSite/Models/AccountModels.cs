@@ -74,7 +74,7 @@ namespace WebSite.Models
     public class UserIdentity
     {
         public IdentityProvider IdentityProvider { get; set; }
-        public string UserID { get; set; }
+        public string Id { get; set; }
         public string EmailAddress { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

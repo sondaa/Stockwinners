@@ -14,13 +14,13 @@ namespace WebSite.Models
         public string CardholderName { get; set; }
 
         [Required]
-        [MaxLength(25)]
-        [MinLength(16)]
         public string Number { get; set; }
 
         [Required]
         public DateTime Expiry { get; set; }
 
+        [MaxLength(4)]
+        [MinLength(3)]
         public int? CVV { get; set; }
 
         [ForeignKey("BillingAddress")]

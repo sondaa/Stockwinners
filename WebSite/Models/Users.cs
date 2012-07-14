@@ -51,6 +51,9 @@ namespace WebSite.Models
         [ForeignKey("Subscription")]
         public int SubscriptionId { get; set; }
         public virtual Subscription Subscription { get; set; }
+
+        // Role Support
+        public virtual ICollection<Role> Roles { get; set; }
     }
 
     /// <summary>
@@ -71,5 +74,7 @@ namespace WebSite.Models
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
+
+        public string EmailAddress { get; set; }
     }
 }

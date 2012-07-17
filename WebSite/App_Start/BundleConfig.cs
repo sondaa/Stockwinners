@@ -13,6 +13,12 @@ namespace WebSite
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery-ui*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/upshot").Include(
+                        "~/Scripts/upshot.js",
+                        "~/Scripts/knockout.js",
+                        "~/Scripts/upshot.compat.knockout.js",
+                        "~/Scripts/upshot.knockout.extensions.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.unobtrusive*",
                         "~/Scripts/jquery.validate*"));

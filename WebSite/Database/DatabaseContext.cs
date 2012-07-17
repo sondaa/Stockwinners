@@ -9,7 +9,7 @@ namespace WebSite.Database
 {
     public class DatabaseContext : DbContext
     {
-        public DatabaseContext()
+        private DatabaseContext()
             : base("name=DefaultConnection")
         {
         }
@@ -21,5 +21,38 @@ namespace WebSite.Database
         public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
+
+        #region Lifetime Management
+
+        public static bool IsAvailableForCurrentContext()
+        {
+            return HttpContext.Current.Items.Contains(typeof(DatabaseContext));
+        }
+
+        public static DatabaseContext GetInstance()
+        {
+            if (DatabaseContext.IsAvailableForCurrentContext())
+            {
+                return HttpContext.Current.Items[typeof(DatabaseContext)] as DatabaseContext;
+            }
+            else
+            {
+                DatabaseContext db = new DatabaseContext();
+
+                HttpContext.Current.Items.Add(typeof(DatabaseContext), db);
+
+                return db;
+            }
+        }
+
+        public static void DisposeInstance()
+        {
+            if (DatabaseContext.IsAvailableForCurrentContext())
+            {
+                DatabaseContext.GetInstance().Dispose();
+            }
+        }
+
+        #endregion
     }
 }

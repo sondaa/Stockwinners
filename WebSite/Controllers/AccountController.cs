@@ -81,36 +81,27 @@ namespace WebSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Attempt to register the user by adding a record to the asp.net membership and also one to our own database to store first and last names.
-                using (DatabaseContext db = new DatabaseContext())
+                MembershipCreateStatus createStatus;
+                WebSite.Infrastructure.MembershipProvider membershipProvider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
+
+                int memberId = membershipProvider.CreateStockwinnersMember(model.Email, model.Password, model.FirstName, model.LastName, out createStatus);
+
+                if (createStatus == MembershipCreateStatus.Success)
                 {
-                    StockwinnersMember newMember = db.StockwinnersMembers.Add(new StockwinnersMember()
+                    Authentication.SetCurrentUser(new LoggedInUserIdentity()
                     {
                         FirstName = model.FirstName,
-                        LastName = model.LastName
+                        LastName = model.LastName,
+                        EmailAddress = model.Email,
+                        IdentityProvider = IdentityProvider.Stockwinners,
+                        IdentityProviderIssuedId = memberId.ToString()
                     });
 
-                    MembershipCreateStatus createStatus;
-                    Membership.CreateUser(model.Email, model.Password, model.Email, passwordQuestion: null, passwordAnswer: null, isApproved: true, providerUserKey: newMember.MemberId, status: out createStatus);
-
-                    if (createStatus == MembershipCreateStatus.Success)
-                    {
-                        Authentication.SetCurrentUser(new LoggedInUserIdentity()
-                        {
-                            FirstName = model.FirstName,
-                            LastName = model.LastName,
-                            EmailAddress = model.Email,
-                            IdentityProvider = IdentityProvider.Stockwinners,
-                            IdentityProviderIssuedId = newMember.MemberId.ToString()
-                        });
-
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", ErrorCodeToString(createStatus));
-                    }
-
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
                 }
             }
 

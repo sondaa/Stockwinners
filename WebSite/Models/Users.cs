@@ -51,16 +51,13 @@ namespace WebSite.Models
         [ForeignKey("Subscription")]
         public int SubscriptionId { get; set; }
         public virtual Subscription Subscription { get; set; }
+        public DateTime? SubscriptionActivationDate { get; set; }
+        public DateTime? SubscriptionCancellationDate { get; set; }
 
         // Role Support
         public virtual ICollection<Role> Roles { get; set; }
     }
 
-    /// <summary>
-    /// We used ASP.NET Membership providers to store Stockwinners members but the membership system does not allow
-    /// information such as first and last name to be stored. As such, we add this extra table to store this information
-    /// for Stockwinners members.
-    /// </summary>
     public class StockwinnersMember
     {
         [Required]
@@ -75,6 +72,18 @@ namespace WebSite.Models
         [MaxLength(50)]
         public string LastName { get; set; }
 
+        [Required]
+        [MaxLength(150)]
         public string EmailAddress { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Whether the member has been ported from the legacy Stockwinners site.
+        /// </summary>
+        [Required]
+        public bool IsLegacyMember { get; set; }
     }
 }

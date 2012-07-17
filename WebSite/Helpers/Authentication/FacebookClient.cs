@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -20,8 +21,8 @@ namespace WebSite.Helpers.Authentication
 
         public FacebookClient()
             : base(Description,
-            clientIdentifier: "384974754900125",
-            credentialApplicator: ClientCredentialApplicator.PostParameter("731e7e962fd4edcc67589ea87c7f6b7d"),
+            clientIdentifier: ConfigurationManager.AppSettings["FacebookClientID"],
+            credentialApplicator: ClientCredentialApplicator.PostParameter(ConfigurationManager.AppSettings["FacebookSecretKey"]),
             requestScopes:new string[] { }, // Not requesting anything beyond the default from Facebook
             dataRequestUri: "https://graph.facebook.com/me",
             identityProvider: Models.IdentityProvider.Facebook)

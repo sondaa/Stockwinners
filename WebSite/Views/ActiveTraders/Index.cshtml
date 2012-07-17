@@ -1,0 +1,46 @@
+﻿@using WebSite.Controllers
+@{
+    ViewBag.Title = "Index";
+}
+@section Scripts
+{
+    @Scripts.Render("~/ViewModels/ActiveTradersViewModel.js")
+    @Scripts.Render("~/bundles/upshot")
+    @Scripts.Render("~/Scripts/jquery.signalR-0.5.2.js")
+    @Scripts.Render("~/signalr/hubs")
+    <script type="text/javascript">
+        $(function ()
+        {
+            var activeTradersHub = $.connection.activeTradersHub;
+            var dataModel = new ActiveTradersViewModel();
+
+            activeTradersHub.addNewsElement = function (data)
+            {
+                dataModel.addNewsElement(data);
+            };
+
+            $.connection.hub.start().done(function ()
+            {
+                // Start binding our UI data
+                ko.applyBindings(dataModel);
+
+                // Notify the server that we want to listen to items
+                activeTradersHub.clientInitialize();
+            });
+        });
+    </script>
+}
+<h2>Index</h2>
+<table>
+    <caption>test</caption>
+    <tr>
+        <th>Contents</th>
+    </tr>
+    <tbody data-bind="foreach: newsElements">
+        <tr>
+            <td data-bind="text: Text"></td>
+        </tr>
+    </tbody>
+</table>
+
+

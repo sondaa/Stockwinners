@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Security;
+using WebSite.Database;
+using WebSite.Models;
 
 namespace WebSite.Infrastructure
 {
@@ -16,17 +20,57 @@ namespace WebSite.Infrastructure
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            if (this.ValidateUser(username, oldPassword))
+            {
+                DatabaseContext db = DatabaseContext.GetInstance();
+
+                StockwinnersMember member = db.StockwinnersMembers.First(m => m.EmailAddress == username && m.Password == MembershipProvider.HashPassword(oldPassword));
+
+                member.Password = MembershipProvider.HashPassword(newPassword);
+
+                db.SaveChanges();
+            }
+
+            return false;
         }
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
+        }
+
+        public int CreateStockwinnersMember(string emailAddress, string password, string firstName, string lastName, out MembershipCreateStatus status)
+        {
+            status = MembershipCreateStatus.Success;
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            // Is member unique?
+            if (db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress) != null)
+            {
+                status = MembershipCreateStatus.DuplicateEmail;
+
+                return 0;
+            }
+
+            StockwinnersMember newMember = new StockwinnersMember()
+            {
+                EmailAddress = emailAddress,
+                FirstName = firstName,
+                LastName = lastName,
+                Password = MembershipProvider.HashPassword(password),
+                IsLegacyMember = false
+            };
+
+            db.StockwinnersMembers.Add(newMember);
+
+            db.SaveChanges();
+
+            return newMember.MemberId;
         }
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
@@ -36,18 +80,30 @@ namespace WebSite.Infrastructure
 
         public override bool EnablePasswordReset
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public override bool EnablePasswordRetrieval
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
-            throw new NotImplementedException();
+            MembershipUserCollection results = new MembershipUserCollection();
+            totalRecords = 0;
+            DatabaseContext db = DatabaseContext.GetInstance();
+            StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailToMatch);
+
+            if (member != null)
+            {
+                results.Add(MembershipProvider.GetMembershipUser(member));
+                totalRecords = 1;
+            }
+
+            return results;
         }
+
 
         public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords)
         {
@@ -57,92 +113,129 @@ namespace WebSite.Infrastructure
 
         public override MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords)
         {
-            throw new NotImplementedException();
+            totalRecords = 0;
+            MembershipUserCollection members = new MembershipUserCollection();
+
+            foreach (StockwinnersMember member in DatabaseContext.GetInstance().StockwinnersMembers)
+            {
+                members.Add(MembershipProvider.GetMembershipUser(member));
+                totalRecords++;
+            }
+
+            return members;
         }
 
         public override int GetNumberOfUsersOnline()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override string GetPassword(string username, string answer)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
-            throw new NotImplementedException();
+            int count = 0;
+            MembershipUserCollection matches = this.FindUsersByEmail(username, 0, 0, out count);
+
+            if (count > 0)
+            {
+                return matches[username];
+            }
+
+            return null;
         }
 
         public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override string GetUserNameByEmail(string email)
         {
-            throw new NotImplementedException();
+            // We use email address and username the same
+            return email;
         }
 
         public override int MaxInvalidPasswordAttempts
         {
-            get { throw new NotImplementedException(); }
+            get { return 3; }
         }
 
         public override int MinRequiredNonAlphanumericCharacters
         {
-            get { throw new NotImplementedException(); }
+            get { return 0; }
         }
 
         public override int MinRequiredPasswordLength
         {
-            get { throw new NotImplementedException(); }
+            get { return 6; }
         }
 
         public override int PasswordAttemptWindow
         {
-            get { throw new NotImplementedException(); }
+            get { return 5; }
         }
 
         public override MembershipPasswordFormat PasswordFormat
         {
-            get { throw new NotImplementedException(); }
+            get { return MembershipPasswordFormat.Hashed; }
         }
 
         public override string PasswordStrengthRegularExpression
         {
-            get { throw new NotImplementedException(); }
+            get { return string.Empty; }
         }
 
         public override bool RequiresQuestionAndAnswer
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public override bool RequiresUniqueEmail
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         public override string ResetPassword(string username, string answer)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override bool UnlockUser(string userName)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override void UpdateUser(MembershipUser user)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public override bool ValidateUser(string username, string password)
         {
-            throw new NotImplementedException();
+            return DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username && m.Password == MembershipProvider.HashPassword(password)) != null;
         }
+
+        #region Private Helpers
+
+        private static MembershipUser GetMembershipUser(StockwinnersMember member)
+        {
+            // We don't supply any real dates as those are stored in the real User data model
+            return new MembershipUser("StockwinnersMembershipProvider", member.EmailAddress, null, member.EmailAddress, null,
+                null, true, false, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow);
+        }
+
+        private static string HashPassword(string rawPassword)
+        {
+            using (SHA256 hash = SHA256.Create())
+            {
+                return Convert.ToBase64String(hash.ComputeHash(Encoding.UTF8.GetBytes(rawPassword)));
+            }
+        }
+
+        #endregion
     }
 }

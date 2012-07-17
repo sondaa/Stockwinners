@@ -5,30 +5,71 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Web;
+using SignalR;
 using SignalR.Hubs;
 using WebSite.Models;
 
 namespace WebSite.Hubs
 {
-    public class ActiveTraders : Hub
+    public class ActiveTradersHub : Hub
     {
         /// <summary>
         /// Tracks the set of items received so far today.
         /// </summary>
-        SortedSet<ActiveTradersNewsElement> _newsElements;
+        static SortedSet<ActiveTradersNewsElement> _newsElements;
+
+        /// <summary>
+        /// Track whether we are receiving news from fly on the wall.
+        /// </summary>
+        static bool _isReceivingNews = false;
+
+        /// <summary>
+        /// Lock used to synchronize access to static fields.
+        /// </summary>
+        static object _stateLock = new object();
 
         static string FlyOnTheWallServerAddress = "news.theflyonthewall.com";
         int FlyOnTheWallServerPort = 80;
 
-        public ActiveTraders()
+        public ActiveTradersHub()
         {
-            _newsElements = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
+            if (_newsElements == null)
+            {
+                lock (_stateLock)
+                {
+                    if (_newsElements == null)
+                    {
+                        _newsElements = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
+                    }
+                }
+            }
 
             this.StartReceivingNews();
         }
 
         private void StartReceivingNews()
         {
+            // Don't bother subscribing to the feed again if we already have done so.
+            if (_isReceivingNews)
+            {
+                return;
+            }
+            else
+            {
+                lock (_stateLock)
+                {
+                    if (!_isReceivingNews)
+                    {
+                        // Track that we are already receiving news.
+                        _isReceivingNews = true;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+
             // Schedule the connection with FlyOnTheWall on its own separate thread
             ThreadPool.QueueUserWorkItem(delegate
             {
@@ -75,7 +116,7 @@ namespace WebSite.Hubs
         private void AddNewNewsElement(ActiveTradersNewsElement newsElement)
         {
             // First atomically update the collection of news elements we have
-            SortedSet<ActiveTradersNewsElement> newsElementsClone = new SortedSet<ActiveTradersNewsElement>();
+            SortedSet<ActiveTradersNewsElement> newsElementsClone = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
 
             // Clone the existing collection
             newsElementsClone.UnionWith(_newsElements);
@@ -87,7 +128,10 @@ namespace WebSite.Hubs
             Interlocked.Exchange(ref _newsElements, newsElementsClone);
 
             // Then notify the clients out there about the new item
-            Clients.AddNewsElement(newsElement);
+            if (Clients != null)
+            {
+                Clients.addNewsElement(newsElement);
+            }
         }
 
         private ActiveTradersNewsElement ParseActiveTradersElement(string data)
@@ -125,9 +169,23 @@ namespace WebSite.Hubs
 
         #region Public Methods
 
-        public ActiveTradersNewsElement[] GetCurrentNewsItems()
+        public static IEnumerable<ActiveTradersNewsElement> GetCurrentNewsItems()
         {
-            return _newsElements.ToArray();
+            if (_newsElements != null)
+            {
+                return _newsElements;
+            }
+            else
+            {
+                return new ActiveTradersNewsElement[] { };
+            }
+        }
+
+        /// <summary>
+        /// Called by the clients to initialize the connection to the hub.
+        /// </summary>
+        public void ClientInitialize()
+        {
         }
 
         #endregion

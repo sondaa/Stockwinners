@@ -15,39 +15,37 @@ namespace WebSite.Infrastructure
     {
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-            using (DatabaseContext db = new DatabaseContext())
+            DatabaseContext db = DatabaseContext.GetInstance();
+            
+            for (int usernameIndex = 0; usernameIndex < usernames.Length; usernameIndex++)
             {
-                for (int usernameIndex = 0; usernameIndex < usernames.Length; usernameIndex++)
+                User user = db.Users.FirstOrDefault(u => u.EmailAddress == usernames[usernameIndex]);
+
+                if (user != null)
                 {
-                    User user = db.Users.FirstOrDefault(u => u.EmailAddress == usernames[usernameIndex]);
-
-                    if (user != null)
+                    for (int roleIndex = 0; roleIndex < roleNames.Length; roleIndex++)
                     {
-                        for (int roleIndex = 0; roleIndex < roleNames.Length; roleIndex++)
-                        {
-                            Role role = db.Roles.FirstOrDefault(r => r.Name == roleNames[roleIndex]);
+                        Role role = db.Roles.FirstOrDefault(r => r.Name == roleNames[roleIndex]);
 
-                            if (role != null)
-                            {
-                                user.Roles.Add(role);
-                            }
+                        if (role != null)
+                        {
+                            user.Roles.Add(role);
                         }
                     }
                 }
-
-                db.SaveChanges();
             }
+
+            db.SaveChanges();
         }
 
         public override string ApplicationName { get; set; }
 
         public override void CreateRole(string roleName)
         {
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                db.Roles.Add(new Role() { Name = roleName });
-                db.SaveChanges();
-            }
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            db.Roles.Add(new Role() { Name = roleName });
+            db.SaveChanges();
         }
 
         public override bool DeleteRole(string roleName, bool throwOnPopulatedRole)
@@ -62,22 +60,18 @@ namespace WebSite.Infrastructure
 
         public override string[] GetAllRoles()
         {
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                return (from role in db.Roles select role.Name).ToArray();
-            }
+            return (from role in DatabaseContext.GetInstance().Roles select role.Name).ToArray();
         }
 
         public override string[] GetRolesForUser(string username)
         {
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
+            DatabaseContext db = DatabaseContext.GetInstance();
 
-                if (user != null)
-                {
-                    return (from role in user.Roles select role.Name).ToArray();
-                }
+            User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
+
+            if (user != null)
+            {
+                return (from role in user.Roles select role.Name).ToArray();
             }
 
             return null;
@@ -90,14 +84,13 @@ namespace WebSite.Infrastructure
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
+            DatabaseContext db = DatabaseContext.GetInstance();
 
-                if (user != null)
-                {
-                    return user.Roles.FirstOrDefault(role => role.Name == roleName) != null;
-                }
+            User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
+
+            if (user != null)
+            {
+                return user.Roles.FirstOrDefault(role => role.Name == roleName) != null;
             }
 
             return false;
@@ -105,40 +98,36 @@ namespace WebSite.Infrastructure
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
-            using (DatabaseContext db = new DatabaseContext())
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            foreach (string username in usernames)
             {
-                foreach (string username in usernames)
+                User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
+
+                if (user != null)
                 {
-                    User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
-
-                    if (user != null)
+                    foreach (string role in roleNames)
                     {
-                        foreach (string role in roleNames)
-                        {
-                            List<Role> userRoles = user.Roles.ToList();
-                            user.Roles.Clear();
+                        List<Role> userRoles = user.Roles.ToList();
+                        user.Roles.Clear();
 
-                            foreach (Role userRole in userRoles)
+                        foreach (Role userRole in userRoles)
+                        {
+                            if (userRole.Name != role)
                             {
-                                if (userRole.Name != role)
-                                {
-                                    user.Roles.Add(userRole);
-                                }
+                                user.Roles.Add(userRole);
                             }
                         }
                     }
                 }
-
-                db.SaveChanges();
             }
+
+            db.SaveChanges();
         }
 
         public override bool RoleExists(string roleName)
         {
-            using (DatabaseContext db = new DatabaseContext())
-            {
-                return db.Roles.FirstOrDefault(role => role.Name == roleName) != null;
-            }
+            return DatabaseContext.GetInstance().Roles.FirstOrDefault(role => role.Name == roleName) != null;
         }
     }
 }

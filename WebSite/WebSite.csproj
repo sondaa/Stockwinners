@@ -147,7 +147,11 @@
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Database\DatabaseContext.cs" />
+    <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
+    <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
+      <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -158,14 +162,14 @@
     <Compile Include="Infrastructure\MembershipProvider.cs" />
     <Compile Include="Infrastructure\RoleProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Accounts.cs" />
-    <Compile Include="Models\ActiveTradersNewsElements.cs" />
-    <Compile Include="Models\Addresses.cs" />
-    <Compile Include="Models\Countries.cs" />
-    <Compile Include="Models\CreditCards.cs" />
-    <Compile Include="Models\Roles.cs" />
-    <Compile Include="Models\Subscriptions.cs" />
-    <Compile Include="Models\Users.cs" />
+    <Compile Include="Models\Logic\Accounts.cs" />
+    <Compile Include="Models\Logic\ActiveTradersNewsElements.cs" />
+    <Compile Include="Models\Data\Addresses.cs" />
+    <Compile Include="Models\Data\Countries.cs" />
+    <Compile Include="Models\Data\CreditCards.cs" />
+    <Compile Include="Models\Data\Roles.cs" />
+    <Compile Include="Models\Data\Subscriptions.cs" />
+    <Compile Include="Models\Data\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +283,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\ActiveTraders\Index.cshtml" />
+    <Content Include="Views\Account\InvalidProvider.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -24,11 +24,13 @@ namespace WebSite.Infrastructure
             {
                 DatabaseContext db = DatabaseContext.GetInstance();
 
-                StockwinnersMember member = db.StockwinnersMembers.First(m => m.EmailAddress == username && m.Password == MembershipProvider.HashPassword(oldPassword));
+                StockwinnersMember member = db.StockwinnersMembers.First(m => m.EmailAddress == username);
 
                 member.Password = MembershipProvider.HashPassword(newPassword);
 
                 db.SaveChanges();
+
+                return true;
             }
 
             return false;
@@ -216,7 +218,21 @@ namespace WebSite.Infrastructure
 
         public override bool ValidateUser(string username, string password)
         {
-            return DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username && m.Password == MembershipProvider.HashPassword(password)) != null;
+            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username); 
+            
+            return member != null && member.Password == MembershipProvider.HashPassword(password);
+        }
+
+        public StockwinnersMember GetStockwinnersMember(string emailAddress, string password)
+        {
+            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress);
+
+            if (member != null && member.Password == MembershipProvider.HashPassword(password))
+            {
+                return member;
+            }
+
+            return null;
         }
 
         #region Private Helpers
@@ -224,7 +240,7 @@ namespace WebSite.Infrastructure
         private static MembershipUser GetMembershipUser(StockwinnersMember member)
         {
             // We don't supply any real dates as those are stored in the real User data model
-            return new MembershipUser("StockwinnersMembershipProvider", member.EmailAddress, null, member.EmailAddress, null,
+            return new MembershipUser("DefaultMembershipProvider", member.EmailAddress, null, member.EmailAddress, null,
                 null, true, false, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow);
         }
 

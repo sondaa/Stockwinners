@@ -43,7 +43,7 @@ namespace WebSite.Controllers
                     returnUrl = null;
                 }
 
-                if (!Authentication.AuthenticateOrRedirectStockwinnersMember(model.Email, model.Password, model.RememberMe))
+                if (!Authentication.AuthenticateOrRedirectStockwinnersMember(model.Email, model.Password, returnUrl, model.RememberMe))
                 {
                     ModelState.AddModelError("", "The user name or password provided is incorrect.");
                 }
@@ -114,6 +114,14 @@ namespace WebSite.Controllers
 
         public ActionResult ChangePassword()
         {
+            // Only stockwinners members can change their password using our website.
+            this.EnsureStockwinnersMember();
+
+            return View();
+        }
+
+        public ActionResult InvalidProvider()
+        {
             return View();
         }
 
@@ -123,6 +131,8 @@ namespace WebSite.Controllers
         [HttpPost]
         public ActionResult ChangePassword(PasswordChangeModel model)
         {
+            this.EnsureStockwinnersMember();
+
             if (ModelState.IsValid)
             {
                 // ChangePassword will throw an exception rather
@@ -130,7 +140,7 @@ namespace WebSite.Controllers
                 bool changePasswordSucceeded;
                 try
                 {
-                    MembershipUser currentUser = Membership.GetUser(User.Identity.Name, userIsOnline: true);
+                    MembershipUser currentUser = Membership.GetUser(Authentication.GetCurrentUserIdentity().EmailAddress, userIsOnline: true);
                     changePasswordSucceeded = currentUser.ChangePassword(model.OldPassword, model.NewPassword);
                 }
                 catch (Exception)
@@ -163,6 +173,16 @@ namespace WebSite.Controllers
         private IEnumerable<string> GetErrorsFromModelState()
         {
             return ModelState.SelectMany(x => x.Value.Errors.Select(error => error.ErrorMessage));
+        }
+
+        private void EnsureStockwinnersMember()
+        {
+            LoggedInUserIdentity currentUser = Authentication.GetCurrentUserIdentity();
+
+            if (currentUser.IdentityProvider != IdentityProvider.Stockwinners)
+            {
+                RedirectToAction("InvalidProvider");
+            }
         }
 
         #region Status Codes

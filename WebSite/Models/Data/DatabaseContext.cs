@@ -9,7 +9,7 @@ namespace WebSite.Database
 {
     public class DatabaseContext : DbContext
     {
-        private DatabaseContext()
+        public DatabaseContext()
             : base("name=DefaultConnection")
         {
         }

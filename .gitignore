@@ -7,3 +7,7 @@ TestResults
 
 # Visual Studio solution settings
 *.suo
+
+# Local Database Files
+*.mdf
+*.ldf

@@ -9,6 +9,9 @@ namespace WebSite.Models
 {
     public class CreditCard
     {
+        [Key]
+        public int CreditCardId { get; set; }
+
         [Required]
         [MaxLength(100)]
         public string CardholderName { get; set; }

@@ -17,7 +17,7 @@ namespace WebSite.Helpers.Authentication
         /// Authenticates the user in the system as the currently logged on user. Ensures that we have sufficient information
         /// in our database to track the user's identity. If the user is already authenticated, then redirects it to the <paramref name="returnUrl"/>.
         /// </summary>
-        public static void AuthenticateOrRedirect(IdentityProvider identityProvider, HttpResponseBase httpResponse, string returnUrl)
+        public static void AuthenticateOrRedirect(IdentityProvider identityProvider, string returnUrl)
         {
             // Get user information from the identitiy provider
             LoggedInUserIdentity userIdentity = Authentication.GetUserIdentity(identityProvider, returnUrl);
@@ -26,47 +26,34 @@ namespace WebSite.Helpers.Authentication
             {
                 Authentication.SetCurrentUser(userIdentity);
 
-                if (!string.IsNullOrEmpty(returnUrl))
-                {
-                    httpResponse.Redirect(returnUrl);
-                }
-                else
-                {
-                    httpResponse.Redirect("/");
-                }
+                Authentication.Redirect(returnUrl);
             }
         }
 
         /// <summary>
         /// Authenticates a Stockwinners member. Returns false if the provided login credentials are invalid.
         /// </summary>
-        /// <param name="emailAddress"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password, bool rememberUser = false)
+        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password, string redirectUrl, bool rememberUser = false)
         {
-            if (Membership.ValidateUser(emailAddress, password))
+            WebSite.Infrastructure.MembershipProvider memberProvider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
+
+            // Lookup the Stockwinners member to locate first and last names
+            StockwinnersMember member = memberProvider.GetStockwinnersMember(emailAddress, password);
+
+            if (member != null)
             {
-                MembershipUser user = Membership.GetUser(emailAddress);
-
-                // Lookup the Stockwinners member to locate first and last names
-                StockwinnersMember member = (from m in DatabaseContext.GetInstance().StockwinnersMembers where m.MemberId == (int)user.ProviderUserKey select m).First();
-
-                if (member != null)
+                Authentication.SetCurrentUser(new LoggedInUserIdentity()
                 {
-                    Authentication.SetCurrentUser(new LoggedInUserIdentity()
-                    {
-                        FirstName = member.FirstName,
-                        LastName = member.LastName,
-                        EmailAddress = user.Email,
-                        IdentityProvider = IdentityProvider.Stockwinners,
-                        IdentityProviderIssuedId = member.MemberId.ToString()
-                    });
-                }
-                else
-                {
-                    //TODO Log Error
-                }
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    EmailAddress = member.EmailAddress,
+                    IdentityProvider = IdentityProvider.Stockwinners,
+                    IdentityProviderIssuedId = member.MemberId.ToString()
+                }, rememberUser);
+
+                Authentication.Redirect(redirectUrl);
+
+                return true;
             }
 
             // Membership validation failed
@@ -111,7 +98,7 @@ namespace WebSite.Helpers.Authentication
             if (Authentication.EnsureUserExists(userIdentity))
             {
                 // Create a customized authentication cookie
-                Authentication.SetAuthenticationCookie(userIdentity);
+                Authentication.SetAuthenticationCookie(userIdentity, rememberUser);
             }
             else
             {
@@ -137,6 +124,18 @@ namespace WebSite.Helpers.Authentication
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
+        private static void Redirect(string returnUrl)
+        {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                HttpContext.Current.Response.Redirect(returnUrl);
+            }
+            else
+            {
+                HttpContext.Current.Response.Redirect("/");
+            }
+        }
+
         /// <summary>
         /// Returns false if the user already exists and is banned, otherwise returns true.
         /// </summary>
@@ -149,8 +148,8 @@ namespace WebSite.Helpers.Authentication
             DatabaseContext database = DatabaseContext.GetInstance();
 
             var existingUser = (from user in database.Users
-                                where user.IdentityProvider == userIdentity.IdentityProvider && user.IdentityProviderIssuedUserId == userIdentity.IdentityProviderIssuedId
-                                select user).First();
+                                where user.IdentityProvider == (int)userIdentity.IdentityProvider && user.IdentityProviderIssuedUserId == userIdentity.IdentityProviderIssuedId
+                                select user).FirstOrDefault();
 
             if (existingUser == null)
             {
@@ -160,11 +159,11 @@ namespace WebSite.Helpers.Authentication
                 // subscription so that if a user by mistake uses another of its identity providers, he/she still gets his subscription
                 DateTime trialEndDate = DateTime.UtcNow.AddDays(14);
                 Subscription subscription = null;
-                int subscriptionId = 0;
+                int? subscriptionId = null;
 
                 var existingUserWithSameEmail = (from user in database.Users
                                                     where user.EmailAddress == userIdentity.EmailAddress
-                                                    select user).First();
+                                                    select user).FirstOrDefault();
 
                 if (existingUserWithSameEmail != null)
                 {
@@ -179,7 +178,7 @@ namespace WebSite.Helpers.Authentication
                     FirstName = userIdentity.FirstName,
                     LastName = userIdentity.LastName,
                     EmailAddress = userIdentity.EmailAddress,
-                    IdentityProvider = userIdentity.IdentityProvider,
+                    IdentityProvider = (int)userIdentity.IdentityProvider,
                     IdentityProviderIssuedUserId = userIdentity.IdentityProviderIssuedId,
                     TrialExpiryDate = trialEndDate,
                     SignUpDate = DateTime.UtcNow,
@@ -187,7 +186,7 @@ namespace WebSite.Helpers.Authentication
                     IsBanned = false
                 };
 
-                if (subscriptionId != 0)
+                if (subscriptionId.HasValue)
                 {
                     newUser.SubscriptionId = subscriptionId;
                     newUser.Subscription = subscription;

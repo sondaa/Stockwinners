@@ -23,7 +23,7 @@ namespace WebSite.Helpers.Authentication
             : base(Description,
             clientIdentifier: ConfigurationManager.AppSettings["FacebookClientID"],
             credentialApplicator: ClientCredentialApplicator.PostParameter(ConfigurationManager.AppSettings["FacebookSecretKey"]),
-            requestScopes:new string[] { }, // Not requesting anything beyond the default from Facebook
+            requestScopes:new string[] { "email" }, // We'd like the "email" scope from Facebook in addition to what Facebook defines as "basic"
             dataRequestUri: "https://graph.facebook.com/me",
             identityProvider: Models.IdentityProvider.Facebook)
         {

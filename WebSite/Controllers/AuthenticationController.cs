@@ -16,7 +16,7 @@ namespace WebSite.Controllers
         /// <returns></returns>
         public void GoogleCallback()
         {
-            Authentication.AuthenticateOrRedirect(IdentityProvider.Google, this.HttpContext.Response, returnUrl: null);
+            Authentication.AuthenticateOrRedirect(IdentityProvider.Google, returnUrl: null);
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace WebSite.Controllers
         /// <param name="returnUrl"></param>
         public void FacebookCallback(string returnUrl)
         {
-            Authentication.AuthenticateOrRedirect(IdentityProvider.Facebook, this.HttpContext.Response, returnUrl);
+            Authentication.AuthenticateOrRedirect(IdentityProvider.Facebook, returnUrl);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace WebSite.Controllers
                 returnUrl = null;
             }
 
-            Authentication.AuthenticateOrRedirect(identityProvider, this.HttpContext.Response, returnUrl);
+            Authentication.AuthenticateOrRedirect(identityProvider, returnUrl);
         }
     }
 }

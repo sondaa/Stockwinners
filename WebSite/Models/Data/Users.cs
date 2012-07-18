@@ -15,7 +15,7 @@ namespace WebSite.Models
 
         // Basic Properties
         [Required]
-        public IdentityProvider IdentityProvider { get; set; }
+        public int IdentityProvider { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -23,6 +23,7 @@ namespace WebSite.Models
 
         [Required]
         [MaxLength(100)]
+        [DataType(DataType.EmailAddress)]
         public string EmailAddress { get; set; }
 
         [Required]
@@ -49,7 +50,7 @@ namespace WebSite.Models
 
         // Subscription related
         [ForeignKey("Subscription")]
-        public int SubscriptionId { get; set; }
+        public int? SubscriptionId { get; set; }
         public virtual Subscription Subscription { get; set; }
         public DateTime? SubscriptionActivationDate { get; set; }
         public DateTime? SubscriptionCancellationDate { get; set; }
@@ -74,10 +75,12 @@ namespace WebSite.Models
 
         [Required]
         [MaxLength(150)]
+        [DataType(DataType.EmailAddress)]
         public string EmailAddress { get; set; }
 
         [Required]
         [MaxLength(100)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
 
         /// <summary>

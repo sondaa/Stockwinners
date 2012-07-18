@@ -15,7 +15,7 @@
 <p>@Model.Exception</p>
 <p>@foreach (var e in (Model.Exception as System.Data.Entity.Validation.DbEntityValidationException).EntityValidationErrors) {
 
-         @foreach (var m in e.ValidationErrors)
+         foreach (var m in e.ValidationErrors)
          {
              @m.ErrorMessage<br />
              @m.PropertyName<br />

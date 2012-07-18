@@ -13,4 +13,8 @@
 <p>Controller: @Model.ActionName</p>
 <p>@Model.ControllerName</p>
 <p>@Model.Exception</p>
-<p>@((Model.Exception as System.Data.Entity.Validation.DbEntityValidationException).EntityValidationErrors)</p>
+<p>@{foreach (var e in (Model.Exception as System.Data.Entity.Validation.DbEntityValidationException).EntityValidationErrors) 
+
+         @e
+}
+</p>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -45,23 +46,29 @@ namespace WebSite.Helpers.Authentication
 
             if (authorizationState == null)
             {
+                string callbackURL = string.Empty;
+
                 // Send the authorization request to the corresponding authorization server. If all of the providers could agree on the same format, we could
                 // be doing the same code irrespective of which identity provider is being used which would be the ideal design.
                 if (_identityProvider == IdentityProvider.Google)
                 {
+                    callbackURL = ConfigurationManager.AppSettings["GoogleCallbackURL"];
+
                     // TODO: Google is lame and does not support addition of extra data at the end of the call back URL. We need to use an extra
                     // state parameter for which DotNetOpenAuth does not have support yet.
-                    this.RequestUserAuthorization(_requestScopes, new Uri("http://localhost:38187/authentication/googlecallback"));
+                    this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL));
                 }
                 else if (_identityProvider == IdentityProvider.Facebook)
                 {
+                    callbackURL = ConfigurationManager.AppSettings["FacebookCallbackURL"];
+
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
-                       this.RequestUserAuthorization(_requestScopes, new Uri("http://localhost:38187/authentication/facebookcallback?returnUrl=" + returnUrl));
+                       this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL + "?returnUrl=" + returnUrl));
                     }
                     else
                     {
-                        this.RequestUserAuthorization(_requestScopes, new Uri("http://localhost:38187/authentication/facebookcallback"));
+                        this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL));
                     }
                 }
             }

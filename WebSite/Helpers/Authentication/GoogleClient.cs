@@ -26,8 +26,8 @@ namespace WebSite.Helpers.Authentication
             : base(Description, 
             clientIdentifier: ConfigurationManager.AppSettings["GoogleClientID"], 
             // Guys at Google somehow require this to be in POST form. Documenting it in their docs would have been nice.
-            credentialApplicator: ClientCredentialApplicator.PostParameter(ConfigurationManager.AppSettings["GoogleSecretKey"]), 
-            requestScopes: new string[] { "https://www.googleapis.com/auth/userinfo.profile" }, 
+            credentialApplicator: ClientCredentialApplicator.PostParameter(ConfigurationManager.AppSettings["GoogleSecretKey"]),
+            requestScopes: new string[] { "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email" }, 
             dataRequestUri: "https://www.googleapis.com/oauth2/v2/userinfo",
             identityProvider: IdentityProvider.Google)
         {

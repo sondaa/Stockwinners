@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Security.Principal;
 using DotNetOpenAuth.OAuth2;
 using WebSite.Database;
+using WebSite.Models.Data;
 
 namespace WebSite.Helpers.Authentication
 {
@@ -68,6 +69,19 @@ namespace WebSite.Helpers.Authentication
             if (cookie != null)
             {
                 return JsonConvert.DeserializeObject<LoggedInUserIdentity>(FormsAuthentication.Decrypt(cookie.Value).UserData);
+            }
+
+            return null;
+        }
+
+        public static User GetCurrentUser()
+        {
+            LoggedInUserIdentity loggedInUser = Authentication.GetCurrentUserIdentity();
+
+            if (loggedInUser != null)
+            {
+                return DatabaseContext.GetInstance().Users.First(
+                    u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
             }
 
             return null;
@@ -157,9 +171,19 @@ namespace WebSite.Helpers.Authentication
                 // and also its subscription. 
                 // Use the trial date to ensure users with the same email can't cheat the system by logging into multiple providers. Further, use the
                 // subscription so that if a user by mistake uses another of its identity providers, he/she still gets his subscription
-                DateTime trialEndDate = DateTime.UtcNow.AddDays(14);
+                DateTime trialEndDate = DateTime.UtcNow.AddDays(15);
                 Subscription subscription = null;
                 int? subscriptionId = null;
+
+                // By default send all types of emails to users
+                NotificationSettings notificationSettings = new NotificationSettings() { 
+                    ReceiveStockPicks = true, 
+                    ReceiveOptionPicks = true, 
+                    ReceiveGeneralAnnouncements = true, 
+                    ReceiveDailyAlerts = true, 
+                    ReceiveWeeklyAlerts = true };
+
+                bool isBanned = false;
 
                 var existingUserWithSameEmail = (from user in database.Users
                                                     where user.EmailAddress == userIdentity.EmailAddress
@@ -170,6 +194,8 @@ namespace WebSite.Helpers.Authentication
                     trialEndDate = existingUserWithSameEmail.TrialExpiryDate;
                     subscription = existingUserWithSameEmail.Subscription;
                     subscriptionId = existingUserWithSameEmail.SubscriptionId;
+                    notificationSettings = existingUserWithSameEmail.NotificationSettings;
+                    isBanned = existingUserWithSameEmail.IsBanned;
                 }
 
                 // Create new user account
@@ -183,13 +209,15 @@ namespace WebSite.Helpers.Authentication
                     TrialExpiryDate = trialEndDate,
                     SignUpDate = DateTime.UtcNow,
                     LastLoginDate = DateTime.UtcNow,
-                    IsBanned = false
+                    IsBanned = isBanned,
+                    NotificationSettings = notificationSettings
                 };
 
                 if (subscriptionId.HasValue)
                 {
                     newUser.SubscriptionId = subscriptionId;
                     newUser.Subscription = subscription;
+                    newUser.Subscriptions.Add(subscription);
                 }
 
                 database.Users.Add(newUser);

@@ -15,18 +15,27 @@ namespace WebSite.Models
 
         [Required]
         [MaxLength(100)]
+        [Display(Name = "Address Line 1")]
         public string AddressLine1 { get; set; }
 
-        [Required(AllowEmptyStrings=true)]
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(100)]
+        [Display(Name = "Address Line 2")]
         public string AddressLine2 { get; set; }
 
-        [Required(AllowEmptyStrings=true)]
+        [Required(AllowEmptyStrings = true)]
+        [MaxLength(70)]
+        [Display(Name = "City")]
+        public string City { get; set; }
+        
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(30)]
+        [Display(Name = "Province or State")]
         public string ProvinceOrState { get; set; }
 
-        [Required(AllowEmptyStrings=true)]
+        [Required(AllowEmptyStrings = true)]
         [MaxLength(20)]
+        [Display(Name = "Zip Code or Postal Code")]
         public string PostalCode { get; set; }
 
         [ForeignKey("Country")]

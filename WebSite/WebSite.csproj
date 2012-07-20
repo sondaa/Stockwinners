@@ -39,6 +39,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AuthorizeNet">
+      <HintPath>References\AuthorizeNet.dll</HintPath>
+    </Reference>
+    <Reference Include="AuthorizeNet.Helpers">
+      <HintPath>References\AuthorizeNet.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetOpenAuth">
       <HintPath>..\packages\DotNetOpenAuth.Ultimate.4.1.0.12182\lib\net40-full\DotNetOpenAuth.dll</HintPath>
     </Reference>
@@ -147,9 +153,14 @@
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
       <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs" />
+    <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.Designer.cs">
+      <DependentUpon>201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -162,6 +173,7 @@
     <Compile Include="Infrastructure\MembershipProvider.cs" />
     <Compile Include="Infrastructure\RoleProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Data\NotificationSettings.cs" />
     <Compile Include="Models\Logic\Accounts.cs" />
     <Compile Include="Models\Logic\ActiveTradersNewsElements.cs" />
     <Compile Include="Models\Data\Addresses.cs" />
@@ -201,7 +213,11 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="favicon.ico" />
+    <Content Include="Fonts\icons.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Fonts\icons.eot" />
+    <Content Include="Fonts\icons.ttf" />
+    <Content Include="Fonts\icons.woff" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
@@ -251,13 +267,7 @@
     <Content Include="Scripts\_references.js" />
     <Compile Include="Helpers\Authentication\Authentication.cs" />
     <Compile Include="Helpers\Authentication\GoogleClient.cs" />
-    <Content Include="Images\accent.png" />
-    <Content Include="Images\aspNetHome.png" />
     <Content Include="Images\bullet.png" />
-    <Content Include="Images\facebook.png" />
-    <Content Include="Images\findHosting.png" />
-    <Content Include="Images\heroAccent.png" />
-    <Content Include="Images\NuGetGallery.png" />
     <Content Include="Images\orderedList0.png" />
     <Content Include="Images\orderedList1.png" />
     <Content Include="Images\orderedList2.png" />
@@ -268,8 +278,6 @@
     <Content Include="Images\orderedList7.png" />
     <Content Include="Images\orderedList8.png" />
     <Content Include="Images\orderedList9.png" />
-    <Content Include="Images\twitter.png" />
-    <Content Include="Images\windowsLive.png" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Account\ChangePasswordSuccess.cshtml" />
@@ -284,9 +292,12 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\ActiveTraders\Index.cshtml" />
     <Content Include="Views\Account\InvalidProvider.cshtml" />
+    <Content Include="Views\Members\Index.cshtml" />
+    <Content Include="Views\Members\Subscribe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="References\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -19,7 +19,7 @@ namespace WebSite.Migrations
             // This method will be called after migrating to the latest version.
 
             // Ensure default subscriptions are available
-            Configuration.SeedSubscriptions(context);
+            Configuration.SeedSubscriptionTypesAndFrequencies(context);
 
             // Ensure default roles are available
             Configuration.SeedRoles(context);
@@ -292,12 +292,18 @@ Zimbabwe";
             }
         }
 
-        private static void SeedSubscriptions(DatabaseContext context)
+        private static void SeedSubscriptionTypesAndFrequencies(DatabaseContext context)
         {
-            context.Subscriptions.AddOrUpdate(
-                new Subscription() { Frequency = SubscriptionFrequency.Monthly, Price = 39 },
-                new Subscription() { Frequency = SubscriptionFrequency.Quarterly, Price = 110 },
-                new Subscription() { Frequency = SubscriptionFrequency.Yearly, Price = 350 }
+            SubscriptionFrequency monthly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Monthly };
+            SubscriptionFrequency quarterly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Quarterly };
+            SubscriptionFrequency yearly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Yearly };
+
+            context.SubscriptionFrequencies.AddOrUpdate(monthly, quarterly, yearly);
+
+            context.SubscriptionTypes.AddOrUpdate(
+                new SubscriptionType() { SubscriptionFrequency = monthly, Price = 39, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequency = quarterly, Price = 110, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequency = yearly, Price = 350, IsAvailableToUsers = true }
                 );
         }
     }

@@ -17,6 +17,8 @@ namespace WebSite.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<SubscriptionType> SubscriptionTypes { get; set; }
+        public DbSet<SubscriptionFrequency> SubscriptionFrequencies { get; set; }
         public DbSet<StockwinnersMember> StockwinnersMembers { get; set; }
         public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Address> Addresses { get; set; }

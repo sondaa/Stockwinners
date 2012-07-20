@@ -14,6 +14,7 @@ namespace WebSite.Models
 
         [Required]
         [MaxLength(100)]
+        [Display(Name = "Name on card")]
         public string CardholderName { get; set; }
 
         [Required]

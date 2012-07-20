@@ -1,0 +1,37 @@
+@model WebSite.Models.CreditCard
+
+@{
+    ViewBag.Title = "Subscribe";
+}
+
+<h2>Subscribe</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Subscription</legend>
+
+		<ul>
+            <li>@Html.LabelFor(m => m.CardholderName) @Html.TextBoxFor(m => m.CardholderName)</li>
+            <li>@Html.LabelFor(m => m.Number) @Html.TextBoxFor(m => m.Number)</li>
+            <li>@Html.LabelFor(m => m.CVV) @Html.TextBoxFor(m => m.CVV)</li>
+            <li>@Html.LabelFor(m => m.Expiry) @Html.TextBoxFor(m => m.Expiry.Month)/@Html.TextBoxFor(m => m.Expiry.Year)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.AddressLine1) @Html.TextBoxFor(m => m.BillingAddress.AddressLine1)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.AddressLine2) @Html.TextBoxFor(m => m.BillingAddress.AddressLine2)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.City) @Html.TextBoxFor(m => m.BillingAddress.City)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.ProvinceOrState) @Html.TextBoxFor(m => m.BillingAddress.ProvinceOrState)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.BillingAddress.PostalCode)</li>
+            <li>@Html.LabelFor(m => m.BillingAddress.Country) @Html.DropDownListFor(m => m.BillingAddress.CountryId, new SelectList(WebSite.Database.DatabaseContext.GetInstance().Countries, "CountryId", "Name"))</li>
+		</ul>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using WebSite.Models.Data;
 
 namespace WebSite.Models
 {
@@ -35,6 +36,7 @@ namespace WebSite.Models
         public string LastName { get; set; }
 
         [Required]
+        [Display(Name = "Is member banned?")]
         public bool IsBanned { get; set; }
 
         // Telemetry
@@ -51,12 +53,16 @@ namespace WebSite.Models
         // Subscription related
         [ForeignKey("Subscription")]
         public int? SubscriptionId { get; set; }
-        public virtual Subscription Subscription { get; set; }
-        public DateTime? SubscriptionActivationDate { get; set; }
-        public DateTime? SubscriptionCancellationDate { get; set; }
+        public virtual Subscription Subscription { get; set; } // Currently active subscription
+        public virtual ICollection<Subscription> Subscriptions { get; set; } // List of any subscriptions obtained in the past
 
         // Role Support
         public virtual ICollection<Role> Roles { get; set; }
+
+        // Email notifications
+        [ForeignKey("NotificationSettings")]
+        public virtual int NotificationSettingsId { get; set; }
+        public virtual NotificationSettings NotificationSettings { get; set; }
     }
 
     public class StockwinnersMember

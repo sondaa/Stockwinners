@@ -1,0 +1,34 @@
+﻿@model WebSite.Models.Data.NotificationSettings
+@if (ViewBag.IsTrialMember)
+{
+    if (ViewBag.IsTrialExpired)
+    {
+        <span>Your trial has expired. Please subscribe to continue enjoying our services! @Html.ActionLink("Subscribe Now", "Subscribe")</span>
+    }
+    else
+    {
+        <span>Your trial will expire in @(ViewBag.TrialDaysLeft) days. @Html.ActionLink("Subscribe now", "Subscribe") to ensure you receive uninterrupted service.</span>
+    }
+}
+else
+{
+    <span>You have an active @ViewBag.SubscriptionFrequency subscription. @Html.ActionLink("Cancel Subscription", "CancelSubscription")</span>
+}
+@if (ViewBag.SavedSuccessfully)
+{
+    <span>Changes have been saved.</span>
+}
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Notification Settings</legend>
+        <ul>
+            <li>@Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts)</li>
+            <li>@Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks)</li>
+            <li>@Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks)</li>
+            <li>@Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements)</li>
+        </ul>
+        <input type="submit" value="Save" />
+    </fieldset>
+}

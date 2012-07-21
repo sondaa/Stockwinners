@@ -127,9 +127,9 @@ namespace WebSite.Helpers.Authentication
             FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
 
             // Append user information to the cookie
-            FormsAuthenticationTicket ticketWithUserData = 
-                new FormsAuthenticationTicket(ticket.Version, ticket.Name, 
-                    ticket.IssueDate, ticket.Expiration, 
+            FormsAuthenticationTicket ticketWithUserData =
+                new FormsAuthenticationTicket(ticket.Version, ticket.Name,
+                    ticket.IssueDate, ticket.Expiration,
                     ticket.IsPersistent, JsonConvert.SerializeObject(userIdentity));
 
             cookie.Value = FormsAuthentication.Encrypt(ticketWithUserData);
@@ -167,36 +167,9 @@ namespace WebSite.Helpers.Authentication
 
             if (existingUser == null)
             {
-                // No user exists, check to see if another account with the same email exists and if so mark the trial date of the duplicate account
-                // and also its subscription. 
-                // Use the trial date to ensure users with the same email can't cheat the system by logging into multiple providers. Further, use the
-                // subscription so that if a user by mistake uses another of its identity providers, he/she still gets his subscription
-                DateTime trialEndDate = DateTime.UtcNow.AddDays(15);
-                Subscription subscription = null;
-                int? subscriptionId = null;
-
-                // By default send all types of emails to users
-                NotificationSettings notificationSettings = new NotificationSettings() { 
-                    ReceiveStockPicks = true, 
-                    ReceiveOptionPicks = true, 
-                    ReceiveGeneralAnnouncements = true, 
-                    ReceiveDailyAlerts = true, 
-                    ReceiveWeeklyAlerts = true };
-
-                bool isBanned = false;
-
                 var existingUserWithSameEmail = (from user in database.Users
-                                                    where user.EmailAddress == userIdentity.EmailAddress
-                                                    select user).FirstOrDefault();
-
-                if (existingUserWithSameEmail != null)
-                {
-                    trialEndDate = existingUserWithSameEmail.TrialExpiryDate;
-                    subscription = existingUserWithSameEmail.Subscription;
-                    subscriptionId = existingUserWithSameEmail.SubscriptionId;
-                    notificationSettings = existingUserWithSameEmail.NotificationSettings;
-                    isBanned = existingUserWithSameEmail.IsBanned;
-                }
+                                                 where user.EmailAddress == userIdentity.EmailAddress
+                                                 select user).FirstOrDefault();
 
                 // Create new user account
                 User newUser = new User()
@@ -206,23 +179,58 @@ namespace WebSite.Helpers.Authentication
                     EmailAddress = userIdentity.EmailAddress,
                     IdentityProvider = (int)userIdentity.IdentityProvider,
                     IdentityProviderIssuedUserId = userIdentity.IdentityProviderIssuedId,
-                    TrialExpiryDate = trialEndDate,
                     SignUpDate = DateTime.UtcNow,
                     LastLoginDate = DateTime.UtcNow,
-                    IsBanned = isBanned,
-                    NotificationSettings = notificationSettings
                 };
 
-                if (subscriptionId.HasValue)
+                // No user exists, check to see if another account with the same email exists and if so mark the trial date of the duplicate account
+                // and also its subscription. 
+                // Use the trial date to ensure users with the same email can't cheat the system by logging into multiple providers. Further, use the
+                // subscription so that if a user by mistake uses another of its identity providers, he/she still gets his subscription
+                if (existingUserWithSameEmail != null)
                 {
-                    newUser.SubscriptionId = subscriptionId;
-                    newUser.Subscription = subscription;
-                    newUser.Subscriptions.Add(subscription);
+                    newUser.TrialExpiryDate = existingUserWithSameEmail.TrialExpiryDate;
+                    newUser.Subscription = existingUserWithSameEmail.Subscription;
+                    newUser.SubscriptionId = existingUserWithSameEmail.SubscriptionId;
+                    newUser.NotificationSettings = existingUserWithSameEmail.NotificationSettings;
+                    newUser.IsBanned = existingUserWithSameEmail.IsBanned;
+
+                    if (newUser.SubscriptionId.HasValue)
+                    {
+                        newUser.Subscriptions.Add(newUser.Subscription);
+                    }
+
+                    // Copy user roles
+                    newUser.Roles = existingUserWithSameEmail.Roles;
+                }
+                else
+                {
+                    // By default send all types of emails to users
+                    newUser.NotificationSettings = new NotificationSettings()
+                    {
+                        ReceiveStockPicks = true,
+                        ReceiveOptionPicks = true,
+                        ReceiveGeneralAnnouncements = true,
+                        ReceiveDailyAlerts = true,
+                        ReceiveWeeklyAlerts = true
+                    };
+
+                    // Provide a 14 day trial membership
+                    newUser.TrialExpiryDate = DateTime.UtcNow.AddDays(15);
+
+                    // New users are not banned by default
+                    newUser.IsBanned = false;
+
+                    // New users are added to the member role by default
+                    newUser.Roles = new List<Role>(new Role[] { database.Roles.Where(r => r.Name == PredefinedRoles.Member).Single() });
                 }
 
                 database.Users.Add(newUser);
 
-                //TODO: Send welcome email to user
+                if (existingUserWithSameEmail != null)
+                {
+                    //TODO: Send welcome email to user
+                }
             }
             else
             {
@@ -230,7 +238,7 @@ namespace WebSite.Helpers.Authentication
                 existingUser.LastLoginDate = DateTime.UtcNow;
                 isAccepted = !existingUser.IsBanned;
             }
-                
+
             database.SaveChanges();
 
             return isAccepted;

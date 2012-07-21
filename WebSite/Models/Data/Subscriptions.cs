@@ -24,6 +24,10 @@ namespace WebSite.Models
         [Required]
         public DateTime ActivationDate { get; set; }
         public DateTime? CancellationDate { get; set; }
+
+        [ForeignKey("CreditCard")]
+        public int CreditCardId { get; set; }
+        public virtual CreditCard CreditCard { get; set; }
     }
 
     public class SubscriptionType
@@ -37,7 +41,7 @@ namespace WebSite.Models
         public decimal Price { get; set; }
 
         [ForeignKey("SubscriptionFrequency")]
-        public virtual int SubscriptionFrequencyId { get; set; }
+        public int SubscriptionFrequencyId { get; set; }
 
         [Required]
         [Display(Name = "Billing frequency")]

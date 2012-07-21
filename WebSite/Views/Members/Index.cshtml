@@ -1,5 +1,5 @@
 ﻿@model WebSite.Models.Data.NotificationSettings
-@if (ViewBag.IsTrialMember)
+@if (ViewBag.IsTrialMember && !ViewBag.IsUsingCancelledSubscription)
 {
     if (ViewBag.IsTrialExpired)
     {
@@ -9,6 +9,10 @@
     {
         <span>Your trial will expire in @(ViewBag.TrialDaysLeft) days. @Html.ActionLink("Subscribe now", "Subscribe") to ensure you receive uninterrupted service.</span>
     }
+}
+else if (ViewBag.IsUsingCancelledSubscription)
+{
+    <span>You have cancelled your subscription but may use the website until @ViewBag.SubscriptionExpiryDate. Please @Html.ActionLink("resubscribe", "Subscribe") to continue using the website after @ViewBag.SubscriptionExpiryDate.</span>
 }
 else
 {

@@ -45,6 +45,12 @@
     <Reference Include="AuthorizeNet.Helpers">
       <HintPath>References\AuthorizeNet.Helpers.dll</HintPath>
     </Reference>
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DataAnnotationsExtensions.ClientValidation">
+      <HintPath>..\packages\DataAnnotationsExtensions.MVC3.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetOpenAuth">
       <HintPath>..\packages\DotNetOpenAuth.Ultimate.4.1.0.12182\lib\net40-full\DotNetOpenAuth.dll</HintPath>
     </Reference>
@@ -135,6 +141,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20505.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="WebActivator">
+      <HintPath>..\packages\WebActivator.1.2.0.0\lib\NETFramework40\WebActivator.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.0.0\lib\WebGrease.dll</HintPath>
@@ -147,12 +156,14 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
@@ -161,6 +172,34 @@
     <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs" />
     <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.Designer.cs">
       <DependentUpon>201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207201757532_MakingCVVFieldOfCreditCardAString.cs" />
+    <Compile Include="Migrations\201207201757532_MakingCVVFieldOfCreditCardAString.Designer.cs">
+      <DependentUpon>201207201757532_MakingCVVFieldOfCreditCardAString.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207201851336_MakingRoleToUsersManyToManyRelationship.cs" />
+    <Compile Include="Migrations\201207201851336_MakingRoleToUsersManyToManyRelationship.Designer.cs">
+      <DependentUpon>201207201851336_MakingRoleToUsersManyToManyRelationship.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207201927107_AddingPhoneNumberToBillingAddress.cs" />
+    <Compile Include="Migrations\201207201927107_AddingPhoneNumberToBillingAddress.Designer.cs">
+      <DependentUpon>201207201927107_AddingPhoneNumberToBillingAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.cs" />
+    <Compile Include="Migrations\201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.Designer.cs">
+      <DependentUpon>201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207202114247_SplittingCreditCardExpiryInto2SepalateFields.cs" />
+    <Compile Include="Migrations\201207202114247_SplittingCreditCardExpiryInto2SepalateFields.Designer.cs">
+      <DependentUpon>201207202114247_SplittingCreditCardExpiryInto2SepalateFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207202126414_SplittingCardHolderNameInto2Fields.cs" />
+    <Compile Include="Migrations\201207202126414_SplittingCardHolderNameInto2Fields.Designer.cs">
+      <DependentUpon>201207202126414_SplittingCardHolderNameInto2Fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207210350555_AddingUserSubscriptionExpiryDate.cs" />
+    <Compile Include="Migrations\201207210350555_AddingUserSubscriptionExpiryDate.Designer.cs">
+      <DependentUpon>201207210350555_AddingUserSubscriptionExpiryDate.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -182,6 +221,7 @@
     <Compile Include="Models\Data\Roles.cs" />
     <Compile Include="Models\Data\Subscriptions.cs" />
     <Compile Include="Models\Data\Users.cs" />
+    <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -294,6 +334,15 @@
     <Content Include="Views\Account\InvalidProvider.cshtml" />
     <Content Include="Views\Members\Index.cshtml" />
     <Content Include="Views\Members\Subscribe.cshtml" />
+    <Content Include="Views\Members\CancelSubscription.cshtml" />
+    <Content Include="Views\Information\Market101.cshtml" />
+    <Content Include="Views\Information\TradingTips.cshtml" />
+    <Content Include="Views\Information\ChartReading.cshtml" />
+    <Content Include="Views\Information\BuyingOnMargin.cshtml" />
+    <Content Include="Views\Information\PhilosophyAndPerformance.cshtml" />
+    <Content Include="Views\Information\MembershipPolicy.cshtml" />
+    <Content Include="Views\Information\PrivacyPolicy.cshtml" />
+    <Content Include="Views\Information\ContactUs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

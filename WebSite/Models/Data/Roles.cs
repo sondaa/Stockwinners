@@ -18,6 +18,9 @@ namespace WebSite.Models
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }
+
+        // There are a set of Users belonging to each role
+        public virtual ICollection<User> Users { get; set; }
     }
 
     public static class PredefinedRoles

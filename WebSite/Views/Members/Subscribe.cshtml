@@ -1,37 +1,42 @@
-@model WebSite.Models.CreditCard
-
+@model WebSite.Models.Logic.SubscriptionRegistration
 @{
     ViewBag.Title = "Subscribe";
 }
-
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    
+}
 <h2>Subscribe</h2>
 
 @using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     <fieldset>
         <legend>Subscription</legend>
-
+        @foreach (WebSite.Models.SubscriptionType availableSubscription in Model.AvailableSubscriptionTypes)
+        {
+            @(Html.RadioButtonFor(m => m.SelectedSubscriptionTypeId, availableSubscription.SubscriptionTypeId)) @(availableSubscription.SubscriptionFrequency.Name) @(availableSubscription.Price)
+        }
 		<ul>
-            <li>@Html.LabelFor(m => m.CardholderName) @Html.TextBoxFor(m => m.CardholderName)</li>
-            <li>@Html.LabelFor(m => m.Number) @Html.TextBoxFor(m => m.Number)</li>
-            <li>@Html.LabelFor(m => m.CVV) @Html.TextBoxFor(m => m.CVV)</li>
-            <li>@Html.LabelFor(m => m.Expiry) @Html.TextBoxFor(m => m.Expiry.Month)/@Html.TextBoxFor(m => m.Expiry.Year)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.AddressLine1) @Html.TextBoxFor(m => m.BillingAddress.AddressLine1)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.AddressLine2) @Html.TextBoxFor(m => m.BillingAddress.AddressLine2)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.City) @Html.TextBoxFor(m => m.BillingAddress.City)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.ProvinceOrState) @Html.TextBoxFor(m => m.BillingAddress.ProvinceOrState)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.BillingAddress.PostalCode)</li>
-            <li>@Html.LabelFor(m => m.BillingAddress.Country) @Html.DropDownListFor(m => m.BillingAddress.CountryId, new SelectList(WebSite.Database.DatabaseContext.GetInstance().Countries, "CountryId", "Name"))</li>
+            <li>@Html.LabelFor(m => m.CreditCard.CardholderFirstName) @Html.TextBoxFor(m => m.CreditCard.CardholderFirstName)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.CardholderLastName) @Html.TextBoxFor(m => m.CreditCard.CardholderLastName)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.Number) @Html.TextBoxFor(m => m.CreditCard.Number)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.CVV) @Html.TextBoxFor(m => m.CreditCard.CVV)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.ExpirationMonth) @Html.TextBoxFor(m => m.CreditCard.ExpirationMonth)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.ExpirationYear) @Html.TextBoxFor(m => m.CreditCard.ExpirationYear)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.PhoneNumber) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PhoneNumber)
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine1) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine1)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine2) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine2)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.City) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.City)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.ProvinceOrState) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.ProvinceOrState)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PostalCode)</li>
+            <li>@Html.LabelFor(m => m.CreditCard.BillingAddress.Country) @Html.DropDownListFor(m => m.CreditCard.BillingAddress.CountryId, new SelectList(Model.Countries, "CountryId", "Name"))</li>
 		</ul>
 
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" value="Register" />
         </p>
     </fieldset>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 

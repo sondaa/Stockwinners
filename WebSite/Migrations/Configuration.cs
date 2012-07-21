@@ -30,8 +30,8 @@ namespace WebSite.Migrations
 
         private static void SeedRoles(DatabaseContext context)
         {
-            context.Roles.AddOrUpdate(new Role() { Name = PredefinedRoles.Member });
-            context.Roles.AddOrUpdate(new Role() { Name = PredefinedRoles.Administrator });
+            context.Roles.AddOrUpdate(r => r.Name, new Role() { Name = PredefinedRoles.Member });
+            context.Roles.AddOrUpdate(r => r.Name, new Role() { Name = PredefinedRoles.Administrator });
         }
 
         private static void SeedCountries(DatabaseContext context)
@@ -286,10 +286,14 @@ Yemen
 Zambia
 Zimbabwe";
 
-            foreach (string country in countryList.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
-            {
-                context.Countries.AddOrUpdate(new Country() { Name = country });
-            }
+            context.Countries.AddOrUpdate(
+                country => country.Name, 
+                    (
+                        from countryName in countryList.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
+                        select new Country() { Name = countryName }
+                    )
+                    .ToArray()
+                );
         }
 
         private static void SeedSubscriptionTypesAndFrequencies(DatabaseContext context)
@@ -298,12 +302,12 @@ Zimbabwe";
             SubscriptionFrequency quarterly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Quarterly };
             SubscriptionFrequency yearly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Yearly };
 
-            context.SubscriptionFrequencies.AddOrUpdate(monthly, quarterly, yearly);
+            context.SubscriptionFrequencies.AddOrUpdate(sf => sf.Name, monthly, quarterly, yearly);
 
-            context.SubscriptionTypes.AddOrUpdate(
-                new SubscriptionType() { SubscriptionFrequency = monthly, Price = 39, IsAvailableToUsers = true },
-                new SubscriptionType() { SubscriptionFrequency = quarterly, Price = 110, IsAvailableToUsers = true },
-                new SubscriptionType() { SubscriptionFrequency = yearly, Price = 350, IsAvailableToUsers = true }
+            context.SubscriptionTypes.AddOrUpdate(st => st.Price,
+                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, Price = 39, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequencyId = quarterly.SubscriptionFrequencyId, Price = 110, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequencyId = yearly.SubscriptionFrequencyId, Price = 350, IsAvailableToUsers = true }
                 );
         }
     }

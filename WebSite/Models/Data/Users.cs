@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using DataAnnotationsExtensions;
 using WebSite.Models.Data;
 
 namespace WebSite.Models
@@ -25,6 +26,7 @@ namespace WebSite.Models
         [Required]
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
+        [Email]
         public string EmailAddress { get; set; }
 
         [Required]
@@ -55,13 +57,14 @@ namespace WebSite.Models
         public int? SubscriptionId { get; set; }
         public virtual Subscription Subscription { get; set; } // Currently active subscription
         public virtual ICollection<Subscription> Subscriptions { get; set; } // List of any subscriptions obtained in the past
+        public DateTime? SubscriptionExpiryDate { get; set; } // Tracks the last day until which a user's subscription is good after it has been cancelled mid-way.
 
         // Role Support
         public virtual ICollection<Role> Roles { get; set; }
 
         // Email notifications
         [ForeignKey("NotificationSettings")]
-        public virtual int NotificationSettingsId { get; set; }
+        public int NotificationSettingsId { get; set; }
         public virtual NotificationSettings NotificationSettings { get; set; }
     }
 

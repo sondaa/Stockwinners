@@ -33,11 +33,11 @@
                 </table>
             </div>
             <div class="header-links-background">
-                <div class="header-link-box"><a href="test.com" class="header-link-text">Active Traders</a></div>
+                <div class="header-link-box">>@Html.ActionLink("Active Traders", "Index", "ActiveTraders", new {}, new { @class = "header-link-text" })</div>
                 <div class="header-link-box"><a href="test.com" class="header-link-text">Stock Picks</a></div>
                 <div class="header-link-box"><a href="test.com" class="header-link-text">Option Picks</a></div>
                 <div class="header-link-box"><a href="test.com" class="header-link-text">Portfolio</a></div>
-                <div class="header-link-box"><a href="test.com" class="header-link-text">Members</a></div>
+                <div class="header-link-box">@Html.ActionLink("Members", "Index", "Members", new {}, new { @class = "header-link-text" })</div>
             </div>
         </div>
         <div id="contents" style="padding: 10px;">
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="footer">
-            <div style="text-align: center; padding: 3px;"><a class="footer-link-text">Stock Market 101</a>·<a class="footer-link-text">Trading Tips</a>· Chart Reading · Buying on Margin · Philosophy &amp; Performance · Membership Policy · Privacy Policy · Contact Us</div>
+            <div style="text-align: center; padding: 3px;">@Html.ActionLink("Stock Market 101", "Market101", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Trading Tips", "TradingTips", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Chart Reading", "ChartReading", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Buying on Margin", "BuyingOnMargin", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Philosophy & Performance", "PhilosophyAndPerformance", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Membership Policy", "MembershipPolicy", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Contact Us", "ContactUs", "Information", null, new { @class = "footer-link-text" })</div>
             <div style="text-align: center; padding: 3px;">&copy; @DateTime.Now.Year - Stockwinners.com</div>
         </div>
     </div>

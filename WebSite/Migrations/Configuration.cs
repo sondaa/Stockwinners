@@ -6,6 +6,7 @@ namespace WebSite.Migrations
     using System.Linq;
     using WebSite.Database;
     using WebSite.Models;
+    using WebSite.Models.Data.Picks;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DatabaseContext>
     {
@@ -26,6 +27,23 @@ namespace WebSite.Migrations
 
             // Ensure countries are available
             Configuration.SeedCountries(context);
+
+            Configuration.SeedStockPickTypes(context);
+
+            Configuration.SeedOptionPickTyps(context);
+        }
+
+        private static void SeedOptionPickTyps(DatabaseContext context)
+        {
+            context.OptionPickTypes.AddOrUpdate(optionPickType => optionPickType.Name, new OptionPickType() { Name = "Vertical Call Spread" });
+        }
+
+        private static void SeedStockPickTypes(DatabaseContext context)
+        {
+            context.StockPickTypes.AddOrUpdate(stockPickType => stockPickType.Name,
+                new StockPickType() { Name = "Momentum" },
+                new StockPickType() { Name = "Fundamentals" },
+                new StockPickType() { Name = "Rumour" });
         }
 
         private static void SeedRoles(DatabaseContext context)

@@ -165,6 +165,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
       <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
@@ -201,6 +202,10 @@
     <Compile Include="Migrations\201207210350555_AddingUserSubscriptionExpiryDate.Designer.cs">
       <DependentUpon>201207210350555_AddingUserSubscriptionExpiryDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201207222213072_AddingModelsForStockAndOptionPicks.cs" />
+    <Compile Include="Migrations\201207222213072_AddingModelsForStockAndOptionPicks.Designer.cs">
+      <DependentUpon>201207222213072_AddingModelsForStockAndOptionPicks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -213,6 +218,14 @@
     <Compile Include="Infrastructure\RoleProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Data\NotificationSettings.cs" />
+    <Compile Include="Models\Data\Picks\OptionPick.cs" />
+    <Compile Include="Models\Data\Picks\OptionPickLeg.cs" />
+    <Compile Include="Models\Data\Picks\OptionPickType.cs" />
+    <Compile Include="Models\Data\Picks\Pick.cs" />
+    <Compile Include="Models\Data\Picks\PickFigure.cs" />
+    <Compile Include="Models\Data\Picks\PickUpdate.cs" />
+    <Compile Include="Models\Data\Picks\StockPick.cs" />
+    <Compile Include="Models\Data\Picks\StockPickType.cs" />
     <Compile Include="Models\Logic\Accounts.cs" />
     <Compile Include="Models\Logic\ActiveTradersNewsElements.cs" />
     <Compile Include="Models\Data\Addresses.cs" />
@@ -371,7 +384,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>64711</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:38187/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

@@ -7,13 +7,14 @@ using System.Web.Mvc;
 using AuthorizeNet;
 using WebSite.Database;
 using WebSite.Helpers.Authentication;
+using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
 using WebSite.Models.Data;
 using WebSite.Models.Logic;
 
 namespace WebSite.Controllers
 {
-    [Authorize]
+    [MembersOnly(AllowExpiredTrials = true)]
     public class MembersController : Controller
     {
         public ActionResult Index()

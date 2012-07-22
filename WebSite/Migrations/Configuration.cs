@@ -305,9 +305,9 @@ Zimbabwe";
             context.SubscriptionFrequencies.AddOrUpdate(sf => sf.Name, monthly, quarterly, yearly);
 
             context.SubscriptionTypes.AddOrUpdate(st => st.Price,
-                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, Price = 39, IsAvailableToUsers = true },
-                new SubscriptionType() { SubscriptionFrequencyId = quarterly.SubscriptionFrequencyId, Price = 110, IsAvailableToUsers = true },
-                new SubscriptionType() { SubscriptionFrequencyId = yearly.SubscriptionFrequencyId, Price = 350, IsAvailableToUsers = true }
+                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, SubscriptionFrequency = monthly, Price = 39, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequencyId = quarterly.SubscriptionFrequencyId, SubscriptionFrequency = quarterly, Price = 110, IsAvailableToUsers = true },
+                new SubscriptionType() { SubscriptionFrequencyId = yearly.SubscriptionFrequencyId, SubscriptionFrequency = yearly, Price = 350, IsAvailableToUsers = true }
                 );
         }
     }

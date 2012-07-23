@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebSite.Models.Data.Picks.StockPickType>
+﻿@model IEnumerable<WebSite.Models.Data.Picks.OptionPickType>
 
 @{
     ViewBag.Title = "Index";
@@ -23,7 +23,9 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.StockPickTypeId }) |
+            @Html.ActionLink("Edit", "Edit", new { id=item.OptionPickTypeId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.OptionPickTypeId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.OptionPickTypeId })
         </td>
     </tr>
 }

@@ -77,31 +77,6 @@ namespace WebSite.Controllers.Admin
             return View(stockpicktype);
         }
 
-        //
-        // GET: /StockPickTypes/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            StockPickType stockpicktype = db.StockPickTypes.Find(id);
-            if (stockpicktype == null)
-            {
-                return HttpNotFound();
-            }
-            return View(stockpicktype);
-        }
-
-        //
-        // POST: /StockPickTypes/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            StockPickType stockpicktype = db.StockPickTypes.Find(id);
-            db.StockPickTypes.Remove(stockpicktype);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

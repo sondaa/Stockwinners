@@ -14,7 +14,7 @@ namespace WebSite.Models
         public int SubscriptionId { get; set; }
 
         [ForeignKey("SubscriptionType")]
-        public virtual int SubscriptionTypeId { get; set; }
+        public int SubscriptionTypeId { get; set; }
         public virtual SubscriptionType SubscriptionType { get; set; }
 
         [Required]
@@ -43,7 +43,6 @@ namespace WebSite.Models
         [ForeignKey("SubscriptionFrequency")]
         public int SubscriptionFrequencyId { get; set; }
 
-        [Required]
         [Display(Name = "Billing frequency")]
         public virtual SubscriptionFrequency SubscriptionFrequency { get; set; }
 

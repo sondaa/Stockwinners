@@ -163,7 +163,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
+    <Compile Include="Controllers\Admin\AdministratorController.cs" />
+    <Compile Include="Controllers\Admin\OptionPickTypesController.cs" />
     <Compile Include="Controllers\Admin\StockPickTypesController.cs" />
+    <Compile Include="Controllers\Admin\SubscriptionTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -367,10 +370,19 @@
     <Content Include="Views\Account\TrialExpired.cshtml" />
     <Content Include="Views\Shared\_EmailLayout.cshtml" />
     <Content Include="Views\StockPickTypes\Index.cshtml" />
-    <Content Include="Views\StockPickTypes\Details.cshtml" />
     <Content Include="Views\StockPickTypes\Create.cshtml" />
     <Content Include="Views\StockPickTypes\Edit.cshtml" />
-    <Content Include="Views\StockPickTypes\Delete.cshtml" />
+    <Content Include="Views\OptionPickTypes\Index.cshtml" />
+    <Content Include="Views\OptionPickTypes\Details.cshtml" />
+    <Content Include="Views\OptionPickTypes\Create.cshtml" />
+    <Content Include="Views\OptionPickTypes\Edit.cshtml" />
+    <Content Include="Views\OptionPickTypes\Delete.cshtml" />
+    <Content Include="Views\SubscriptionTypes\Index.cshtml" />
+    <Content Include="Views\SubscriptionTypes\Details.cshtml" />
+    <Content Include="Views\SubscriptionTypes\Create.cshtml" />
+    <Content Include="Views\SubscriptionTypes\Edit.cshtml" />
+    <Content Include="Views\Administrator\Index.cshtml" />
+    <Content Include="Views\Shared\_AdministratorLinkPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

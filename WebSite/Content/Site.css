@@ -29,8 +29,10 @@ a, a:visited
 	background-color: #ffffff
 }
 
-.header-links-background
+#header-link-group
 {
+    line-height: 0;
+    font-size: 0;
 	background-image: linear-gradient(bottom, rgb(34,34,38) 9%, rgb(49,49,51) 55%, rgb(68,68,71) 78%);
 	background-image: -o-linear-gradient(bottom, rgb(34,34,38) 9%, rgb(49,49,51) 55%, rgb(68,68,71) 78%);
 	background-image: -moz-linear-gradient(bottom, rgb(34,34,38) 9%, rgb(49,49,51) 55%, rgb(68,68,71) 78%);
@@ -39,29 +41,31 @@ a, a:visited
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#222226', endColorstr='#444447'); /* for IE */
 }
 
-.header-link-box
-{
-	border-left: 1px;
-	border-left-style: solid;
-	border-left-color: #333333;
-	border-right: 1px;
-	border-right-style: solid;
-	border-right-color: #000000;
-	background-color: transparent;
-	padding: 5px 9px 5px 9px;
-	display: inline-block;
-}
+    #header-link-group div
+    {
+        font-size: 11pt;
+        line-height: normal;
+	    border-left: 1px;
+	    border-left-style: solid;
+	    border-left-color: #333333;
+	    border-right: 1px;
+	    border-right-style: solid;
+	    border-right-color: #000000;
+	    background-color: transparent;
+	    padding: 5px 9px 5px 9px;
+	    display: inline-block;
+    }
 
-.header-link-box:hover
-{
-	background-color: #000000;
-}
+    #header-link-group div:hover
+    {
+	    background-color: #000000;
+    }
 
-.header-link-text, .header-link-text:visited
-{
-	color: #CCCCCC;
-	text-decoration: none;
-}
+        #header-link-group div a, #header-link-group div a:visited
+        {
+	        color: #CCCCCC;
+	        text-decoration: none;
+        }
 
 .footer
 {

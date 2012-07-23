@@ -24,7 +24,7 @@
                 <table style="width: 100%; padding: 0px; margin: 0px;">
                     <tr>
                         <td>
-                            <img src="~/Images/Logo.gif" alt="Stockwinners.com" />
+                            <a href="/"><img src="~/Images/Logo.gif" alt="Stockwinners.com" style="border-width: 0px;" /></a>
                         </td>
                         <td style="text-align: right;">
                             @Html.Partial("_LoginPartial")
@@ -32,12 +32,13 @@
                     </tr>
                 </table>
             </div>
-            <div class="header-links-background">
-                <div class="header-link-box">>@Html.ActionLink("Active Traders", "Index", "ActiveTraders", new {}, new { @class = "header-link-text" })</div>
-                <div class="header-link-box"><a href="test.com" class="header-link-text">Stock Picks</a></div>
-                <div class="header-link-box"><a href="test.com" class="header-link-text">Option Picks</a></div>
-                <div class="header-link-box"><a href="test.com" class="header-link-text">Portfolio</a></div>
-                <div class="header-link-box">@Html.ActionLink("Members", "Index", "Members", new {}, new { @class = "header-link-text" })</div>
+            <div id="header-link-group" class="no-whitespace">
+                <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders")</div>
+                <div><a href="test.com">Stock Picks</a></div>
+                <div><a href="test.com">Option Picks</a></div>
+                <div><a href="test.com">Portfolio</a></div>
+                <div>@Html.ActionLink("Members", "Index", "Members")</div>
+                @Html.Partial("_AdministratorLinkPartial")
             </div>
         </div>
         <div id="contents" style="padding: 10px;">

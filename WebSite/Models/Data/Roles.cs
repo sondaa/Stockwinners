@@ -25,7 +25,7 @@ namespace WebSite.Models
 
     public static class PredefinedRoles
     {
-        public static string Member = "Member";
-        public static string Administrator = "Administrator";
+        public const string Member = "Member";
+        public const string Administrator = "Administrator";
     }
 }

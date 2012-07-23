@@ -123,7 +123,7 @@ namespace WebSite.Helpers.Authentication
         private static void SetAuthenticationCookie(LoggedInUserIdentity userIdentity, bool rememberUser = false)
         {
             // Get or create current authentication cookie
-            HttpCookie cookie = FormsAuthentication.GetAuthCookie(userIdentity.FirstName, rememberUser);
+            HttpCookie cookie = FormsAuthentication.GetAuthCookie(userIdentity.EmailAddress, rememberUser);
             FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
 
             // Append user information to the cookie

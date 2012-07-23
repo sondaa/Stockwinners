@@ -1,6 +1,8 @@
 namespace WebSite.Migrations
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -31,6 +33,27 @@ namespace WebSite.Migrations
             Configuration.SeedStockPickTypes(context);
 
             Configuration.SeedOptionPickTyps(context);
+
+            Configuration.SeedAdministrators(context);
+        }
+
+        private static void SeedAdministrators(DatabaseContext context)
+        {
+            // Make any user with ameen.tayyebi@gmail.com or s.mehdi.ghaffari@gmail.com or seyed@stockwinners.com an admin
+            string[] adminEmails = new string[] { "ameen.tayyebi@gmail.com", "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com" };
+            Role adminRole = context.Roles.Single(role => role.Name == PredefinedRoles.Administrator);
+
+            foreach (string adminEmail in adminEmails)
+            {
+                User admin = context.Users.SingleOrDefault(user => user.EmailAddress == adminEmail);
+
+                if (admin != null)
+                {
+                    ICollection<Role> roles = admin.Roles ?? new List<Role>();
+
+                    roles.Add(adminRole);
+                }
+            }
         }
 
         private static void SeedOptionPickTyps(DatabaseContext context)

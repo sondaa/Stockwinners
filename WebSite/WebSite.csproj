@@ -163,6 +163,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
+    <Compile Include="Controllers\Admin\StockPickTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -365,6 +366,11 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\TrialExpired.cshtml" />
     <Content Include="Views\Shared\_EmailLayout.cshtml" />
+    <Content Include="Views\StockPickTypes\Index.cshtml" />
+    <Content Include="Views\StockPickTypes\Details.cshtml" />
+    <Content Include="Views\StockPickTypes\Create.cshtml" />
+    <Content Include="Views\StockPickTypes\Edit.cshtml" />
+    <Content Include="Views\StockPickTypes\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

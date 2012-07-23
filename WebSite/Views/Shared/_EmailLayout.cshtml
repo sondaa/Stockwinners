@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    @if (string.IsNullOrEmpty(ViewBag.Title))
+    {   
+        <title>Stockwinners.com</title>
+    }
+    else
+    {
+        <title>Stockwinners.com - @ViewBag.Title</title>
+    }
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Needed for open type font support of Open Sans and Merriweather -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300|Merriweather' rel='stylesheet' type='text/css'>
+    @Styles.Render("~/Content/themes/base/css", "~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="page-box">
+        <div id="header">
+            <div id="logo-bar" style="padding: 4px 10px 0px 10px;">
+                <table style="width: 100%; padding: 0px; margin: 0px;">
+                    <tr>
+                        <td>
+                            <img src="~/Images/Logo.gif" alt="Stockwinners.com" />
+                        </td>
+                        <td style="text-align: right;">
+                            @Html.Partial("_LoginPartial")
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header-links-background">
+                <div class="header-link-box">>@Html.ActionLink("Active Traders", "Index", "ActiveTraders", new {}, new { @class = "header-link-text" })</div>
+                <div class="header-link-box"><a href="test.com" class="header-link-text">Stock Picks</a></div>
+                <div class="header-link-box"><a href="test.com" class="header-link-text">Option Picks</a></div>
+                <div class="header-link-box"><a href="test.com" class="header-link-text">Portfolio</a></div>
+                <div class="header-link-box">@Html.ActionLink("Members", "Index", "Members", new {}, new { @class = "header-link-text" })</div>
+            </div>
+        </div>
+        <div id="contents" style="padding: 10px;">
+            @RenderSection("featured", required: false)
+            <div id="body">
+                @RenderBody()
+            </div>
+        </div>
+        <div class="footer">
+            <div style="text-align: center; padding: 3px;">@Html.ActionLink("Stock Market 101", "Market101", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Trading Tips", "TradingTips", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Chart Reading", "ChartReading", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Buying on Margin", "BuyingOnMargin", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Philosophy & Performance", "PhilosophyAndPerformance", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Membership Policy", "MembershipPolicy", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information", null, new { @class = "footer-link-text" })·@Html.ActionLink("Contact Us", "ContactUs", "Information", null, new { @class = "footer-link-text" })</div>
+            <div style="text-align: center; padding: 3px;">&copy; @DateTime.Now.Year - Stockwinners.com</div>
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

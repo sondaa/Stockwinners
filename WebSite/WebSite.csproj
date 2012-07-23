@@ -55,6 +55,9 @@
       <HintPath>..\packages\DotNetOpenAuth.Ultimate.4.1.0.12182\lib\net40-full\DotNetOpenAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mvc.Mailer">
+      <HintPath>..\packages\MvcMailer.1.1\lib\40\Mvc.Mailer.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -166,6 +169,7 @@
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
+    <Compile Include="Mailers\Account.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
       <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
@@ -357,6 +361,10 @@
     <Content Include="Views\Information\MembershipPolicy.cshtml" />
     <Content Include="Views\Information\PrivacyPolicy.cshtml" />
     <Content Include="Views\Information\ContactUs.cshtml" />
+    <Content Include="Views\Account\Welcome.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\TrialExpired.cshtml" />
+    <Content Include="Views\Shared\_EmailLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

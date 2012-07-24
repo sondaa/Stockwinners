@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using WebSite.Models;
+using WebSite.Models.Data;
 using WebSite.Models.Data.Picks;
 
 namespace WebSite.Database
@@ -24,10 +25,11 @@ namespace WebSite.Database
         public DbSet<CreditCard> CreditCards { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<DailyAlert> DailyAlerts { get; set; }
+        public DbSet<Figure> Figures { get; set; }
 
         // Picks related
         public DbSet<Pick> Picks { get; set; }
-        public DbSet<PickFigure> PickFigures { get; set; }
         public DbSet<PickUpdate> PickUpdates { get; set; }
         public DbSet<OptionPick> OptionPicks { get; set; }
         public DbSet<OptionPickType> OptionPickTypes { get; set; }

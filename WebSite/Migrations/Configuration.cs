@@ -45,13 +45,17 @@ namespace WebSite.Migrations
 
             foreach (string adminEmail in adminEmails)
             {
-                User admin = context.Users.SingleOrDefault(user => user.EmailAddress == adminEmail);
-
-                if (admin != null)
+                foreach (User admin in context.Users.Include("Roles").Where(user => user.EmailAddress == adminEmail))
                 {
-                    ICollection<Role> roles = admin.Roles ?? new List<Role>();
+                    if (admin != null)
+                    {
+                        ICollection<Role> roles = admin.Roles ?? new List<Role>();
 
-                    roles.Add(adminRole);
+                        if (!roles.Any(role => role.RoleId == adminRole.RoleId))
+                        {
+                            roles.Add(adminRole);
+                        }
+                    }
                 }
             }
         }

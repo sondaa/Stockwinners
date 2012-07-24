@@ -16,6 +16,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300|Merriweather' rel='stylesheet' type='text/css'>
     @Styles.Render("~/Content/themes/base/css", "~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
 </head>
 <body>
     <div class="page-box">
@@ -38,7 +40,7 @@
                 <div><a href="test.com">Option Picks</a></div>
                 <div><a href="test.com">Portfolio</a></div>
                 <div>@Html.ActionLink("Members", "Index", "Members")</div>
-                @Html.Partial("_AdministratorLinkPartial")
+                @Html.Partial("_AdministratorLinksPartial")
             </div>
         </div>
         <div id="contents" style="padding: 10px;">
@@ -52,7 +54,5 @@
             <div style="text-align: center; padding: 3px;">&copy; @DateTime.Now.Year - Stockwinners.com</div>
         </div>
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @RenderSection("scripts", required: false)
 </body>
 </html>

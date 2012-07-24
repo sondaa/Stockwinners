@@ -1,0 +1,71 @@
+﻿@model WebSite.Models.Data.Picks.StockPick
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>StockPick</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.EntryPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EntryPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ExitPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExitPrice)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Symbol)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Symbol)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsPublished)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsPublished)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PublishingDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PublishingDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CreationDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreationDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ClosingDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ClosingDate)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -10,12 +10,14 @@ namespace WebSite.Models.Data.Picks
     [Table("OptionPicks")]
     public class OptionPick : Pick
     {
-        [Key]
-        public int OptionPickId { get; set; }
-
         /// <summary>
         /// Legs that this option pick contains.
         /// </summary>
         public virtual ICollection<OptionPickLeg> Legs { get; set; }
+
+        public override void Email()
+        {
+            Helpers.Email.Send(this);
+        }
     }
 }

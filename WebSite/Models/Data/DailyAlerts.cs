@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebSite.Interfaces;
 
 namespace WebSite.Models.Data
 {
-    public class DailyAlert
+    public class DailyAlert : IEmailable
     {
         [Key]
         public int DailyAlertId { get; set; }
@@ -38,15 +39,20 @@ namespace WebSite.Models.Data
         /// </summary>
         public virtual ICollection<Figure> Figures { get; set; }
 
+        public void Initialize()
+        {
+            this.CreationDate = DateTime.UtcNow;
+        }
+
         public void Publish()
         {
             this.IsPublished = true;
             this.PublishDate = DateTime.UtcNow;
         }
 
-        public void EmailToUsers()
+        public void Email()
         {
-            // TODO
+            Helpers.Email.Send(this);
         }
     }
 }

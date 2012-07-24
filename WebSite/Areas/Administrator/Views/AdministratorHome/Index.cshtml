@@ -2,8 +2,13 @@
     ViewBag.Title = "Administer";
 }
 <ul>
-    <li>@Html.ActionLink("Manage Stock Pick Types", "Index", "StockPickTypes")
-        <ul><li>Stock pick types are the categories to which a stock pick belongs, such as &quot;Momentum&quot;, or &quot;Fundamentals&quot;.</li></ul>
+    <li>Stock Picks
+        <ul>
+            <li>@Html.ActionLink("Manage Stock Picks", "Index", "StockPicks")</li>
+            <li>@Html.ActionLink("Manage Stock Pick Types", "Index", "StockPickTypes")
+            <ul><li>Stock pick types are the categories to which a stock pick belongs, such as &quot;Momentum&quot;, or &quot;Fundamentals&quot;.</li></ul>
+            </li>
+        </ul>
     </li>
     <li>@Html.ActionLink("Manage Option Pick Types", "Index", "OptionPickTypes")
         <ul><li>Option pick types are the various option strategies that we'd like to publish such as &quot;Vertical Call Spread&quot;.</li></ul>

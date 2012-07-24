@@ -5,41 +5,38 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WebSite.Models.Data;
+using WebSite.Models.Data.Picks;
 using WebSite.Database;
-using WebSite.Infrastructure.Attributes;
-using WebSite.Models;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
-    [MembersOnly(Roles = PredefinedRoles.Administrator)]
-    public class DailyAlertsController : Controller
+    public class StockPicksController : Controller
     {
         private DatabaseContext db = new DatabaseContext();
 
         //
-        // GET: /DailyAlerts/
+        // GET: /Administrator/StockPicks/
 
         public ActionResult Index()
         {
-            return View(db.DailyAlerts.ToList());
+            return View(db.StockPicks.ToList());
         }
 
         //
-        // GET: /DailyAlerts/Details/5
+        // GET: /Administrator/StockPicks/Details/5
 
         public ActionResult Details(int id = 0)
         {
-            DailyAlert dailyalerts = db.DailyAlerts.Find(id);
-            if (dailyalerts == null)
+            StockPick stockpick = db.StockPicks.Find(id);
+            if (stockpick == null)
             {
                 return HttpNotFound();
             }
-            return View(dailyalerts);
+            return View(stockpick);
         }
 
         //
-        // GET: /DailyAlerts/Create
+        // GET: /Administrator/StockPicks/Create
 
         public ActionResult Create()
         {
@@ -47,95 +44,100 @@ namespace WebSite.Areas.Administrator.Controllers
         }
 
         //
-        // POST: /DailyAlerts/Create
+        // POST: /Administrator/StockPicks/Create
 
         [HttpPost]
-        public ActionResult Create(DailyAlert dailyAlert, string saveButton, string publishButton)
+        public ActionResult Create(StockPick stockPick, string saveButton, string publishButton)
         {
-            dailyAlert.Initialize();
+            stockPick.Initialize();
 
             if (ModelState.IsValid)
             {
                 if (publishButton != null)
                 {
-                    dailyAlert.Publish();
+                    stockPick.Publish();
                 }
 
-                db.DailyAlerts.Add(dailyAlert);
+                db.Picks.Add(stockPick);
                 db.SaveChanges();
 
                 if (publishButton != null)
                 {
-                    dailyAlert.Email();
+                    stockPick.Email();
                 }
 
                 return RedirectToAction("Index");
             }
 
-            return View(dailyAlert);
+            return View(stockPick);
         }
 
         //
-        // GET: /DailyAlerts/Edit/5
+        // GET: /Administrator/StockPicks/Edit/5
 
         public ActionResult Edit(int id = 0)
         {
-            DailyAlert dailyalerts = db.DailyAlerts.Find(id);
-            if (dailyalerts == null)
+            StockPick stockpick = db.StockPicks.Find(id);
+            if (stockpick == null)
             {
                 return HttpNotFound();
             }
-            return View(dailyalerts);
+            return View(stockpick);
         }
 
         //
-        // POST: /DailyAlerts/Edit/5
+        // POST: /Administrator/StockPicks/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(DailyAlert dailyAlert, string saveButton, string publishButton)
+        public ActionResult Edit(StockPick stockPick, string publishButton, string saveButton, string closeButton)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(dailyAlert).State = EntityState.Modified;
+                db.Entry(stockPick).State = EntityState.Modified;
+
+                if (closeButton != null)
+                {
+                    stockPick.Close();
+                }
 
                 if (publishButton != null)
                 {
-                    dailyAlert.Publish();
+                    stockPick.Publish();
                 }
 
                 db.SaveChanges();
 
                 if (publishButton != null)
                 {
-                    dailyAlert.Email();
+                    stockPick.Email();
                 }
 
                 return RedirectToAction("Index");
             }
-            return View(dailyAlert);
+            return View(stockPick);
         }
 
         //
-        // GET: /DailyAlerts/Delete/5
+        // GET: /Administrator/StockPicks/Delete/5
 
         public ActionResult Delete(int id = 0)
         {
-            DailyAlert dailyalerts = db.DailyAlerts.Find(id);
-            if (dailyalerts == null)
+            StockPick stockpick = db.StockPicks.Find(id);
+            if (stockpick == null)
             {
                 return HttpNotFound();
             }
-            return View(dailyalerts);
+            return View(stockpick);
         }
 
         //
-        // POST: /DailyAlerts/Delete/5
+        // POST: /Administrator/StockPicks/Delete/5
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            DailyAlert dailyalerts = db.DailyAlerts.Find(id);
-            db.DailyAlerts.Remove(dailyalerts);
+            StockPick stockpick = db.StockPicks.Find(id);
+            db.Picks.Remove(stockpick);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

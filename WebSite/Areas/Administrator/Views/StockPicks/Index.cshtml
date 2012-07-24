@@ -1,0 +1,66 @@
+﻿@model IEnumerable<WebSite.Models.Data.Picks.StockPick>
+
+@{
+    ViewBag.Title = "Stock Picks";
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExitPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Symbol)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PublishingDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IsPublished)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClosingDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.EntryPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExitPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Symbol)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PublishingDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IsPublished)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClosingDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new {  id=item.PickId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PickId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PickId })
+        </td>
+    </tr>
+}
+
+</table>

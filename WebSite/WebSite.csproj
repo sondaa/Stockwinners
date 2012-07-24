@@ -163,6 +163,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administrator\AdministratorAreaRegistration.cs" />
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\StockPicksController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
     <Compile Include="Areas\Administrator\Controllers\DailyAlertsController.cs" />
@@ -175,7 +176,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Helpers\Email.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
+    <Compile Include="Interfaces\IEmailable.cs" />
     <Compile Include="Mailers\Account.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
@@ -224,6 +227,14 @@
     <Compile Include="Migrations\201207240040211_RenamingDailyAlerts.cs" />
     <Compile Include="Migrations\201207240040211_RenamingDailyAlerts.Designer.cs">
       <DependentUpon>201207240040211_RenamingDailyAlerts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207240257249_AddingPublishingDateToPicks.cs" />
+    <Compile Include="Migrations\201207240257249_AddingPublishingDateToPicks.Designer.cs">
+      <DependentUpon>201207240257249_AddingPublishingDateToPicks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs" />
+    <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.Designer.cs">
+      <DependentUpon>201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
@@ -293,6 +304,11 @@
     <Content Include="Fonts\icons.woff" />
     <Content Include="Areas\Administrator\Views\Web.config" />
     <Content Include="Areas\Administrator\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Administrator\Views\StockPicks\Index.cshtml" />
+    <Content Include="Areas\Administrator\Views\StockPicks\Details.cshtml" />
+    <Content Include="Areas\Administrator\Views\StockPicks\Create.cshtml" />
+    <Content Include="Areas\Administrator\Views\StockPicks\Edit.cshtml" />
+    <Content Include="Areas\Administrator\Views\StockPicks\Delete.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Images\logo.gif" />

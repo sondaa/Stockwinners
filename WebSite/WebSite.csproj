@@ -335,6 +335,8 @@
     <Content Include="Images\SP500_063099.gif" />
     <Content Include="Images\twitter_logo.png" />
     <Content Include="Images\volume_HS.JPG" />
+    <Content Include="Images\vo_033199.gif" />
+    <Content Include="Images\vrsn_033099.gif" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js">
       <DependentUpon>jquery-1.6.4.js</DependentUpon>

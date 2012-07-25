@@ -330,7 +330,11 @@
     <Content Include="Images\macr_010500_chart.gif" />
     <Content Include="Images\msp_042699.gif" />
     <Content Include="Images\mxt_080399.gif" />
+    <Content Include="Images\qmdc_100599.gif" />
+    <Content Include="Images\sntc_061099.gif" />
+    <Content Include="Images\SP500_063099.gif" />
     <Content Include="Images\twitter_logo.png" />
+    <Content Include="Images\volume_HS.JPG" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js">
       <DependentUpon>jquery-1.6.4.js</DependentUpon>

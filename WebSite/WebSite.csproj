@@ -311,7 +311,26 @@
     <Content Include="Areas\Administrator\Views\StockPicks\Delete.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Images\0831nasdaq10yr.gif" />
+    <Content Include="Images\amzn_080599.gif" />
+    <Content Include="Images\aol_080599.gif" />
+    <Content Include="Images\aol_102599_fig2.gif" />
+    <Content Include="Images\avp_fig1.gif" />
+    <Content Include="Images\bgen_fig02.gif" />
+    <Content Include="Images\bvsn_121399_fig2.gif" />
+    <Content Include="Images\chart_Page_cust.gif" />
+    <Content Include="Images\emc_092099_fig2a.gif" />
+    <Content Include="Images\espi-030399.gif" />
+    <Content Include="Images\hmtt_fig04.gif" />
+    <Content Include="Images\imn_071299.gif" />
+    <Content Include="Images\itvu_051199.gif" />
+    <Content Include="Images\jdsu_123199.gif" />
     <Content Include="Images\logo.gif" />
+    <Content Include="Images\lu_110899.gif" />
+    <Content Include="Images\macr_010500_chart.gif" />
+    <Content Include="Images\msp_042699.gif" />
+    <Content Include="Images\mxt_080399.gif" />
+    <Content Include="Images\twitter_logo.png" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js">
       <DependentUpon>jquery-1.6.4.js</DependentUpon>

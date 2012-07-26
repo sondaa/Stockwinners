@@ -1,0 +1,33 @@
+﻿@model WebSite.Models.Data.Picks.OptionPickLeg
+
+<fieldset>
+    <legend>OptionPickLeg</legend>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.EntryPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EntryPrice)
+    </div>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.ExitPrice)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExitPrice)
+    </div>
+    
+    <div class="display-label">
+            @Html.DisplayNameFor(model => model.Quantity)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Quantity)
+    </div>
+</fieldset>

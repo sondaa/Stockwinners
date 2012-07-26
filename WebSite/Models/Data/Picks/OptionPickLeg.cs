@@ -15,17 +15,26 @@ namespace WebSite.Models.Data.Picks
         /// Name of the leg purchased (e.g. April 2012 Call)
         /// </summary>
         [StringLength(50)]
+        [Display(Name = "Name of the contract")]
         public string Name { get; set; }
 
         /// <summary>
         /// Price at which this leg was obtained.
         /// </summary>
+        [Display(Name = "Obtained at")]
         public decimal EntryPrice { get; set; }
 
         /// <summary>
         /// Price at which this leg was let go of.
         /// </summary>
+        [Display(Name = "Let go at")]
         public decimal? ExitPrice { get; set; }
+
+        /// <summary>
+        /// Date on which the leg was closed.
+        /// </summary>
+        [Display(Name = "Closed on")]
+        public DateTime? ClosingDate { get; set; }
 
         /// <summary>
         /// Number of contracts purchased.

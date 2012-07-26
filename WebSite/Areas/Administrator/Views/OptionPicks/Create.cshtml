@@ -1,31 +1,23 @@
-﻿@model WebSite.Models.Data.Picks.StockPick
+﻿@model WebSite.Models.Data.Picks.OptionPick
 
 @{
     ViewBag.Title = "Create";
 }
 
-<h2>Create new Stock Pick</h2>
+<h2>Create</h2>
 
 @using (Html.BeginForm()) {
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>StockPick</legend>
+        <legend>OptionPick</legend>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.StockPickTypeId)
+            @Html.LabelFor(model => model.OptionPickTypeId, "Type")
         </div>
         <div class="editor-field">
-            @Html.DropDownList("StockPickTypeId", String.Empty)
-            @Html.ValidationMessageFor(model => model.StockPickTypeId)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.EntryPrice)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.EntryPrice)
-            @Html.ValidationMessageFor(model => model.EntryPrice)
+            @Html.DropDownList("OptionPickTypeId", String.Empty)
+            @Html.ValidationMessageFor(model => model.OptionPickTypeId)
         </div>
 
         <div class="editor-label">
@@ -45,11 +37,9 @@
         </div>
 
         <p>
-            <input type="submit" name="saveButton" value="Save but don't publish" />
+            <input type="submit" value="Save Changes and prepare for publishing" />
         </p>
-        <p>
-            <input type="submit" name="publishButton" value="Save and publish to users." />
-        </p>
+
     </fieldset>
 }
 

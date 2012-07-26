@@ -163,6 +163,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administrator\AdministratorAreaRegistration.cs" />
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\OptionPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\StockPicksController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
@@ -235,6 +236,22 @@
     <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs" />
     <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.Designer.cs">
       <DependentUpon>201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207242137053_AddingPickTypeToStockPicks.cs" />
+    <Compile Include="Migrations\201207242137053_AddingPickTypeToStockPicks.Designer.cs">
+      <DependentUpon>201207242137053_AddingPickTypeToStockPicks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207242336595_AddingOptionPickTypesToOptionPicks.cs" />
+    <Compile Include="Migrations\201207242336595_AddingOptionPickTypesToOptionPicks.Designer.cs">
+      <DependentUpon>201207242336595_AddingOptionPickTypesToOptionPicks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207250016517_AddingClosingDateToOptionLegs.cs" />
+    <Compile Include="Migrations\201207250016517_AddingClosingDateToOptionLegs.Designer.cs">
+      <DependentUpon>201207250016517_AddingClosingDateToOptionLegs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201207260435562_MakingOptionLegClosingDateOptional.cs" />
+    <Compile Include="Migrations\201207260435562_MakingOptionLegClosingDateOptional.Designer.cs">
+      <DependentUpon>201207260435562_MakingOptionLegClosingDateOptional.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
@@ -309,6 +326,12 @@
     <Content Include="Areas\Administrator\Views\StockPicks\Create.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPicks\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPicks\Delete.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Index.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Details.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Create.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Edit.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Delete.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPicks\Legs.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Images\logo.gif" />
@@ -677,6 +700,7 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

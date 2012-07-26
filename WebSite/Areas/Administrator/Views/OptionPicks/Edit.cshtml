@@ -1,4 +1,4 @@
-﻿@model WebSite.Models.Data.Picks.StockPick
+﻿@model WebSite.Models.Data.Picks.OptionPick
 
 @{
     ViewBag.Title = "Edit";
@@ -10,22 +10,14 @@
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>StockPick</legend>
+        <legend>OptionPick</legend>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.StockPickTypeId)
+            @Html.LabelFor(model => model.OptionPickTypeId, "Type")
         </div>
         <div class="editor-field">
-            @Html.DropDownList("StockPickTypeId", String.Empty)
-            @Html.ValidationMessageFor(model => model.StockPickTypeId)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.EntryPrice)
-        </div>
-        <div class="editor-field">
-            @Html.DisplayFor(model => model.EntryPrice)
-            @Html.ValidationMessageFor(model => model.EntryPrice)
+            @Html.DropDownList("OptionPickTypeId", String.Empty)
+            @Html.ValidationMessageFor(model => model.OptionPickTypeId)
         </div>
 
         @Html.HiddenFor(model => model.PickId)
@@ -47,20 +39,20 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.IsPublished)
-        </div>
-        <div class="editor-field">
-            @Html.DisplayFor(model => model.IsPublished)
-            @Html.HiddenFor(model => model.IsPublished)
-            @Html.ValidationMessageFor(model => model.IsPublished)
-        </div>
-
-        <div class="editor-label">
             @Html.LabelFor(model => model.PublishingDate)
         </div>
         <div class="editor-field">
             @Html.DisplayFor(model => model.PublishingDate)
             @Html.HiddenFor(model => model.PublishingDate)
+            @Html.ValidationMessageFor(model => model.PublishingDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsPublished)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.IsPublished)
+            @Html.HiddenFor(model => model.IsPublished)
             @Html.ValidationMessageFor(model => model.IsPublished)
         </div>
 
@@ -81,39 +73,24 @@
             @Html.HiddenFor(model => model.ClosingDate)
             @Html.ValidationMessageFor(model => model.ClosingDate)
         </div>
-        @if (Model.IsPublished && !Model.ClosingDate.HasValue) {
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ExitPrice)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.ExitPrice)
-                @Html.ValidationMessageFor(model => model.ExitPrice)
-            </div>
-            <p>
-                <input type="submit" name="closeButton" value="Close Trade" />
-            </p>
-        }
-        else
-        {
-            <div class="editor-label">
-                @Html.LabelFor(model => model.ExitPrice)
-            </div>
-            <div class="editor-field">
-                @Html.DisplayFor(model => model.ExitPrice)
-                @Html.HiddenFor(model => model.ExitPrice)
-                @Html.ValidationMessageFor(model => model.ExitPrice)
-            </div>
-        }
+        <div>Legs
+            @foreach (WebSite.Models.Data.Picks.OptionPickLeg leg in Model.Legs)
+            {
+                Html.DisplayFor(m => leg);
+            }
+            @Html.ActionLink("Edit Legs", "Legs", new { optionPickId = Model.PickId })
+            
+        </div>
         <p>
-            <input type="submit" name="saveButton" value="Save Changes" />
+            <input type="submit" name="submitButton" value="Save Changes" />
         </p>
-        @if(!Model.IsPublished)
+        @if (!Model.IsPublished)
         {
             <p>
                 <input type="submit" name="publishButton" value="Save Changes and Publish to Users" />
-            </p>            
+            </p>
         }
-   </fieldset>
+    </fieldset>
 }
 
 <div>

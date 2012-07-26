@@ -12,7 +12,7 @@ namespace WebSite.Mailers
 		public Account():
 			base()
 		{
-			MasterName="_Layout";
+			MasterName="_EmailLayout";
 		}
 
 		

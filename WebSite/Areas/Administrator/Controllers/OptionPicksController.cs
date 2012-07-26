@@ -132,55 +132,6 @@ namespace WebSite.Areas.Administrator.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Legs(int optionPickId)
-        {
-            OptionPick optionPick = db.OptionPicks.Find(optionPickId);
-
-            if (optionPick == null)
-            {
-                return this.HttpNotFound("Invalid pick identifier");
-            }
-
-            ViewBag.OptionPick = optionPick;
-
-            return View("Legs", new OptionPickLeg());
-        }
-
-        [HttpPost]
-        public ActionResult AddLeg(OptionPickLeg leg, int optionPickId)
-        {
-            if (ModelState.IsValid)
-            {
-                OptionPick optionPick = db.OptionPicks.Find(optionPickId);
-
-                if (optionPick == null)
-                {
-                    return this.HttpNotFound("Invalid pick option ID");
-                }
-
-                optionPick.Legs.Add(leg);
-
-                db.SaveChanges();
-
-                return this.Legs(optionPickId);
-            }
-
-            return this.Legs(optionPickId);
-        }
-
-        public ActionResult DeleteLeg(int optionPickLegId, int optionPickId)
-        {
-            OptionPick optionPick = db.OptionPicks.Find(optionPickId);
-            OptionPickLeg leg = optionPick.Legs.First(optionLeg => optionLeg.OptionPickLegId == optionPickLegId);
-
-            // Remove the leg from the pick and save the changes into the database
-            optionPick.Legs.Remove(leg);
-            db.SaveChanges();
-
-            // Forward the user back to the main option pick editing page
-            return this.Legs(optionPickId);
-        }
-
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

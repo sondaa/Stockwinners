@@ -27,15 +27,41 @@ namespace WebSite.Helpers
                 email.Bcc.Add(user.EmailAddress);
             }
 
-            email.Send();
+            email.SendAsync();
         }
 
         public static void Send(OptionPick optionPick)
         {
+            MailMessage email = new Mailers.Picks().Option(optionPick);
+
+            // Add recepients to the email
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            email.To.Add("noreply@stockwinners.com");
+
+            foreach (User user in db.Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveOptionPicks))
+            {
+                email.Bcc.Add(user.EmailAddress);
+            }
+
+            email.SendAsync();
         }
 
         public static void Send(DailyAlert dailyAlert)
         {
+            MailMessage email = new Mailers.Picks().Alert(dailyAlert);
+
+            // Add recepients to the email
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            email.To.Add("noreply@stockwinners.com");
+
+            foreach (User user in db.Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveDailyAlerts))
+            {
+                email.Bcc.Add(user.EmailAddress);
+            }
+
+            email.SendAsync();
         }
     }
 }

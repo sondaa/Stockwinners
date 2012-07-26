@@ -19,8 +19,21 @@
                 dataModel.addNewsElement(data);
             };
 
+            activeTradersHub.resetState = function (data)
+            {
+                dataModel.resetItems();
+            };
+
             $.connection.hub.start().done(function ()
             {
+                ko.bindingHandlers.symbols = {
+                    init: function (element, valueAccessor)
+                    {
+                        $(element).text(valueAccessor()().toString().split(";").join(" "))
+                    },
+                    update: this.init
+                };
+
                 // Start binding our UI data
                 ko.applyBindings(dataModel);
 
@@ -30,15 +43,13 @@
         });
     </script>
 }
-<h2>Index</h2>
-<table>
-    <caption>test</caption>
-    <tr>
-        <th>Contents</th>
-    </tr>
+<h2>Active Traders</h2>
+<table style="width: 100%; font-size: 9pt;">
     <tbody data-bind="foreach: newsElements">
         <tr>
-            <td data-bind="text: Text"></td>
+            <td data-bind="symbols: Symbol" style="vertical-align: top;"></td>
+            <td data-bind="text: Category" style="vertical-align: top;"></td>
+            <td data-bind="text: Text" style="vertical-align: top;"></td>
         </tr>
     </tbody>
 </table>

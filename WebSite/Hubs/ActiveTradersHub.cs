@@ -16,7 +16,12 @@ namespace WebSite.Hubs
         /// <summary>
         /// Tracks the set of items received so far today.
         /// </summary>
-        static SortedSet<ActiveTradersNewsElement> _newsElements;
+        static SortedSet<ActiveTradersNewsElement> NewsElements;
+
+        /// <summary>
+        /// Thread used to communicate with FlyOnTheWall.
+        /// </summary>
+        static Thread TCPThread;
 
         /// <summary>
         /// Track whether we are receiving news from fly on the wall.
@@ -33,13 +38,13 @@ namespace WebSite.Hubs
 
         public ActiveTradersHub()
         {
-            if (_newsElements == null)
+            if (NewsElements == null)
             {
                 lock (_stateLock)
                 {
-                    if (_newsElements == null)
+                    if (NewsElements == null)
                     {
-                        _newsElements = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
+                        NewsElements = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
                     }
                 }
             }
@@ -70,67 +75,85 @@ namespace WebSite.Hubs
                 }
             }
 
-            // Schedule the connection with FlyOnTheWall on its own separate thread
-            ThreadPool.QueueUserWorkItem(delegate
-            {
-                // Create a TCP connection to FlyOnTheWall servers
-                TcpClient tcpClient = new TcpClient(FlyOnTheWallServerAddress, FlyOnTheWallServerPort);
-
-                NetworkStream stream = tcpClient.GetStream();
-
-                // Send the initial request which must have HTTP like headers
-                byte[] initialRequest = Encoding.ASCII.GetBytes("GET /SERVICE/STORY?NUM=0&u=stockwinners&p=stockwinners HTTP/1.0\r\n\r\n");
-                stream.Write(initialRequest, 0, initialRequest.Length);
-
-                // Used to track the data received so far (unprocessed data)
-                string dataReceived = string.Empty;
-
-                // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
-                while (true)
-                {
-                    // Read data in chunks of 1KB each.
-                    byte[] data = new byte[1024];
-                    int bytesRead = stream.Read(data, 0, data.Length);
-
-                    dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
-
-                    // Messages sent from the server are delimited by \n
-                    for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
-                    {
-                        // Parse from the start of the accumulated data until the first \n found
-                        ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
-
-                        if (newsElement != null)
-                        {
-                            this.AddNewNewsElement(newsElement);
-                        }
-
-                        // Remove the processed part of the massage from it (and also remove the \n) and continue processing
-                        // the rest
-                        dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
-                    }
-                }
-            });
+            TCPThread = new Thread(new ThreadStart(ConnectWithFlyOnTheWall));
+            TCPThread.Start();
         }
 
-        private void AddNewNewsElement(ActiveTradersNewsElement newsElement)
+        private void ConnectWithFlyOnTheWall()
         {
+            // Create a TCP connection to FlyOnTheWall servers
+            TcpClient tcpClient = new TcpClient(FlyOnTheWallServerAddress, FlyOnTheWallServerPort);
+
+            NetworkStream stream = tcpClient.GetStream();
+
+            // Send the initial request which must have HTTP like headers
+            byte[] initialRequest = Encoding.ASCII.GetBytes("GET /SERVICE/STORY?NUM=0&u=stockwinners&p=stockwinners HTTP/1.0\r\n\r\n");
+            stream.Write(initialRequest, 0, initialRequest.Length);
+
+            // Used to track the data received so far (unprocessed data)
+            string dataReceived = string.Empty;
+
+            // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
+            while (true)
+            {
+                // Read data in chunks of 1KB each.
+                byte[] data = new byte[1024];
+                int bytesRead = stream.Read(data, 0, data.Length);
+
+                dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
+
+                // Messages sent from the server are delimited by \n
+                for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
+                {
+                    // Parse from the start of the accumulated data until the first \n found
+                    ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
+
+                    if (newsElement != null)
+                    {
+                        this.AddNewNewsElement(newsElement);
+                    }
+
+                    // Remove the processed part of the massage from it (and also remove the \n) and continue processing
+                    // the rest
+                    dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
+                }
+            }
+        }
+
+        private void AddNewNewsElement(ActiveTradersNewsElement newNewsElement)
+        {
+            // Has a new day begun?
+            bool newDay = false;
+
             // First atomically update the collection of news elements we have
             SortedSet<ActiveTradersNewsElement> newsElementsClone = new SortedSet<ActiveTradersNewsElement>(new ActiveTradersNewsElement.Comparer());
 
             // Clone the existing collection
-            newsElementsClone.UnionWith(_newsElements);
+            newsElementsClone.UnionWith(NewsElements);
+
+            // If the new item has a number smaller than the current maximum, then a new day has begun. As such, clear all the data and start from
+            // scratch. Also, let clients know about this wonderful phenomenon in history of human beings.
+            if (newsElementsClone.Count > 0 && newNewsElement.ElementId < newsElementsClone.Max.ElementId)
+            {
+                newDay = true;
+                newsElementsClone.Clear();
+            }
 
             // Add the new item
-            newsElementsClone.Add(newsElement);
+            newsElementsClone.Add(newNewsElement);
 
             // Update the current items atomically
-            Interlocked.Exchange(ref _newsElements, newsElementsClone);
+            Interlocked.Exchange(ref NewsElements, newsElementsClone);
 
             // Then notify the clients out there about the new item
             if (Clients != null)
             {
-                Clients.addNewsElement(newsElement);
+                if (newDay)
+                {
+                    Clients.resetState();
+                }
+
+                Clients.addNewsElement(newNewsElement);
             }
         }
 
@@ -171,9 +194,9 @@ namespace WebSite.Hubs
 
         public static IEnumerable<ActiveTradersNewsElement> GetCurrentNewsItems()
         {
-            if (_newsElements != null)
+            if (NewsElements != null)
             {
-                return _newsElements;
+                return NewsElements;
             }
             else
             {

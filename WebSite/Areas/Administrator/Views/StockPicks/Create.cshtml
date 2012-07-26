@@ -21,6 +21,14 @@
         </div>
 
         <div class="editor-label">
+            @Html.LabelFor(model => model.CreationDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CreationDate)
+            @Html.ValidationMessageFor(model => model.CreationDate)
+        </div>
+
+        <div class="editor-label">
             @Html.LabelFor(model => model.EntryPrice)
         </div>
         <div class="editor-field">

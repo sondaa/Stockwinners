@@ -37,7 +37,8 @@ namespace WebSite.Models
         {
             public int Compare(ActiveTradersNewsElement x, ActiveTradersNewsElement y)
             {
-                return x.ElementId - y.ElementId;
+                // We want to keep the list sorted in descending order so that newer elements show at the top of the list
+                return y.ElementId - x.ElementId;
             }
         }
     }

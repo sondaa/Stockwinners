@@ -53,4 +53,9 @@ function ActiveTradersViewModel()
     {
         self.newsElements.unshift(ko.observable(new NewsElement(properties)));
     };
+
+    self.resetItems = function ()
+    {
+        self.newsElements = [];
+    };
 }

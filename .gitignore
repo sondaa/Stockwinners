@@ -11,3 +11,5 @@ TestResults
 # Local Database Files
 *.mdf
 *.ldf
+
+*.tmp

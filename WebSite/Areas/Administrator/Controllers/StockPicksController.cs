@@ -51,7 +51,8 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Create(StockPick stockPick, string saveButton, string publishButton)
         {
-            stockPick.Initialize();
+            // TODO: Temporarily disable
+            // stockPick.Initialize();
 
             if (ModelState.IsValid)
             {
@@ -68,7 +69,7 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Email();
                 }
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction("Index");
             }
 
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);

@@ -5,6 +5,7 @@ using System.Web;
 using Mvc.Mailer;
 using System.Net.Mail;
 using WebSite.Models.Data.Picks;
+using WebSite.Models.Data;
 
 namespace WebSite.Mailers
 { 
@@ -28,24 +29,24 @@ namespace WebSite.Mailers
 		}
 
 		
-		public virtual MailMessage Option()
+		public virtual MailMessage Option(OptionPick optionPick)
 		{
 			var mailMessage = new MailMessage{Subject = "New Option Pick"};
-			
-			//mailMessage.To.Add("some-email@example.com");
-			//ViewBag.Data = someObject;
+
+            ViewBag.OptionPickContents = optionPick.Description;
+
 			PopulateBody(mailMessage, viewName: "Option");
 
 			return mailMessage;
 		}
 
 		
-		public virtual MailMessage Alert()
+		public virtual MailMessage Alert(DailyAlert dailyAlert)
 		{
 			var mailMessage = new MailMessage{Subject = "Market Alert"};
-			
-			//mailMessage.To.Add("some-email@example.com");
-			//ViewBag.Data = someObject;
+
+            ViewBag.AlertContents = dailyAlert.Content;
+
 			PopulateBody(mailMessage, viewName: "Alert");
 
 			return mailMessage;

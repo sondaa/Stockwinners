@@ -128,7 +128,9 @@ h4, h5, h6
 {
     color: #000;
     margin-bottom: 0;
-    padding-bottom: 0;
+    padding-bottom: 5px;
+    padding-top: 3px;
+    margin-top: 0;
     font-weight: 300
 }
 

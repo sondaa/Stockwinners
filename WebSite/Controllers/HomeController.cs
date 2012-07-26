@@ -14,13 +14,6 @@ namespace WebSite.Controllers
         {
             ViewBag.Message = "Modify this template to kick-start your ASP.NET MVC application.";
 
-            MailMessage m = new Mailers.Account().Welcome();
-
-            m.To.Add("ameen.tayyebi@gmail.com");
-            m.To.Add("s.mehdi.ghaffari@gmail.com");
-
-            m.Send();
-
             return View();
         }
 

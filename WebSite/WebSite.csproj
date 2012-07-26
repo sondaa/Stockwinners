@@ -181,6 +181,7 @@
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />
     <Compile Include="Mailers\Account.cs" />
+    <Compile Include="Mailers\Picks.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
     <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
       <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
@@ -724,6 +725,9 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
+    <Content Include="Views\Picks\Stock.cshtml" />
+    <Content Include="Views\Picks\Option.cshtml" />
+    <Content Include="Views\Picks\Alert.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

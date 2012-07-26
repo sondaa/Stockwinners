@@ -67,6 +67,19 @@ a, a:visited
 	        text-decoration: none;
         }
 
+.text-material 
+{
+    font-family: 'Merriweather';
+    font-size: 12pt;
+}
+
+.text-material-heading
+{
+    font-family: 'Merriweather';
+    font-size: 14pt;
+    font-weight: bold;
+}
+        
 .footer
 {
   	background-color: #454545;

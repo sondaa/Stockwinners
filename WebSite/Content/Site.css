@@ -66,7 +66,7 @@ a, a:visited
 	        color: #CCCCCC;
 	        text-decoration: none;
         }
-
+       
 #footer
 {
   	background-color: #454545;
@@ -93,6 +93,19 @@ a, a:visited
         text-align: center;
         padding: 3px;
     }
+    
+.text-material 
+{
+    font-family: 'Merriweather';
+    font-size: 12pt;
+}
+
+.text-material-heading
+{
+    font-family: 'Merriweather';
+    font-size: 14pt;
+    font-weight: bold;
+}
 
 mark
 {

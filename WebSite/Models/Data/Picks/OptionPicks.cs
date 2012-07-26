@@ -15,6 +15,11 @@ namespace WebSite.Models.Data.Picks
         /// </summary>
         public virtual ICollection<OptionPickLeg> Legs { get; set; }
 
+        [ForeignKey("Type")]
+        [Display(Name = "Type of option strategy")]
+        public int OptionPickTypeId { get; set; }
+        public virtual OptionPickType Type { get; set; }
+
         public override void Email()
         {
             Helpers.Email.Send(this);

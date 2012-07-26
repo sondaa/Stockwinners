@@ -40,6 +40,8 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Create()
         {
+            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name");
+
             return View();
         }
 
@@ -69,6 +71,8 @@ namespace WebSite.Areas.Administrator.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
+
             return View(stockPick);
         }
 
@@ -77,12 +81,13 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            StockPick stockpick = db.StockPicks.Find(id);
-            if (stockpick == null)
+            StockPick stockPick = db.StockPicks.Find(id);
+            if (stockPick == null)
             {
                 return HttpNotFound();
             }
-            return View(stockpick);
+            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
+            return View(stockPick);
         }
 
         //
@@ -114,6 +119,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
                 return RedirectToAction("Index");
             }
+            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
             return View(stockPick);
         }
 

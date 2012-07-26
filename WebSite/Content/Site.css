@@ -66,7 +66,34 @@ a, a:visited
 	        color: #CCCCCC;
 	        text-decoration: none;
         }
+       
+#footer
+{
+  	background-color: #454545;
+	font-size: 9pt;
+	color: #cccccc;
+}
 
+    #footer a, #footer a:visited
+    {
+	    color: #CCCCCC;
+	    text-decoration: none;
+	    cursor: pointer;
+	    padding-left: 6px;
+	    padding-right: 6px;
+    }
+
+    #footer a:hover
+    {
+	    text-decoration: underline;
+    }
+
+    #footer div
+    {
+        text-align: center;
+        padding: 3px;
+    }
+    
 .text-material 
 {
     font-family: 'Merriweather';
@@ -78,27 +105,6 @@ a, a:visited
     font-family: 'Merriweather';
     font-size: 14pt;
     font-weight: bold;
-}
-        
-.footer
-{
-  	background-color: #454545;
-	font-size: 9pt;
-	color: #cccccc;
-}
-
-.footer-link-text, .footer-link-text:visited
-{
-	color: #CCCCCC;
-	text-decoration: none;
-	cursor: pointer;
-	padding-left: 6px;
-	padding-right: 6px;
-}
-
-.footer-link-text:hover
-{
-	text-decoration: underline;
 }
 
 mark
@@ -123,6 +129,7 @@ h4, h5, h6
     color: #000;
     margin-bottom: 0;
     padding-bottom: 0;
+    font-weight: 300
 }
 
 h1

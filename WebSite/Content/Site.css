@@ -409,7 +409,6 @@ fieldset
     {
         display: block;
         font-size: 1.2em;
-        font-weight: 600;
     }
 
         fieldset label.checkbox
@@ -440,7 +439,8 @@ fieldset
         border: 1px solid #787878;
         cursor: pointer;
         font-size: 1.2em;
-        font-weight: 600;
+        font-family: 'Open Sans', Arial;
+        font-weight: 300;
         padding: 7px;
     }
 

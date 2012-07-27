@@ -367,6 +367,12 @@
     <Content Include="Images\Chart Reading\volume_HS.JPG" />
     <Content Include="Images\Chart Reading\vo_033199.gif" />
     <Content Include="Images\Chart Reading\vrsn_033099.gif" />
+    <Content Include="Images\Social Networks\facebook-16.png" />
+    <Content Include="Images\Social Networks\facebook-32.png" />
+    <Content Include="Images\Social Networks\facebook-signin.gif" />
+    <Content Include="Images\Social Networks\google.gif" />
+    <Content Include="Images\Social Networks\twitter-16.png" />
+    <Content Include="Images\Social Networks\twitter-32.png" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js">
       <DependentUpon>jquery-1.6.4.js</DependentUpon>

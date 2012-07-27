@@ -36,7 +36,7 @@ namespace WebSite.Controllers
         public void OAuthAuthenticate(IdentityProvider identityProvider, string returnUrl)
         {
             // Only allow local URLs as return URLs
-            if (!Url.IsLocalUrl(returnUrl))
+            if (returnUrl != null && !Url.IsLocalUrl(returnUrl))
             {
                 returnUrl = null;
             }

@@ -1,0 +1,271 @@
+@{
+    ViewBag.Title = "Options101";
+}
+
+<h2>Options Basics</h2>
+<ol>
+    <li><a href="#WhatAre">What are Options? </a></li>
+    <li><a href="#CallsPuts">Calls and Puts </a></li>
+    <li><a href="#The Lingo ">The Lingo </a></li>
+    <li><a href="#Why Use Options?">Why Use Options?</a></li>
+    <li><a href="#How Options Work">How Options Work</a></li>
+    <li><a href="#Intrinsic">Intrinsic Time and Value</a></li>
+    <li><a href="#Types of Options ">Types of Options </a></li>
+</ol>
+<span class="text-material-heading"><a name="what are">What are Options?</a> </span><br /><br />
+<span class="text-material"> 
+    <P>An option is a contract that gives the buyer the right, but not the obligation, to buy or sell an 
+    underlying asset at a specific price on or before a certain date. An option, just like a stock or
+     bond, is a security. It is also a binding contract with strictly defined terms and properties.</P>
+
+<P>Still confused? The idea behind an option is present in many everyday situations. Say, for example, 
+    that you discover a house that you'd love to purchase. Unfortunately, you won't have the cash to
+     buy it for another three months. You talk to the owner and negotiate a deal that gives you an 
+    option to buy the house in three months for a price of $200,000. The owner agrees, but for this
+     option, you pay a price of $3,000.</P>
+
+<P>Now, consider two theoretical situations that might arise:</P>
+
+<P>1. It's discovered that the house is actually the true birthplace of Elvis! As a result, 
+    the market value of the house skyrockets to $1 million. Because the owner sold you the 
+    option, he is obligated to sell you the house for $200,000. In the end, you stand to 
+    make a profit of $797,000 ($1 million - $200,000 - $3,000).</P>
+
+<P>2. While touring the house, you discover not only that the walls are chock-full of asbestos, 
+    but also that the ghost of Henry VII haunts the master bedroom; furthermore, a family of 
+    super-intelligent rats have built a fortress in the basement. Though you originally 
+    thought you had found the house of your dreams, you now consider it worthless. 
+    On the upside, because you bought an option, you are under no obligation to go 
+    through with the sale. Of course, you still lose the $3,000 price of the option.</P>
+
+<P>This example demonstrates two very important points. First, when you buy an option, you have a 
+    right but not an obligation to do something. You can always let the expiration date go by,
+     at which point the option becomes worthless. If this happens, you lose 100% of your investment, 
+    which is the money you used to pay for the option. Second, an option is merely a contract that 
+    deals with an underlying asset. For this reason, options are called derivatives, which means an
+     option derives its value from something else. In our example, the house is the underlying asset.
+     Most of the time, the underlying asset is a stock or an index.</P></span>
+
+<span class="text-material-heading"><a name="CallsPuts">Calls and Puts</a> </span><br /><br />
+<span class="text-material"> 
+    <p>The two types of options are calls and puts:</p>
+
+<p>A call gives the holder the right to buy an asset at a certain price within a specific period of time.
+     Calls are similar to having a long position on a stock. Buyers of calls hope that the stock will
+     increase substantially before the option expires.
+    </p>
+
+<p>A put gives the holder the right to sell an asset at a certain price within a specific period of time. 
+    Puts are very similar to having a short position on a stock. Buyers of puts hope that the price of
+     the stock will fall before the option expires.</p>
+
+Participants in the Options Market<br />
+<P>There are four types of participants in options markets depending on the position they take:</P>
+<ul>
+1. Buyers of calls<br />
+2. Sellers of calls<br />
+3. Buyers of puts<Br />
+4. Sellers of puts<br />
+    </ul>
+<p>People who buy options are called holders and those who sell options are called writers; furthermore, 
+    buyers are said to have long positions, and sellers are said to have short positions.</p>
+
+<p>Here is the important distinction between buyers and sellers:</p>
+-Call holders and put holders (buyers) are not obligated to buy or sell. They have the choice to 
+    exercise their rights if they choose.<br /><br />
+-Call writers and put writers (sellers), however, are obligated to buy or sell. This means that
+     a seller may be required to make good on a promise to buy or sell.<br /><br />
+
+<P>Don't worry if this seems confusing - it is. For this reason we are going to look at options
+     from the point of view of the buyer. Selling options is more complicated and can be even 
+    riskier. At this point, it is sufficient to understand that there are two sides of an options contract.</P>
+    </span>
+
+
+<span class="text-material-heading"><a name="The Lingo">The Lingo</a></span><br /><br />
+
+<span class="text-material"> 
+    <P>To trade options, you'll have to know the terminology associated with the options market.</P>
+
+<P>The price at which an underlying stock can be purchased or sold is called the strike price. 
+    This is the price a stock price must go above (for calls) or go below (for puts) before a position 
+    can be exercised for a profit. All of this must occur before the expiration date.</P>
+
+<P>An option that is traded on a national options exchange such as the Chicago Board Options Exchange 
+    (CBOE) is known as a listed option. These have fixed strike prices and expiration dates. 
+    Each listed option represents 100 shares of company stock (known as a contract).</p>
+
+<p>For call options, the option is said to be in-the-money if the share price is above the strike price. 
+    A put option is in-the-money when the share price is below the strike price. The amount by which an option
+     is in-the-money is referred to as intrinsic value.</p>
+
+<P>The total cost (the price) of an option is called the premium. This price is determined by factors 
+    including the stock price, strike price, time remaining until expiration (time value) and volatility. 
+    Because of all these factors, determining the premium of an option is complicated and beyond the scope
+     of this tutorial</P> </span>
+
+<span class="text-material-heading"><a name="Why Use Options?">Why Use Options?</a></span><br /><br />
+
+    
+<span class="text-material"> 
+
+<P>There are two main reasons why an investor would use options: to speculate and to hedge.</P>
+   </span>
+<span class="text-material-heading">Speculation </span><br /><br />
+<span class="text-material"> 
+<p>You can think of speculation as betting on the movement of a security. The advantage of options is
+     that you aren't limited to making a profit only when the market goes up. Because of the versatility
+     of options, you can also make money when the market goes down or even sideways.</p>
+
+<p>Speculation is the territory in which the big money is made - and lost. The use of options in this manner
+     is the reason options have the reputation of being risky. This is because when you buy an option, you have
+     to be correct in determining not only the direction of the stock's movement, but also the magnitude and the
+     timing of this movement. To succeed, you must correctly predict whether a stock will go up or down, and you
+     have to be right about how much the price will change as well as the time frame it will take for all this to
+     happen. And don't forget commissions! The combinations of these factors means the odds are stacked against
+     you.</p>
+
+<p>So why do people speculate with options if the odds are so skewed? Aside from versatility, it's all about
+     using leverage. When you are controlling 100 shares with one contract, it doesn't take much of a price 
+    movement to generate substantial profits.</p></span>
+
+<span class="text-material-heading">Hedging  </span><br /><br />
+<span class="text-material">
+    <p>The other function of options is hedging. Think of this as an insurance policy. Just as you insure
+         your house or car, options can be used to insure your investments against a downturn. Critics of 
+        options say that if you are so unsure of your stock pick that you need a hedge, you shouldn't make 
+        the investment. On the other hand, there is no doubt that hedging strategies can be useful, especially 
+        for large institutions. Even the individual investor can benefit. Imagine that you wanted to take 
+        advantage of technology stocks and their upside, but say you also wanted to limit any losses. By 
+        using options, you would be able to restrict your downside while enjoying the full upside in a 
+        cost-effective way. </p></span>
+
+<span class="text-material-heading">A Word on Stock Options</span><br /><br />
+<span class="text-material">
+<p>Although employee stock options aren't available to everyone, this type of option could, 
+    in a way, be classified as a third reason for using options. Many companies use stock
+     options as a way to attract and to keep talented employees, especially management. They are
+     similar to regular stock options in that the holder has the right but not the obligation to 
+    purchase company stock. The contract, however, is between the holder and the company, whereas 
+    a normal option is a contract between two parties that are completely unrelated to the company.</p></span>
+
+
+<span class="text-material-heading"><a name="How Options Work">How Options Work</a></span><br /><br />
+<span class="text-material">
+
+<p>Now that you know the basics of options, here is an example of how they work. We'll use a fictional firm 
+    called Cory's Tequila Company.</p>
+
+<P>Let's say that on May 1, the stock price of Cory's Tequila Co. is $67 and the premium (cost) is $3.15 for 
+    a July 70 Call, which indicates that the expiration is the third Friday of July and the strike price is $70. 
+    The total price of the contract is $3.15 x 100 = $315. In reality, you'd also have to take commissions into
+     account, but we'll ignore them for this example.</P>
+
+<P>Remember, a stock option contract is the option to buy 100 shares; that's why you must multiply the 
+    contract by 100 to get the total price. The strike price of $70 means that the stock price must rise
+     above $70 before the call option is worth anything; furthermore, because the contract is $3.15 per
+     share, the break-even price would be $73.15.</P>
+
+<P>When the stock price is $67, it's less than the $70 strike price, so the option is worthless.
+     But don't forget that you've paid $315 for the option, so you are currently down by this amount.</P>
+
+
+<P>Three weeks later the stock price is $78. The options contract has increased along with the stock price
+     and is now worth $8.25 x 100 = $825. Subtract what you paid for the contract, and your profit is 
+    $8.25 - $3.15) x 100 = $510. You almost doubled our money in just three weeks! You could sell your
+     options, which is called "closing your position," and take your profits - unless, of course, you 
+    think the stock price will continue to rise. For the sake of this example, let's say we let it ride.</P>
+
+<P>By the expiration date, the price drops to $62. Because this is less than our $70 strike price and
+     there is no time left, the option contract is worthless. We are now down to the original investment 
+    of $315.</P>
+
+<P>To recap, here is what happened to our option investment:</P>
+   <ul>
+Date 	May 1 	May 21 	Expiry Date<br />
+Stock Price 	$67 	$78 	$62<br />
+Option Price 	$3.15 	$8.25 	worthless<br />
+Contract Value 	$315 	$825 	$0<br />
+Paper Gain/Loss 	$0 	$510 	-$315<br />
+
+       </ul>
+
+<P>The price swing for the length of this contract from high to low was $825, which would
+     have given us over double our original investment. This is leverage in action.</P></span>
+
+<span class="text-material-heading">Exercising Versus Trading-Out</span><br /><br />
+
+<span class="text-material">
+<P>So far we've talked about options as the right to buy or sell (exercise) the underlying. 
+    This is true, but in reality, a majority of options are not actually exercised.</P>
+
+<P>In our example, you could make money by exercising at $70 and then selling the stock back in the
+     market at $78 for a profit of $8 a share. You could also keep the stock, knowing you were able to
+     buy it at a discount to the present value.</P>
+
+<P>However, the majority of the time holders choose to take their profits by trading out (closing out
+    ) their position. This means that holders sell their options in the market, and writers buy their 
+    positions back to close. According to the CBOE, about 10% of options are exercised, 60% are traded out,
+     and 30% expire worthless.</P><span></span>
+
+
+
+<span class="text-material-heading"><a name="Intrinsic">Intrinsic Value and Time Value</a></span><br /><br />
+
+<span class="text-material">
+<P>At this point it is worth explaining more about the pricing of options. In our example 
+    the premium (price) of the option went from $3.15 to $8.25. These fluctuations can be explained by 
+    intrinsic value and time value.</P>
+
+<P>Basically, an option's premium is its intrinsic value + time value. Remember, intrinsic value is 
+    the amount in-the-money, which, for a call option, means that the price of the stock equals the 
+    strike price. Time value represents the possibility of the option increasing in value. So, the
+     price of the option in our example can be thought of as the following:</P>
+
+Premium = 	Intrinsic Value 	+ 	Time Value<br />
+$8.25 = 	$8 	+ 	$0.25<br />
+
+<P>In real life options almost always trade above intrinsic value. If you are wondering,
+     we just picked the numbers for this example out of the air to demonstrate how options work.</P>
+  </span>
+
+
+    <span class="text-material-heading"><a name="Types of Options">Types of Options</a></span><br /><br />
+      <span class="text-material">
+
+         <P> There are two main types of options:</P> 
+          <ul>
+   <li> American options can be exercised at any time between the date of purchase and the expiration date.
+        The example about Cory's Tequila Co. is an example of the use of an American option. Most exchange-traded options 
+       are of this type.</li>
+   <li> European options are different from American options in that they can only be exercised at the end of their lives. </li>
+          </ul>
+
+<P>The distinction between American and European options has nothing to do with geographic location.</P> </span>
+
+<span class="text-material-heading">Long-Term Options</span><br /><br />
+ <span class="text-material">
+
+<P>So far we've only discussed options in a short-term context. There are also options with holding times of one,
+     two or multiple years, which may be more appealing for long-term investors.</P>
+
+<P>These options are called long-term equity anticipation securities (LEAPS). By providing opportunities to 
+    control and manage risk or even to speculate, LEAPS are virtually identical to regular options. 
+    LEAPS, however, provide these opportunities for much longer periods of time.
+     Although they are not available on all stocks, LEAPS are available on most widely held issues.</P></span>
+
+<span class="text-material-heading">Exotic Options</span><br /><br />
+    <span class="text-material">
+<P>The simple calls and puts we've discussed are sometimes referred to as plain vanilla options. 
+    Even though the subject of options can be difficult to understand at first, these plain vanilla 
+    options are as easy as it gets!</P>
+
+<P>Because of the versatility of options, there are many types and variations of options. Non-standard 
+    options are called exotic options, which are either variations on the payoff profiles of the plain 
+    vanilla options or are wholly different products with "option-ality" embedded in them.</P></span>
+
+    <img src="/Images/logo.gif" />
+
+
+
+

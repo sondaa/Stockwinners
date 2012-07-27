@@ -102,9 +102,9 @@ a, a:visited
 
 .text-material-heading
 {
-    font-family: 'Merriweather';
+    font-family: 'Open Sans';
     font-size: 14pt;
-    font-weight: bold;
+    font-weight: 300;
 }
 
 mark

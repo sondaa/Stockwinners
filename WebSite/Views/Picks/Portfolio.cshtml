@@ -16,12 +16,12 @@
 @section Styles
 {
     <style type="text/css">
-        tr
+        .clickable-row
         {
             cursor: pointer;
         }
 
-            tr:hover
+            .clickable-row:hover
             {
                 background-color: #3b85e0;
             }
@@ -47,7 +47,7 @@
                     background = "grey-background";
                 }
                
-                <tr class="@(background)" data-bind="click: function() { window.location.href = '@Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId })'; }">
+                <tr class="clickable-row;@(background)" data-bind="click: function() { window.location.href = '@Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId })'; }">
                     <td>@stockPick.Symbol</td>
                     <td>@stockPick.EntryPrice.ToString("C")</td>
                     <td>@stockPick.PublishingDate.Value.ToShortDateString()</td>
@@ -80,7 +80,7 @@
                     background = "grey-background";
                 }
                 
-                <tr class="@(background)" data-bind="click: function() { window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })'; }">
+                <tr class="clickable-row;@(background)" data-bind="click: function() { window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })'; }">
                     <td>@optionPick.Symbol</td>
                     <td>@optionPick.Type.Name</td>
                     <td>@optionPick.PublishingDate.Value.ToShortDateString()</td>

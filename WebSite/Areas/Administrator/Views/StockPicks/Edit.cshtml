@@ -24,8 +24,7 @@
             @Html.LabelFor(model => model.EntryPrice)
         </div>
         <div class="editor-field">
-            @Html.DisplayFor(model => model.EntryPrice)
-            @Html.HiddenFor(model => model.EntryPrice)
+            @Html.EditorFor(model => model.EntryPrice)
             @Html.ValidationMessageFor(model => model.EntryPrice)
         </div>
 

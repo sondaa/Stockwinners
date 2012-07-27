@@ -42,6 +42,10 @@
                 <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks")</div>
                 <div>@Html.ActionLink("Members", "Index", "Members")</div>
                 @Html.Partial("_AdministratorLinksPartial")
+                @if (!Request.IsAuthenticated)
+                {
+                    <div style="float: right;" class="trial">@Html.ActionLink("Free Trial", "Register", "Account")</div>
+                }
             </div>
         </div>
         <div id="contents" style="padding: 10px;">

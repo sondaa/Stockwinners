@@ -56,6 +56,16 @@ a, a:visited
 	    display: inline-block;
     }
 
+    #header-link-group .trial
+    {
+        background-color: #3e61a9;
+    }
+
+        #header-link-group .trial:hover
+        {
+            background-color: #27427a;
+        }
+
     #header-link-group div:hover
     {
 	    background-color: #000000;

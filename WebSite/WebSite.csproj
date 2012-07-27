@@ -705,7 +705,6 @@
     <Content Include="Views\Members\Subscribe.cshtml" />
     <Content Include="Views\Members\CancelSubscription.cshtml" />
     <Content Include="Views\Information\Market101.cshtml" />
-    <Content Include="Views\Information\TradingTips.cshtml" />
     <Content Include="Views\Information\ChartReading.cshtml" />
     <Content Include="Views\Information\BuyingOnMargin.cshtml" />
     <Content Include="Views\Information\PhilosophyAndPerformance.cshtml" />
@@ -740,6 +739,7 @@
     <Content Include="Views\Picks\Stock.cshtml" />
     <Content Include="Views\Picks\Option.cshtml" />
     <Content Include="Views\Picks\Alert.cshtml" />
+    <Content Include="Views\Information\Options101.cshtml" />
     <Content Include="Views\Picks\Portfolio.cshtml" />
     <Content Include="Views\Picks\StockPickDetail.cshtml" />
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />

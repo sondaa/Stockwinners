@@ -41,7 +41,7 @@ namespace WebSite.Migrations
         {
             // Make any user with ameen.tayyebi@gmail.com or s.mehdi.ghaffari@gmail.com or seyed@stockwinners.com an admin
             string[] adminEmails = new string[] { "ameen.tayyebi@gmail.com", "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com" };
-            Role adminRole = context.Roles.Single(role => role.Name == PredefinedRoles.Administrator);
+            Role adminRole = context.Roles.First(role => role.Name == PredefinedRoles.Administrator);
 
             foreach (string adminEmail in adminEmails)
             {
@@ -77,6 +77,8 @@ namespace WebSite.Migrations
         {
             context.Roles.AddOrUpdate(r => r.Name, new Role() { Name = PredefinedRoles.Member });
             context.Roles.AddOrUpdate(r => r.Name, new Role() { Name = PredefinedRoles.Administrator });
+
+            context.SaveChanges();
         }
 
         private static void SeedCountries(DatabaseContext context)

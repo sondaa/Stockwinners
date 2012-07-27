@@ -15,7 +15,7 @@ namespace WebSite.Controllers
             return View();
         }
 
-        public ActionResult TradingTips()
+        public ActionResult Options101()
         {
             return View();
         }

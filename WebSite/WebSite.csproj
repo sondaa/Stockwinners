@@ -177,6 +177,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
+    <Compile Include="Controllers\PicksController.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />
@@ -254,6 +255,10 @@
     <Compile Include="Migrations\201207260435562_MakingOptionLegClosingDateOptional.Designer.cs">
       <DependentUpon>201207260435562_MakingOptionLegClosingDateOptional.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201207270258308_AddingLongVersusShortStockPicks.cs" />
+    <Compile Include="Migrations\201207270258308_AddingLongVersusShortStockPicks.Designer.cs">
+      <DependentUpon>201207270258308_AddingLongVersusShortStockPicks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -284,6 +289,7 @@
     <Compile Include="Models\Data\Subscriptions.cs" />
     <Compile Include="Models\Data\Users.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
+    <Compile Include="Models\UI\Portfolio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -728,6 +734,9 @@
     <Content Include="Views\Picks\Option.cshtml" />
     <Content Include="Views\Picks\Alert.cshtml" />
     <Content Include="Views\Information\Options101.cshtml" />
+    <Content Include="Views\Picks\Portfolio.cshtml" />
+    <Content Include="Views\Picks\StockPickDetail.cshtml" />
+    <Content Include="Views\Picks\OptionPickDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

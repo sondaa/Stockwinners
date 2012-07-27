@@ -569,18 +569,28 @@ ul#social li
 .box-table
 {
     width: 100%;
+    table-layout: fixed;
 }
 
     .box-table td
     {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding: 8px;
     }
 
     .box-table div
     {
         padding: 10px;
+        height: 100%;
+        -webkit-transition: background-color 0.3s ease-in;  
+        -moz-transition: background-color 0.3s ease-in;  
+        -o-transition: background-color 0.3s ease-in;  
+        transition: background-color 0.3s ease-in; 
     }
+
+        .box-table div:hover
+        {
+            cursor: pointer;
+        }
 
     .box-table .box-heading
     {

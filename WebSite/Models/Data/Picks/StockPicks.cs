@@ -29,6 +29,13 @@ namespace WebSite.Models.Data.Picks
         public int StockPickTypeId { get; set; }
         public virtual StockPickType Type { get; set; }
 
+        /// <summary>
+        /// Whether the position is long or short.
+        /// </summary>
+        [Required]
+        [Display(Name = "Is this a long position?")]
+        public bool IsLongPosition { get; set; }
+
         public override void Email()
         {
             Helpers.Email.Send(this);

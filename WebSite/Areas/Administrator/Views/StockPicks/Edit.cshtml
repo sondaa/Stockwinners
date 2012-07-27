@@ -29,6 +29,14 @@
             @Html.ValidationMessageFor(model => model.EntryPrice)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsLongPosition)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsLongPosition)
+            @Html.ValidationMessageFor(model => model.IsLongPosition)
+        </div>
+
         @Html.HiddenFor(model => model.PickId)
 
         <div class="editor-label">

@@ -18,6 +18,7 @@
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <div class="page-box">
@@ -38,7 +39,7 @@
                 <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders")</div>
                 <div><a href="test.com">Stock Picks</a></div>
                 <div><a href="test.com">Option Picks</a></div>
-                <div><a href="test.com">Portfolio</a></div>
+                <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks")</div>
                 <div>@Html.ActionLink("Members", "Index", "Members")</div>
                 @Html.Partial("_AdministratorLinksPartial")
             </div>

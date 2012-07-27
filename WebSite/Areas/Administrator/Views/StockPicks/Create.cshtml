@@ -28,6 +28,14 @@
             @Html.ValidationMessageFor(model => model.CreationDate)
         </div>
 
+         <div class="editor-label">
+            @Html.LabelFor(model => model.IsLongPosition)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsLongPosition)
+            @Html.ValidationMessageFor(model => model.IsLongPosition)
+        </div>
+
         <div class="editor-label">
             @Html.LabelFor(model => model.EntryPrice)
         </div>

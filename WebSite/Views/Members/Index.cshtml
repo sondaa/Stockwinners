@@ -1,4 +1,6 @@
 ﻿@model WebSite.Models.Data.NotificationSettings
+<h2>Subscription Settings</h2>
+<div style="padding-top: 10px; padding-bottom: 10px;">
 @if (ViewBag.IsTrialMember && !ViewBag.IsUsingCancelledSubscription)
 {
     if (ViewBag.IsTrialExpired)
@@ -18,21 +20,22 @@ else
 {
     <span>You have an active @ViewBag.SubscriptionFrequency subscription. @Html.ActionLink("Cancel Subscription", "CancelSubscription")</span>
 }
+</div>
+
+<h2>Notification Settings</h2>
 @if (ViewBag.SavedSuccessfully)
 {
-    <span>Changes have been saved.</span>
+    <p class="message-success">Changes have been saved.</p>
 }
-
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Notification Settings</legend>
-        <ul>
-            <li>@Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements)</li>
-        </ul>
-        <input type="submit" value="Save" />
-    </fieldset>
+    <div style="padding-top: 10px;">
+            @Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts)<br />
+            @Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks)<br />
+            @Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks)<br />
+            @Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements)<br />
+    </div>
+    <div style="padding-top: 10px; width: 100%; text-align: right;">
+        <input type="submit" value="Save Changes" />
+    </div>
 }

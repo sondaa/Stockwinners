@@ -24,7 +24,7 @@
             </tr>
             <tr>
                 <td style="padding-right: 40px;">@Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email)</td>
+                    @Html.TextBoxFor(m => m.Email, new { tabindex = 1 })</td>
                 <td style="text-align: center; padding-left: 40px;">
                     <a href="@Url.Action("OAuthAuthenticate", "Authentication", new { identityProvider = WebSite.Models.IdentityProvider.Facebook }, null)">
                         <img src="../../Images/Social%20Networks/facebook-signin.gif" style="vertical-align: middle;" />
@@ -33,13 +33,13 @@
             </tr>
             <tr>
                 <td style="padding-right: 40px;">@Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password)</td>
+                    @Html.PasswordFor(m => m.Password, new { tabindex = 2 })</td>
                 <td style="text-align: center; padding-left: 40px;"><a href="@Url.Action("OAuthAuthenticate", "Authentication", new { identityProvider = WebSite.Models.IdentityProvider.Google }, null)">
                     <img src="../../Images/Social%20Networks/google.gif" style="vertical-align: middle;" />
                 </a></td>
             </tr>
             <tr>
-                <td>@Html.CheckBoxFor(m => m.RememberMe)
+                <td>@Html.CheckBoxFor(m => m.RememberMe, new { tabindex = 3 })
                     @Html.LabelFor(m => m.RememberMe, new { @class = "checkbox" })</td>
                 <td></td>
             </tr>
@@ -49,7 +49,7 @@
             </tr>
             <tr>
                 <td style="padding-left:250px; padding-top: 30px;">
-                    <input type="submit" value="Log in" /></td>
+                    <input type="submit" value="Log in" tabindex="4" /></td>
                 <td></td>
             </tr>
         </table>

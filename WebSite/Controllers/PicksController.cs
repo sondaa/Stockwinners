@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
 using WebSite.Models.Data.Picks;
 
 namespace WebSite.Controllers
 {
+    [MembersOnly]
     public class PicksController : Controller
     {
         public ActionResult Portfolio()

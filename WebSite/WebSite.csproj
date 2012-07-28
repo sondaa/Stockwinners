@@ -369,6 +369,8 @@
     <Content Include="Images\Chart Reading\volume_HS.JPG" />
     <Content Include="Images\Chart Reading\vo_033199.gif" />
     <Content Include="Images\Chart Reading\vrsn_033099.gif" />
+    <Content Include="Images\Option Picks\AAPL Payoff.JPG" />
+    <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
     <Content Include="Images\Social Networks\facebook-signin.gif" />

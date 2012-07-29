@@ -1,0 +1,10 @@
+@model IEnumerable<WebSite.Models.Data.Picks.StockPick>
+@{
+    ViewBag.Title = "Stock Picks";
+}
+<h2>Stock Picks</h2>
+@foreach (WebSite.Models.Data.Picks.StockPick pick in Model)
+{
+    <h3>@(pick.IsLongPosition ? "Long" : "Short") Position on @(pick.Symbol) @@ @(pick.EntryPrice.ToString("C")) on @(pick.PublishingDate.Value.ToShortDateString()) (@pick.Type.Name)</h3>
+    @(Html.Raw(pick.Description))
+}

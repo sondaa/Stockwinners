@@ -342,6 +342,7 @@
     <Content Include="Areas\Administrator\Views\OptionPicks\Legs.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Images\arrow-left-16.png" />
     <Content Include="Images\arrow-right-16.png" />
     <Content Include="Images\Chart Reading\bvsn_121399_fig2.gif" />
     <Content Include="Images\Chart Reading\chart_Page_cust.gif" />
@@ -748,6 +749,8 @@
     <Content Include="Views\Picks\Portfolio.cshtml" />
     <Content Include="Views\Picks\StockPickDetail.cshtml" />
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />
+    <Content Include="Views\Picks\StockPicks.cshtml" />
+    <Content Include="Views\Picks\OptionPicks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

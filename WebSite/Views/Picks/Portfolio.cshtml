@@ -80,7 +80,7 @@
                     background = "grey-background";
                 }
                 
-                <tr class="clickable-row;@(background)" data-bind="click: function() { window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })'; }">
+                <tr class="clickable-row @(background)" data-bind="click: function() { window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })'; }">
                     <td>@optionPick.Symbol</td>
                     <td>@optionPick.Type.Name</td>
                     <td>@optionPick.PublishingDate.Value.ToShortDateString()</td>

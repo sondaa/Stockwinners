@@ -37,8 +37,8 @@
             </div>
             <div id="header-link-group" class="no-whitespace">
                 <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders")</div>
-                <div><a href="test.com">Stock Picks</a></div>
-                <div><a href="test.com">Option Picks</a></div>
+                <div>@Html.ActionLink("Stock Picks", "StockPicks", "Picks")</div>
+                <div>@Html.ActionLink("Option Picks", "OptionPicks", "Picks")</div>
                 <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks")</div>
                 <div>@Html.ActionLink("Members", "Index", "Members")</div>
                 @Html.Partial("_AdministratorLinksPartial")

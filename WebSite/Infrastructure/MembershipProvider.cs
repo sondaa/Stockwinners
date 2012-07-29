@@ -11,7 +11,7 @@ using WebSite.Models;
 namespace WebSite.Infrastructure
 {
     /// <summary>
-    /// Providers membership support for Stockwinners member *only*. Unified users from all sources (Facebook, Google, Stockwinners) are handled 
+    /// Provides membership support for Stockwinners member *only*. Unified users from all sources (Facebook, Google, Stockwinners) are handled 
     /// differently and stored in the database using the <see cref="User"/> model class.
     /// </summary>
     public class MembershipProvider : System.Web.Security.MembershipProvider
@@ -27,6 +27,9 @@ namespace WebSite.Infrastructure
                 StockwinnersMember member = db.StockwinnersMembers.First(m => m.EmailAddress == username);
 
                 member.Password = MembershipProvider.HashPassword(newPassword);
+
+                // Update the legacy member's bit so that the next time the new hash algorithm is used to verify the user's password
+                member.IsLegacyMember = false;
 
                 db.SaveChanges();
 
@@ -220,14 +223,14 @@ namespace WebSite.Infrastructure
         {
             StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username); 
             
-            return member != null && member.Password == MembershipProvider.HashPassword(password);
+            return member != null && MembershipProvider.VerifyPassword(password, member.Password, member.IsLegacyMember);
         }
 
         public StockwinnersMember GetStockwinnersMember(string emailAddress, string password)
         {
             StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress);
 
-            if (member != null && member.Password == MembershipProvider.HashPassword(password))
+            if (member != null && MembershipProvider.VerifyPassword(password, member.Password, member.IsLegacyMember))
             {
                 return member;
             }
@@ -249,6 +252,23 @@ namespace WebSite.Infrastructure
             using (SHA256 hash = SHA256.Create())
             {
                 return Convert.ToBase64String(hash.ComputeHash(Encoding.UTF8.GetBytes(rawPassword)));
+            }
+        }
+
+        /// <summary>
+        /// Verifies that the provided plain text password matches that of the hashed value stored in the database. If the member is a legacy member
+        /// then we use the old Stockwinners' Apache hashing method to check the value. This should only be used for the set of members that have been ported
+        /// from the old Stockwinners' database.
+        /// </summary>
+        private static bool VerifyPassword(string rawPassword, string hashedValue, bool isLegacyMember)
+        {
+            if (isLegacyMember)
+            {
+                return Helpers.ApacheEncryption.VerifyPassword(rawPassword, hashedValue);
+            }
+            else
+            {
+                return MembershipProvider.HashPassword(rawPassword) == hashedValue;
             }
         }
 

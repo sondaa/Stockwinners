@@ -178,6 +178,7 @@
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PicksController.cs" />
+    <Compile Include="Helpers\ApacheEncryption.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />

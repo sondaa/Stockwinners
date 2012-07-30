@@ -7,4 +7,5 @@
 {
     <h3>@(pick.IsLongPosition ? "Long" : "Short") Position on @(pick.Symbol) @@ @(pick.EntryPrice.ToString("C")) on @(pick.PublishingDate.Value.ToShortDateString()) (@pick.Type.Name)</h3>
     @(Html.Raw(pick.Description))
+    <div class="separator"></div>
 }

@@ -373,6 +373,7 @@
     <Content Include="Images\Chart Reading\vrsn_033099.gif" />
     <Content Include="Images\Option Picks\AAPL Payoff.JPG" />
     <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
+    <Content Include="Images\Patterns\separator.gif" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
     <Content Include="Images\Social Networks\facebook-signin.gif" />

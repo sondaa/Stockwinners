@@ -190,6 +190,19 @@ input[type="submit"]
     padding: 7px;
 }
 
+.separator
+{
+    background-clip: border-box;
+    background-image: url("/Images/Patterns/separator.gif");
+    background-repeat: repeat;
+    margin-top: 13px;
+    margin-bottom: 13px;
+    width: 95%;
+    background-origin: padding-box;
+    height: 7px;
+    display: block;
+}
+
 /* login
 ----------------------------------------------------------*/
 #login

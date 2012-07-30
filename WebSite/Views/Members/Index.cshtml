@@ -30,10 +30,10 @@ else
 @using (Html.BeginForm())
 {
     <div style="padding-top: 10px;">
-            @Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts)<br />
-            @Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks)<br />
-            @Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks)<br />
-            @Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements)<br />
+            @Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements, new { @style = "display: inline;" })<br />
     </div>
     <div style="padding-top: 10px; width: 100%; text-align: right;">
         <input type="submit" value="Save Changes" />

@@ -364,9 +364,35 @@ aside
             padding: 2px 0 2px 20px;
         }
 
-.label
+label
 {
-    font-weight: 700;
+    font-weight: 500;
+    display: block;
+    font-size: 1.2em;
+}
+
+    label.checkbox
+    {
+        display: inline;
+    }
+
+input[type="text"],
+input[type="password"],
+select
+{
+    border: 1px solid #e2e2e2;
+    color: #333;
+    font-size: 1.2em;
+    margin: 5px 0 6px 0;
+    padding: 5px;
+    width: 300px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus
+{
+    border: 1px solid #7ac0da;
 }
 
 /* login page */
@@ -429,34 +455,6 @@ fieldset
         fieldset ol li
         {
             padding-bottom: 5px;
-        }
-
-    fieldset label
-    {
-        display: block;
-        font-size: 1.2em;
-    }
-
-        fieldset label.checkbox
-        {
-            display: inline;
-        }
-
-    fieldset input[type="text"],
-    fieldset input[type="password"]
-    {
-        border: 1px solid #e2e2e2;
-        color: #333;
-        font-size: 1.2em;
-        margin: 5px 0 6px 0;
-        padding: 5px;
-        width: 300px;
-    }
-
-        fieldset input[type="text"]:focus,
-        fieldset input[type="password"]:focus
-        {
-            border: 1px solid #7ac0da;
         }
 
 /* ajax login/registration dialog */
@@ -551,7 +549,8 @@ fieldset
 }
 
 input[type="text"].input-validation-error,
-input[type="password"].input-validation-error
+input[type="password"].input-validation-error,
+select.input-validation-error
 {
     border: 1px solid #e80c4d;
 }

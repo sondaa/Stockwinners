@@ -742,9 +742,9 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
-    <Content Include="Views\Picks\Stock.cshtml" />
-    <Content Include="Views\Picks\Option.cshtml" />
-    <Content Include="Views\Picks\Alert.cshtml" />
+    <Content Include="Views\Picks\StockPickEmail.cshtml" />
+    <Content Include="Views\Picks\OptionPickEmail.cshtml" />
+    <Content Include="Views\Picks\AlertEmail.cshtml" />
     <Content Include="Views\Information\Options101.cshtml" />
     <Content Include="Views\Picks\Portfolio.cshtml" />
     <Content Include="Views\Picks\StockPickDetail.cshtml" />

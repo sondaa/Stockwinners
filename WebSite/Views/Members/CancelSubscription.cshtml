@@ -1,4 +1,7 @@
 @{
-    ViewBag.Title = "CancelSubscription";
+    ViewBag.Title = "Cancel Subscription";
 }
-You have successfully cancelled your subscription. Your @ViewBag.SubscriptionFrequency subscription started on @ViewBag.ActivationDate and will expire on @ViewBag.SubscriptionExpiryDate. You'll be able to use the services until @ViewBag.SubscriptionExpiryDate using your current credentials.
+<h2>Membership Cancellation</h2>
+<div>
+You have successfully cancelled your subscription. Your @ViewBag.SubscriptionFrequency subscription started on @ViewBag.ActivationDate and will expire on @ViewBag.SubscriptionExpiryDate. You'll be able to use the services until @ViewBag.SubscriptionExpiryDate using your current credentials.</div>
+<div style="text-align: right;"><img src="/Images/arrow-left-16.png" style="vertical-align: middle;" />@Html.ActionLink("Change Notification Settings", "Index")</div>

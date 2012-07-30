@@ -1,5 +1,40 @@
 ﻿@model WebSite.Models.Data.NotificationSettings
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(function ()
+        {
+            var cancellationDialog = $("#cancellation-dialog-div").dialog({
+                resizable: false,
+                modal: true,
+                autoOpen: false,
+                width: 'auto',
+                draggable: false,
+                title: "Cancelling Subscription",
+                buttons: {
+                    "Cancel Subscription": function ()
+                    {
+                        window.location.href = '@(Url.Action("CancelSubscription"))';
+                    },
+                    "Don't Cancel Subscription": function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#cancellation-link-a").click(function()
+            {
+                $("#cancellation-dialog-div").dialog('open');
+            });
+        });
+    </script>
+}
 <h2>Subscription Settings</h2>
+<div id="cancellation-dialog-div">
+    Are you sure you want to cancel your subscription?
+</div>
 <div style="padding-top: 10px; padding-bottom: 10px;">
 @if (ViewBag.IsTrialMember && !ViewBag.IsUsingCancelledSubscription)
 {
@@ -18,7 +53,7 @@ else if (ViewBag.IsUsingCancelledSubscription)
 }
 else
 {
-    <span>You have an active @ViewBag.SubscriptionFrequency subscription. @Html.ActionLink("Cancel Subscription", "CancelSubscription")</span>
+    <span>You have an active @ViewBag.SubscriptionFrequency subscription. <a href="#" id="cancellation-link-a">Cancel Subscription</a></span>
 }
 </div>
 

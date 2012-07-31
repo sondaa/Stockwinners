@@ -73,5 +73,5 @@ function ActiveTradersViewModel()
     // Conference/Events
     // Rec-Upgrade
     // Rumors
-    // 
+    self.filters = [];
 }

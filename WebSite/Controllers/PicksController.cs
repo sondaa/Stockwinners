@@ -55,12 +55,12 @@ namespace WebSite.Controllers
 
         public ActionResult OptionPicks()
         {
-            return this.View(DatabaseContext.GetInstance().OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value);
+            return this.View(DatabaseContext.GetInstance().OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
         }
 
         public ActionResult StockPicks()
         {
-            return this.View(DatabaseContext.GetInstance().StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value);
+            return this.View(DatabaseContext.GetInstance().StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value));
         }
     }
 }

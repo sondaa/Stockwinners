@@ -367,6 +367,12 @@
     <Content Include="Images\Chart Reading\volume_HS.JPG" />
     <Content Include="Images\Chart Reading\vo_033199.gif" />
     <Content Include="Images\Chart Reading\vrsn_033099.gif" />
+    <Content Include="Images\Option Picks\AAPLE payoff.JPG" />
+    <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
+    <Content Include="Images\Option Picks\AVGO.JPG" />
+    <Content Include="Images\Option Picks\CTRP.JPG" />
+    <Content Include="Images\Option Picks\PKG.JPG" />
+    <Content Include="Images\Option Picks\QSii.JPG" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
     <Content Include="Images\Social Networks\facebook-signin.gif" />

@@ -58,4 +58,20 @@ function ActiveTradersViewModel()
     {
         self.newsElements = [];
     };
+
+    // Filtering
+    // Hot Stocks
+    // General News
+    // Earnings
+    // Recommendations
+    // Syndicate
+    // Technical Analysis
+    // Periodicals
+    // Rec-Initiate
+    // Options
+    // Rec-Downgrade
+    // Conference/Events
+    // Rec-Upgrade
+    // Rumors
+    // 
 }

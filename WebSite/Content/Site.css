@@ -197,7 +197,7 @@ input[type="submit"]
     background-repeat: repeat;
     margin-top: 13px;
     margin-bottom: 13px;
-    width: 95%;
+    width: 100%;
     background-origin: padding-box;
     height: 7px;
     display: block;

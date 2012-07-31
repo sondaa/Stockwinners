@@ -54,7 +54,6 @@ namespace WebSite.Hubs
 
         private void StartReceivingNews()
         {
-            return; 
             // Don't bother subscribing to the feed again if we already have done so.
             if (_isReceivingNews)
             {

@@ -19,6 +19,12 @@
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
     @RenderSection("styles", required: false)
+    <!-- Google Analytics -->
+    <script type="text/javascript">        var _gaq = _gaq || [];        _gaq.push(['_setAccount', 'UA-32515461-1']);        _gaq.push(['_trackPageview']);        (function ()
+        {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 </head>
 <body>
     <div class="page-box">
@@ -37,11 +43,15 @@
             </div>
             <div id="header-link-group" class="no-whitespace">
                 <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders")</div>
-                <div><a href="test.com">Stock Picks</a></div>
-                <div><a href="test.com">Option Picks</a></div>
+                <div>@Html.ActionLink("Stock Picks", "StockPicks", "Picks")</div>
+                <div>@Html.ActionLink("Option Picks", "OptionPicks", "Picks")</div>
                 <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks")</div>
                 <div>@Html.ActionLink("Members", "Index", "Members")</div>
                 @Html.Partial("_AdministratorLinksPartial")
+                @if (!Request.IsAuthenticated)
+                {
+                    <div style="float: right;" class="trial"><img src="/Images/arrow-right-16.png" style="padding-right: 6px; margin: 0px; vertical-align: -3px; width: 16px; height: 16px;" />@Html.ActionLink("Free Trial", "Register", "Account")</div>
+                }
             </div>
         </div>
         <div id="contents" style="padding: 10px;">

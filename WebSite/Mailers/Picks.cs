@@ -22,8 +22,12 @@ namespace WebSite.Mailers
 			var mailMessage = new MailMessage{Subject = "New Stock Pick"};
 
             ViewBag.StockPickContents = stockPick.Description;
+            ViewBag.EntryPrice = stockPick.EntryPrice;
+            ViewBag.IsLongPosition = stockPick.IsLongPosition;
+            ViewBag.Symbol = stockPick.Symbol;
+            ViewBag.PublishingDate = stockPick.PublishingDate.Value;
 
-			PopulateBody(mailMessage, viewName: "Stock");
+			PopulateBody(mailMessage, viewName: "StockPickEmail");
 
 			return mailMessage;
 		}
@@ -34,8 +38,11 @@ namespace WebSite.Mailers
 			var mailMessage = new MailMessage{Subject = "New Option Pick"};
 
             ViewBag.OptionPickContents = optionPick.Description;
+            ViewBag.Symbol = optionPick.Symbol;
+            ViewBag.Type = optionPick.Type;
+            ViewBag.PublishingDate = optionPick.PublishingDate.Value;
 
-			PopulateBody(mailMessage, viewName: "Option");
+			PopulateBody(mailMessage, viewName: "OptionPickEmail");
 
 			return mailMessage;
 		}
@@ -47,7 +54,7 @@ namespace WebSite.Mailers
 
             ViewBag.AlertContents = dailyAlert.Content;
 
-			PopulateBody(mailMessage, viewName: "Alert");
+			PopulateBody(mailMessage, viewName: "AlertEmail");
 
 			return mailMessage;
 		}

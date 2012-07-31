@@ -178,6 +178,7 @@
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PicksController.cs" />
+    <Compile Include="Helpers\ApacheEncryption.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />
@@ -341,6 +342,8 @@
     <Content Include="Areas\Administrator\Views\OptionPicks\Legs.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="Images\arrow-left-16.png" />
+    <Content Include="Images\arrow-right-16.png" />
     <Content Include="Images\Chart Reading\bvsn_121399_fig2.gif" />
     <Content Include="Images\Chart Reading\chart_Page_cust.gif" />
     <Content Include="Images\Chart Reading\emc_092099_fig2a.gif" />
@@ -349,6 +352,7 @@
     <Content Include="Images\Chart Reading\imn_071299.gif" />
     <Content Include="Images\Chart Reading\itvu_051199.gif" />
     <Content Include="Images\Chart Reading\jdsu_123199.gif" />
+    <Content Include="Images\exit.png" />
     <Content Include="Images\logo.gif" />
     <Content Include="Images\Chart Reading\lu_110899.gif" />
     <Content Include="Images\Chart Reading\macr_010500_chart.gif" />
@@ -367,12 +371,14 @@
     <Content Include="Images\Chart Reading\volume_HS.JPG" />
     <Content Include="Images\Chart Reading\vo_033199.gif" />
     <Content Include="Images\Chart Reading\vrsn_033099.gif" />
-    <Content Include="Images\Option Picks\AAPLE payoff.JPG" />
     <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
     <Content Include="Images\Option Picks\AVGO.JPG" />
     <Content Include="Images\Option Picks\CTRP.JPG" />
     <Content Include="Images\Option Picks\PKG.JPG" />
     <Content Include="Images\Option Picks\QSii.JPG" />
+    <Content Include="Images\Option Picks\AAPL Payoff.JPG" />
+    <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
+    <Content Include="Images\Patterns\separator.gif" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
     <Content Include="Images\Social Networks\facebook-signin.gif" />
@@ -742,13 +748,15 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
-    <Content Include="Views\Picks\Stock.cshtml" />
-    <Content Include="Views\Picks\Option.cshtml" />
-    <Content Include="Views\Picks\Alert.cshtml" />
+    <Content Include="Views\Picks\StockPickEmail.cshtml" />
+    <Content Include="Views\Picks\OptionPickEmail.cshtml" />
+    <Content Include="Views\Picks\AlertEmail.cshtml" />
     <Content Include="Views\Information\Options101.cshtml" />
     <Content Include="Views\Picks\Portfolio.cshtml" />
     <Content Include="Views\Picks\StockPickDetail.cshtml" />
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />
+    <Content Include="Views\Picks\StockPicks.cshtml" />
+    <Content Include="Views\Picks\OptionPicks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

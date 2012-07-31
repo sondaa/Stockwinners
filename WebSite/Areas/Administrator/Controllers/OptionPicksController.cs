@@ -97,6 +97,9 @@ namespace WebSite.Areas.Administrator.Controllers
 
                 if (publishButton != null)
                 {
+                    // Include the option trade type so that we can include the information in the email
+                    optionPick.Type = db.OptionPickTypes.Find(optionPick.OptionPickTypeId);
+
                     optionPick.Email();
                 }
 

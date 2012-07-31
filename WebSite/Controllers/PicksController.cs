@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
 using WebSite.Models.Data.Picks;
 
 namespace WebSite.Controllers
 {
+    [MembersOnly]
     public class PicksController : Controller
     {
         public ActionResult Portfolio()
@@ -16,8 +18,8 @@ namespace WebSite.Controllers
 
             Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
             {
-                Stocks = db.StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue),
-                Options = db.OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue)
+                Stocks = db.StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
+                Options = db.OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value)
             };
 
             return View(portfolio);
@@ -27,28 +29,38 @@ namespace WebSite.Controllers
         {
             DatabaseContext db = DatabaseContext.GetInstance();
 
-            StockPick stockPick = db.StockPicks.Find(stockPickId);
+            StockPick pick = db.StockPicks.Include("Type").FirstOrDefault(stockPick => stockPick.PickId == stockPickId);
 
-            if (stockPick == null)
+            if (pick == null)
             {
                 return this.HttpNotFound("Invalid stock pick information");
             }
 
-            return this.View(stockPick);
+            return this.View(pick);
         }
 
         public ActionResult OptionPickDetail(int optionPickId)
         {
             DatabaseContext db = DatabaseContext.GetInstance();
 
-            OptionPick optionPick = db.OptionPicks.Find(optionPickId);
+            OptionPick pick = db.OptionPicks.Include("Type").FirstOrDefault(optionPick => optionPick.PickId == optionPickId);
 
-            if (optionPick == null)
+            if (pick == null)
             {
                 return this.HttpNotFound("Invalid option pick information");
             }
 
-            return this.View(optionPick);
+            return this.View(pick);
+        }
+
+        public ActionResult OptionPicks()
+        {
+            return this.View(DatabaseContext.GetInstance().OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value);
+        }
+
+        public ActionResult StockPicks()
+        {
+            return this.View(DatabaseContext.GetInstance().StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value);
         }
     }
 }

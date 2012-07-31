@@ -1,5 +1,9 @@
+@model WebSite.Models.Data.Picks.OptionPick
 @{
-    ViewBag.Title = "OptionPickDetails";
+    ViewBag.Title = Model.Symbol;
 }
-
-<h2>OptionPickDetails</h2>
+<h2>@(Model.Type.Name) on @(Model.Symbol) on @(Model.PublishingDate.Value.ToShortDateString())</h2>
+@(Html.Raw(Model.Description))
+<div style="text-align: right;">
+    <img src="/Images/arrow-left-16.png" style="vertical-align: middle; padding-right: 7px;" />@Html.ActionLink("Back to Portfolio", "Portfolio", "Picks")
+</div>

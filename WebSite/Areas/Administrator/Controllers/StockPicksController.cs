@@ -51,8 +51,7 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Create(StockPick stockPick, string saveButton, string publishButton)
         {
-            // TODO: Temporarily disable
-            // stockPick.Initialize();
+            stockPick.Initialize();
 
             if (ModelState.IsValid)
             {

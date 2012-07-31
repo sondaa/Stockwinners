@@ -1,4 +1,41 @@
 ﻿@model WebSite.Models.Data.NotificationSettings
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(function ()
+        {
+            var cancellationDialog = $("#cancellation-dialog-div").dialog({
+                resizable: false,
+                modal: true,
+                autoOpen: false,
+                width: 'auto',
+                draggable: false,
+                title: "Cancelling Subscription",
+                buttons: {
+                    "Cancel Subscription": function ()
+                    {
+                        window.location.href = '@(Url.Action("CancelSubscription"))';
+                    },
+                    "Don't Cancel Subscription": function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+            $("#cancellation-link-a").click(function()
+            {
+                $("#cancellation-dialog-div").dialog('open');
+            });
+        });
+    </script>
+}
+<h2>Subscription Settings</h2>
+<div id="cancellation-dialog-div">
+    Are you sure you want to cancel your subscription?
+</div>
+<div style="padding-top: 10px; padding-bottom: 10px;">
 @if (ViewBag.IsTrialMember && !ViewBag.IsUsingCancelledSubscription)
 {
     if (ViewBag.IsTrialExpired)
@@ -16,23 +53,24 @@ else if (ViewBag.IsUsingCancelledSubscription)
 }
 else
 {
-    <span>You have an active @ViewBag.SubscriptionFrequency subscription. @Html.ActionLink("Cancel Subscription", "CancelSubscription")</span>
+    <span>You have an active @ViewBag.SubscriptionFrequency subscription. <a href="#" id="cancellation-link-a">Cancel Subscription</a></span>
 }
+</div>
+
+<h2>Notification Settings</h2>
 @if (ViewBag.SavedSuccessfully)
 {
-    <span>Changes have been saved.</span>
+    <p class="message-success">Changes have been saved.</p>
 }
-
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Notification Settings</legend>
-        <ul>
-            <li>@Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks)</li>
-            <li>@Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements)</li>
-        </ul>
-        <input type="submit" value="Save" />
-    </fieldset>
+    <div style="padding-top: 10px;">
+            @Html.CheckBoxFor(m => m.ReceiveDailyAlerts) @Html.LabelFor(m => m.ReceiveDailyAlerts, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveStockPicks) @Html.LabelFor(m => m.ReceiveStockPicks, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveOptionPicks) @Html.LabelFor(m => m.ReceiveOptionPicks, new { @style = "display: inline;" })<br />
+            @Html.CheckBoxFor(m => m.ReceiveGeneralAnnouncements) @Html.LabelFor(m => m.ReceiveGeneralAnnouncements, new { @style = "display: inline;" })<br />
+    </div>
+    <div style="padding-top: 10px; width: 100%; text-align: right;">
+        <input type="submit" value="Save Changes" />
+    </div>
 }

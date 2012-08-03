@@ -229,7 +229,7 @@ namespace WebSite.Helpers.Authentication
 
                 if (existingUserWithSameEmail != null)
                 {
-                    //TODO: Send welcome email to user
+                    newUser.SendWelcomeEmail();
                 }
             }
             else

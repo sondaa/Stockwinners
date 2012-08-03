@@ -20,8 +20,6 @@ namespace WebSite.Mailers
 		{
 			var mailMessage = new MailMessage{Subject = "Welcome"};
 			
-			//mailMessage.To.Add("some-email@example.com");
-			//ViewBag.Data = someObject;
 			PopulateBody(mailMessage, viewName: "Welcome");
 
 			return mailMessage;
@@ -32,8 +30,6 @@ namespace WebSite.Mailers
 		{
 			var mailMessage = new MailMessage{Subject = "ResetPassword"};
 			
-			//mailMessage.To.Add("some-email@example.com");
-			//ViewBag.Data = someObject;
 			PopulateBody(mailMessage, viewName: "ResetPassword");
 
 			return mailMessage;
@@ -44,8 +40,6 @@ namespace WebSite.Mailers
 		{
 			var mailMessage = new MailMessage{Subject = "TrialExpired"};
 			
-			//mailMessage.To.Add("some-email@example.com");
-			//ViewBag.Data = someObject;
 			PopulateBody(mailMessage, viewName: "TrialExpired");
 
 			return mailMessage;

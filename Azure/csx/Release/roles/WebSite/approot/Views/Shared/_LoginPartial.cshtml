@@ -1,0 +1,10 @@
+﻿@if (Request.IsAuthenticated) {
+       
+    WebSite.Models.LoggedInUserIdentity userIdentity = WebSite.Helpers.Authentication.Authentication.GetCurrentUserIdentity();
+    string userName = userIdentity.FirstName + " " + userIdentity.LastName;
+        
+    @Html.ActionLink(userName, "Index", "Members", routeValues: null, htmlAttributes: new { @class = "username", title = "Change settings" })
+    <img src="../../Images/exit.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Log off", "LogOff", "Account")
+} else {
+    @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+}

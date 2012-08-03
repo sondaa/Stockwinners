@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using DataAnnotationsExtensions;
 using WebSite.Models.Data;
+using Mvc.Mailer;
 
 namespace WebSite.Models
 {
@@ -66,6 +68,15 @@ namespace WebSite.Models
         [ForeignKey("NotificationSettings")]
         public int NotificationSettingsId { get; set; }
         public virtual NotificationSettings NotificationSettings { get; set; }
+
+        public void SendWelcomeEmail()
+        {
+            MailMessage mail = new Mailers.Account().Welcome();
+
+            mail.To.Add(this.EmailAddress);
+
+            mail.SendAsync();
+        }
     }
 
     public class StockwinnersMember

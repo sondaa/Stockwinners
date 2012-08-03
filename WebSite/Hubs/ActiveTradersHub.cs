@@ -110,7 +110,9 @@ namespace WebSite.Hubs
 
                     if (newsElement != null)
                     {
-                        this.AddNewNewsElement(newsElement);
+                        // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
+                        // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
+                        this.AddNewNewsElement(newsElement, notifyClients: splitterIndex == dataReceived.LastIndexOf('\n'));
                     }
 
                     // Remove the processed part of the massage from it (and also remove the \n) and continue processing
@@ -120,7 +122,7 @@ namespace WebSite.Hubs
             }
         }
 
-        private void AddNewNewsElement(ActiveTradersNewsElement newNewsElement)
+        private void AddNewNewsElement(ActiveTradersNewsElement newNewsElement, bool notifyClients)
         {
             // Has a new day begun?
             bool newDay = false;
@@ -146,7 +148,7 @@ namespace WebSite.Hubs
             Interlocked.Exchange(ref NewsElements, newsElementsClone);
 
             // Then notify the clients out there about the new item
-            if (Clients != null)
+            if (notifyClients && Clients != null)
             {
                 if (newDay)
                 {

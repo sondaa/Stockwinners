@@ -55,6 +55,14 @@
       <HintPath>..\packages\DotNetOpenAuth.Ultimate.4.1.0.12182\lib\net40-full\DotNetOpenAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
     <Reference Include="Mvc.Mailer">
       <HintPath>..\packages\MvcMailer.1.1\lib\40\Mvc.Mailer.dll</HintPath>
     </Reference>
@@ -74,6 +82,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -184,81 +193,9 @@
     <Compile Include="Interfaces\IEmailable.cs" />
     <Compile Include="Mailers\Account.cs" />
     <Compile Include="Mailers\Picks.cs" />
-    <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.cs" />
-    <Compile Include="Migrations\201207170508122_MakeSubscriptionOptionalForUsers.Designer.cs">
-      <DependentUpon>201207170508122_MakeSubscriptionOptionalForUsers.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs" />
-    <Compile Include="Migrations\201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.Designer.cs">
-      <DependentUpon>201207200946351_AddSubscriptionTypeAndTrackSubscriptionsForUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207201757532_MakingCVVFieldOfCreditCardAString.cs" />
-    <Compile Include="Migrations\201207201757532_MakingCVVFieldOfCreditCardAString.Designer.cs">
-      <DependentUpon>201207201757532_MakingCVVFieldOfCreditCardAString.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207201851336_MakingRoleToUsersManyToManyRelationship.cs" />
-    <Compile Include="Migrations\201207201851336_MakingRoleToUsersManyToManyRelationship.Designer.cs">
-      <DependentUpon>201207201851336_MakingRoleToUsersManyToManyRelationship.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207201927107_AddingPhoneNumberToBillingAddress.cs" />
-    <Compile Include="Migrations\201207201927107_AddingPhoneNumberToBillingAddress.Designer.cs">
-      <DependentUpon>201207201927107_AddingPhoneNumberToBillingAddress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.cs" />
-    <Compile Include="Migrations\201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.Designer.cs">
-      <DependentUpon>201207202011252_MakingPhoneNumberAndAddressLine2NotRequired.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207202114247_SplittingCreditCardExpiryInto2SepalateFields.cs" />
-    <Compile Include="Migrations\201207202114247_SplittingCreditCardExpiryInto2SepalateFields.Designer.cs">
-      <DependentUpon>201207202114247_SplittingCreditCardExpiryInto2SepalateFields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207202126414_SplittingCardHolderNameInto2Fields.cs" />
-    <Compile Include="Migrations\201207202126414_SplittingCardHolderNameInto2Fields.Designer.cs">
-      <DependentUpon>201207202126414_SplittingCardHolderNameInto2Fields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207210350555_AddingUserSubscriptionExpiryDate.cs" />
-    <Compile Include="Migrations\201207210350555_AddingUserSubscriptionExpiryDate.Designer.cs">
-      <DependentUpon>201207210350555_AddingUserSubscriptionExpiryDate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207222213072_AddingModelsForStockAndOptionPicks.cs" />
-    <Compile Include="Migrations\201207222213072_AddingModelsForStockAndOptionPicks.Designer.cs">
-      <DependentUpon>201207222213072_AddingModelsForStockAndOptionPicks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207232329579_AddingDailyAlerts.cs" />
-    <Compile Include="Migrations\201207232329579_AddingDailyAlerts.Designer.cs">
-      <DependentUpon>201207232329579_AddingDailyAlerts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207240040211_RenamingDailyAlerts.cs" />
-    <Compile Include="Migrations\201207240040211_RenamingDailyAlerts.Designer.cs">
-      <DependentUpon>201207240040211_RenamingDailyAlerts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207240257249_AddingPublishingDateToPicks.cs" />
-    <Compile Include="Migrations\201207240257249_AddingPublishingDateToPicks.Designer.cs">
-      <DependentUpon>201207240257249_AddingPublishingDateToPicks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs" />
-    <Compile Include="Migrations\201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.Designer.cs">
-      <DependentUpon>201207240314283_DroppingUnnecassaryKeyInStockAndOptionPickTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207242137053_AddingPickTypeToStockPicks.cs" />
-    <Compile Include="Migrations\201207242137053_AddingPickTypeToStockPicks.Designer.cs">
-      <DependentUpon>201207242137053_AddingPickTypeToStockPicks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207242336595_AddingOptionPickTypesToOptionPicks.cs" />
-    <Compile Include="Migrations\201207242336595_AddingOptionPickTypesToOptionPicks.Designer.cs">
-      <DependentUpon>201207242336595_AddingOptionPickTypesToOptionPicks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207250016517_AddingClosingDateToOptionLegs.cs" />
-    <Compile Include="Migrations\201207250016517_AddingClosingDateToOptionLegs.Designer.cs">
-      <DependentUpon>201207250016517_AddingClosingDateToOptionLegs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207260435562_MakingOptionLegClosingDateOptional.cs" />
-    <Compile Include="Migrations\201207260435562_MakingOptionLegClosingDateOptional.Designer.cs">
-      <DependentUpon>201207260435562_MakingOptionLegClosingDateOptional.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201207270258308_AddingLongVersusShortStockPicks.cs" />
-    <Compile Include="Migrations\201207270258308_AddingLongVersusShortStockPicks.Designer.cs">
-      <DependentUpon>201207270258308_AddingLongVersusShortStockPicks.cs</DependentUpon>
+    <Compile Include="Migrations\201208021828029_InitialDatabase.cs" />
+    <Compile Include="Migrations\201208021828029_InitialDatabase.Designer.cs">
+      <DependentUpon>201208021828029_InitialDatabase.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
@@ -379,6 +316,7 @@
     <Content Include="Images\Option Picks\AAPL Payoff.JPG" />
     <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
     <Content Include="Images\Patterns\separator.gif" />
+    <Content Include="Images\settings-gear.png" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
     <Content Include="Images\Social Networks\facebook-signin.gif" />
@@ -786,7 +724,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>64711</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:38187/</IISUrl>
+          <IISUrl>http://localhost:30000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

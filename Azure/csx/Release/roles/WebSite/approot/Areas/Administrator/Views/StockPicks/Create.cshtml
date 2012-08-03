@@ -1,0 +1,70 @@
+﻿@model WebSite.Models.Data.Picks.StockPick
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create new Stock Pick</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>StockPick</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StockPickTypeId)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("StockPickTypeId", String.Empty)
+            @Html.ValidationMessageFor(model => model.StockPickTypeId)
+        </div>
+
+         <div class="editor-label">
+            @Html.LabelFor(model => model.IsLongPosition)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsLongPosition)
+            @Html.ValidationMessageFor(model => model.IsLongPosition)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EntryPrice)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EntryPrice)
+            @Html.ValidationMessageFor(model => model.EntryPrice)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Symbol)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Symbol)
+            @Html.ValidationMessageFor(model => model.Symbol)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Description)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Description)
+            @Html.ValidationMessageFor(model => model.Description)
+        </div>
+
+        <p>
+            <input type="submit" name="saveButton" value="Save but don't publish" />
+        </p>
+        <p>
+            <input type="submit" name="publishButton" value="Save and publish to users." />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

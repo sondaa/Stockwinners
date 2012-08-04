@@ -15,7 +15,7 @@ namespace WebSite
 
             bundles.Add(new ScriptBundle("~/bundles/upshot").Include(
                         "~/Scripts/upshot.js",
-                        "~/Scripts/knockout.js",
+                        "~/Scripts/knockout-2.1.0.js",
                         "~/Scripts/upshot.compat.knockout.js",
                         "~/Scripts/upshot.knockout.extensions.js"));
 

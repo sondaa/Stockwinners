@@ -65,9 +65,6 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(optionPick);
         }
 
-        //
-        // GET: /Administrator/OptionPicks/Edit/5
-
         public ActionResult Edit(int id = 0)
         {
             OptionPick optionPick = db.OptionPicks.Find(id);
@@ -78,9 +75,6 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
             return View(optionPick);
         }
-
-        //
-        // POST: /Administrator/OptionPicks/Edit/5
 
         [HttpPost]
         public ActionResult Edit(OptionPick optionPick, string saveButton, string publishButton)
@@ -110,9 +104,6 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(optionPick);
         }
 
-        //
-        // GET: /Administrator/OptionPicks/Delete/5
-
         public ActionResult Delete(int id = 0)
         {
             OptionPick optionPick = db.OptionPicks.Find(id);
@@ -122,9 +113,6 @@ namespace WebSite.Areas.Administrator.Controllers
             }
             return View(optionPick);
         }
-
-        //
-        // POST: /Administrator/OptionPicks/Delete/5
 
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)

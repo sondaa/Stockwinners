@@ -67,8 +67,7 @@
             @Html.LabelFor(model => model.PublishingDate)
         </div>
         <div class="editor-field">
-            @Html.DisplayFor(model => model.PublishingDate)
-            @Html.HiddenFor(model => model.PublishingDate)
+            @Html.EditorFor(model => model.PublishingDate)
             @Html.ValidationMessageFor(model => model.IsPublished)
         </div>
 

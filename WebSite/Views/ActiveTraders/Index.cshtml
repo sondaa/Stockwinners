@@ -36,6 +36,23 @@
                 font-size: 10pt;
                 height: 12px;
             }
+
+        .odd-row
+        {
+            background-color: #deeffc;
+        }
+
+            .odd-row > td
+            {
+                padding-top: 2px;
+                padding-bottom: 2px;
+            }
+
+        .even-row > td
+        {
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
     </style>
 }
 @section Scripts
@@ -61,6 +78,73 @@
                 dataModel.resetItems();
             };
 
+            showOptions = function ()
+            {
+                $("#options-div").html('Displaying ' + dataModel.getFilters());
+            };
+
+            // Initialize the settings tabs and show the tab as collapsed on start
+            $("#tabs").tabs({ collapsible: true });
+
+            // Position the settings tab properly
+            $("#tabs-1").position({ my: "right top", at: "right bottom", of: $("#tabs"), collision: "none" });
+
+            // Collapse the tab by default
+            $("#tabs").tabs("select", 0);
+
+            // Initialize set of sliders for different categories
+            $("#sliders").find("div").slider({ max: 1, min: 0, animate: true });
+
+            // Make the "All" slider move all others
+            $("#all-div").bind("slidechange", function (event, ui)
+            {
+                var selectedValue = $(this).slider("option", "value");
+
+                $("#sliders").find("div").each(function (index, sliderDiv)
+                {
+                    // Ignore the "All" button itself
+                    if ($(sliderDiv).attr("id") != "all-div")
+                    {
+                        $(sliderDiv).slider("option", "value", selectedValue);
+                    }
+                });
+            });
+
+            // Turn on "Hot Stocks" by default
+            $("#hot-stocks-div").slider("option", "value", 1);
+
+            // Create button to apply changes
+            $("#apply-changes-a").button().click(function ()
+            {
+                $("#sliders").find("div").each(function (index, sliderDiv)
+                {
+                    // Ignore the "All" option
+                    if ($(sliderDiv).attr("id") !="all-div")
+                    {
+                        if ($(sliderDiv).slider("option", "value") == 1)
+                        {
+                            dataModel.addFilter($(sliderDiv).attr("data-filter-name"));
+                        }
+                        else
+                        {
+                            dataModel.removeFilter($(sliderDiv).attr("data-filter-name"));
+                        }
+                    }
+                });
+
+                // Update display options label
+                showOptions();
+
+                // Close the settings tab
+                $("#tabs").tabs("select", 0);
+
+                // Refresh the data model to update the news elements based on new filters
+                dataModel.refresh();
+
+                // disable normal anchor element navigation
+                return false;
+            });
+
             $.connection.hub.start().done(function ()
             {
                 // This custom handler will change the way symbols are presented in the UI so that a ; delimited text 
@@ -77,7 +161,19 @@
                         }
                         else
                         {
-                            $(element).text(dataValue.split(";").join(" "))
+                            var separatedSymbols = dataValue.split(";");
+
+                            if (separatedSymbols.length <= 2)
+                            {
+                                // If up to 2 symbols are being shown, then show the entire text
+                                $(element).text(separatedSymbols.join(" "));
+                            }
+                            else
+                            {
+                                // If more than 2 symbols exist, add a "..." and show the complete list on hover
+                                $(element).text(separatedSymbols[0] + " ...");
+                                $(element).attr("title", separatedSymbols.join(" "));
+                            }
                         }
                     },
                     update: this.init
@@ -86,71 +182,52 @@
                 // Start binding our UI data
                 ko.applyBindings(dataModel);
 
-                // Notify the server that we want to listen to items
-                activeTradersHub.clientInitialize();
-
-                showOptions = function()
-                {
-                    $("#options-div").html('Displaying ' + dataModel.getFilters());
-                };
-
-                // Initialize the settings tabs and show the tab as collapsed on start
-                $("#tabs").tabs({ collapsible: true }).tabs("select", 0);
-
                 // Show initial set of options
                 showOptions();
 
-                // Initialize set of selectable filters
-                $("#selectable").selectable({
-                    selected: function (event, ui)
-                    {
-                        dataModel.addFilter($(ui.selected).attr('data-filter-name'));
-                        showOptions();
-                    },
-                    unselected: function (event, ui)
-                    {
-                        dataModel.removeFilter($(ui.unselected).attr('data-filter-name'));
-                        showOptions();
-                    }
-                }).selectable("option", "Hot Stocks", true); // Select Hot Stocks by default
+                // Notify the server that we want to listen to items
+                activeTradersHub.clientInitialize();
             });
         });
     </script>
 }
-<div>
-    <h2 style="display: inline-block;">Active Traders</h2>
-    <div id="tabs" style="width: 37px; display: inline-block; float: right">
-        <ul>
-            <li><a href="#tabs-1">
+<div id="header-container-div">
+    <h2 style="display: inline-block;">Active Traders Real-time</h2>
+    <div id="tabs" style="display: inline-block; float: right; bottom: 0; right: 0; width: 34px; height: 27px; vertical-align: middle;">
+        <ul style="border-width: 0px;">
+            <li style="background-color: transparent; background-image: none; border-width: 0px; padding: 3px;"><a href="#tabs-1">
                 <img src="/Images/settings-gear.png" /></a></li>
         </ul>
-        <div id="tabs-1" style="position: absolute; background-color: white; width: 300px; border-color: black; border-width: 1px;" class="ui-tabs-hide">
-            <ol id="selectable">
-                <li class="ui-widget-content" data-filter-name="Hot Stocks">Hot Stocks</li>
-                <li class="ui-widget-content" data-filter-name="General News">General News</li>
-                <li class="ui-widget-content" data-filter-name="Earnings">Earnings</li>
-                <li class="ui-widget-content" data-filter-name="Recommendations">Recommendations</li>
-                <li class="ui-widget-content" data-filter-name="Syndicate">Syndicate</li>
-                <li class="ui-widget-content" data-filter-name="Technical Analysis">Technical Analysis</li>
-                <li class="ui-widget-content" data-filter-name="Periodicals">Periodicals</li>
-                <li class="ui-widget-content" data-filter-name="Options">Options</li>
-                <li class="ui-widget-content" data-filter-name="Conference/Events">Conference/Events</li>
-                <li class="ui-widget-content" data-filter-name="Rumors">Rumors</li>
-                <li class="ui-widget-content" data-filter-name="Rec-Upgrade">Brokerage Upgrades</li>
-                <li class="ui-widget-content" data-filter-name="Rec-Downgrade">Brokerage Downgrades</li>
-                <li class="ui-widget-content" data-filter-name="Rec-Initiate">Brokerage Initiations</li>
-            </ol>
-            <span style="font-size: 8pt;">Please choose the category of news you like to view by simply clicking on the category. You can drag your mouse over multiple categories to select them in one shot.</span>
+        <div id="tabs-1" style="position: absolute; display: block; padding: 10px; background-color: white; width: 260px; height: 315px; border-color: black; border-width: 1px; font-size: 9pt; right: 0; bottom: 0;" class="ui-tabs-hide">
+            <table style="width: 100%;">
+                <tbody id="sliders">
+                    <tr><td style="width: 83%;"></td><td style="width: 17%;">Off On</td></tr>
+                    <tr><td>All</td><td><div id="all-div"></div></td></tr>
+                    <tr><td>Hot Stocks</td><td><div id="hot-stocks-div" data-filter-name="Hot Stocks"></div></td></tr>
+                    <tr><td>General News</td><td><div data-filter-name="General News"></div></td></tr>
+                    <tr><td>Earnings</td><td><div data-filter-name="Earnings"></div></td></tr>
+                    <tr><td>Recommendations</td><td><div data-filter-name="Recommendations"></div></td></tr>
+                    <tr><td>Syndicate</td><td><div data-filter-name="Syndicate"></div></td></tr>
+                    <tr><td>Technical Analysis</td><td><div data-filter-name="Technical Analysis"></div></td></tr>
+                    <tr><td>Periodicals</td><td><div data-filter-name="Periodicals"></div></td></tr>
+                    <tr><td>Options</td><td><div data-filter-name="Options"></div></td></tr>
+                    <tr><td>Conference/Events</td><td><div data-filter-name="Conference/Events"></div></td></tr>
+                    <tr><td>Rumors</td><td><div data-filter-name="Rumors"></div></td></tr>
+                    <tr><td>Brokerage Upgrades</td><td><div data-filter-name="Rec-Upgrade"></div></td></tr>
+                    <tr><td>Brokerage Downgrades</td><td><div data-filter-name="Rec-Downgrade"></div></td></tr>
+                    <tr><td>Brokerage Initiations</td><td><div data-filter-name="Rec-Initiate"></div></td></tr>
+                </tbody>
+            </table>
+            <div style="text-align: right; padding-top: 6px;"><a href="#" id="apply-changes-a">Apply</a></div>
         </div>
     </div>
-    <div id="options-div" style="float: right; font-size: 9pt; color: #73cb6f; top: 50%;"></div>
 </div>
-<table style="width: 100%; font-size: 9pt;">
+<div id="options-div" style="font-size: 9pt; color: #73cb6f; padding-bottom: 8px;">Connecting and initializing...</div>
+<table style="width: 100%; font-size: 9pt; border-spacing:0; border-collapse: collapse;">
     <tbody data-bind="foreach: filteredElements">
-        <tr>
-            <td data-bind="symbols: Symbol" style="vertical-align: top;"></td>
-            <td data-bind="text: Text" style="vertical-align: top;"></td>
-            <td data-bind="text: Category" style="vertical-align: top;"></td>
+        <tr data-bind="css: { 'even-row': $index() % 2 == 0, 'odd-row': $index() % 2 == 1 }">
+            <td data-bind="symbols: Symbol" style="vertical-align: top; cursor: default;"></td>
+            <td style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span></td>
         </tr>
     </tbody>
 </table>

@@ -5,8 +5,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-<h2>Log in</h2>
-
+<p class="message-info" style="text-align: center;">By logging in, you agree to our @Html.ActionLink("Membership Policy", "MembershipPolicy", "Information") and @Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information").</p>
 @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))
 {
     @Html.ValidationSummary(true, "Log in was unsuccessful. Please correct the errors and try again.")
@@ -44,8 +43,10 @@
                 <td></td>
             </tr>
             <tr>
-                <td style="padding-top: 20px;">@Html.ActionLink("Register", "Register") if you don't have an account.</td>
-                <td></td>
+                <td colspan="2" style="padding-top: 20px;">@Html.ActionLink("Register", "Register") if you don't have an account.</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 20px;">@Html.ActionLink("Reset your password", "ResetPassword") if you have forgotten your password.</td>
             </tr>
             <tr>
                 <td style="padding-left:250px; padding-top: 30px;">

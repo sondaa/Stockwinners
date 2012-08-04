@@ -111,7 +111,7 @@ namespace WebSite.Models
 
         public void SendPasswordResetEmail(string unhashedNewPassword)
         {
-            MailMessage mail = new Mailers.Account().PasswordReset(unhashedNewPassword);
+            MailMessage mail = new Mailers.Account().PasswordResetEmail(unhashedNewPassword);
 
             mail.To.Add(this.EmailAddress);
 

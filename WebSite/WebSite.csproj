@@ -691,7 +691,7 @@
     <Content Include="Views\Information\PrivacyPolicy.cshtml" />
     <Content Include="Views\Information\ContactUs.cshtml" />
     <Content Include="Views\Account\Welcome.cshtml" />
-    <Content Include="Views\Account\PasswordReset.cshtml" />
+    <Content Include="Views\Account\PasswordResetEmail.cshtml" />
     <Content Include="Views\Account\TrialExpired.cshtml" />
     <Content Include="Views\Shared\_EmailLayout.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPickTypes\Index.cshtml" />
@@ -724,6 +724,7 @@
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />
     <Content Include="Views\Picks\StockPicks.cshtml" />
     <Content Include="Views\Picks\OptionPicks.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

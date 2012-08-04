@@ -30,7 +30,7 @@ namespace WebSite.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult ResetPassword(string emailAddress, string submitButton)
+        public ActionResult ResetPassword(string emailAddress)
         {
             ViewBag.InvalidEmail = false;
             ViewBag.SuccessfulChange = false;

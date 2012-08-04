@@ -115,7 +115,7 @@ namespace WebSite.Models
 
             mail.To.Add(this.EmailAddress);
 
-            mail.SendAsync();
+            mail.Send();
         }
     }
 }

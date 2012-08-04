@@ -108,5 +108,14 @@ namespace WebSite.Models
         /// </summary>
         [Required]
         public bool IsLegacyMember { get; set; }
+
+        public void SendPasswordResetEmail(string unhashedNewPassword)
+        {
+            MailMessage mail = new Mailers.Account().PasswordReset(unhashedNewPassword);
+
+            mail.To.Add(this.EmailAddress);
+
+            mail.SendAsync();
+        }
     }
 }

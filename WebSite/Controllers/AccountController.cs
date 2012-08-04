@@ -19,8 +19,39 @@ namespace WebSite.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        //
-        // GET: /Account/Login
+        [AllowAnonymous]
+        public ActionResult ResetPassword()
+        {
+            ViewBag.InvalidEmail = false;
+            ViewBag.SuccessfulChange = false;
+
+            return this.View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult ResetPassword(string emailAddress, string submitButton)
+        {
+            ViewBag.InvalidEmail = false;
+            ViewBag.SuccessfulChange = false;
+            WebSite.Infrastructure.MembershipProvider membershipProvider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
+            string resetPassword = membershipProvider.ResetPassword(emailAddress, string.Empty);
+
+            if (resetPassword == null)
+            {
+                ViewBag.InvalidEmail = true;
+            }
+            else
+            {
+                // Email the new password to the user
+                DatabaseContext.GetInstance().StockwinnersMembers.First(swMember => swMember.EmailAddress == emailAddress).SendPasswordResetEmail(resetPassword);
+
+                ViewBag.SuccessfulChange = true;
+            }
+
+            return this.View();
+        }
+
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -28,9 +59,6 @@ namespace WebSite.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
-        //
-        // POST: /Account/Login
 
         [AllowAnonymous]
         [HttpPost]
@@ -161,9 +189,6 @@ namespace WebSite.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        //
-        // GET: /Account/ChangePasswordSuccess
 
         public ActionResult ChangePasswordSuccess()
         {

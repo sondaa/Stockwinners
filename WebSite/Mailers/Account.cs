@@ -26,10 +26,12 @@ namespace WebSite.Mailers
 		}
 
 		
-		public virtual MailMessage ResetPassword()
+		public virtual MailMessage PasswordReset(string password)
 		{
-			var mailMessage = new MailMessage{Subject = "ResetPassword"};
-			
+			var mailMessage = new MailMessage{Subject = "Password Reset"};
+
+            ViewBag.Password = password;
+
 			PopulateBody(mailMessage, viewName: "ResetPassword");
 
 			return mailMessage;

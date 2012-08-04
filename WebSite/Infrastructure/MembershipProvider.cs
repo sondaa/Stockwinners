@@ -206,7 +206,20 @@ namespace WebSite.Infrastructure
 
         public override string ResetPassword(string username, string answer)
         {
-            throw new NotSupportedException();
+            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username);
+
+            if (member != null)
+            {
+                string newPassword = MembershipProvider.RandomString(9);
+                member.IsLegacyMember = false;
+                member.Password = MembershipProvider.HashPassword(newPassword);
+
+                DatabaseContext.GetInstance().SaveChanges();
+
+                return newPassword;
+            }
+
+            return null;
         }
 
         public override bool UnlockUser(string userName)
@@ -239,6 +252,20 @@ namespace WebSite.Infrastructure
         }
 
         #region Private Helpers
+
+        private static string RandomString(int size)
+        {
+            Random random = new Random();
+            StringBuilder builder = new StringBuilder();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+
+            return builder.ToString();
+        }
 
         private static MembershipUser GetMembershipUser(StockwinnersMember member)
         {

@@ -75,7 +75,6 @@ function ActiveTradersViewModel()
         if (filters.indexOf(filterText) < 0)
         {
             filters.push(filterText);
-            self.localDataSource.refresh();
         }
     }
 
@@ -93,8 +92,6 @@ function ActiveTradersViewModel()
             {
                 filters.splice(filterIndex, 1);
             }
-
-            self.localDataSource.refresh();
         }
     }
 
@@ -126,6 +123,11 @@ function ActiveTradersViewModel()
     self.resetItems = function ()
     {
         self.newsElements = [];
+        self.localDataSource.refresh();
+    };
+
+    self.refresh = function ()
+    {
         self.localDataSource.refresh();
     };
 }

@@ -227,7 +227,8 @@ namespace WebSite.Helpers.Authentication
 
                 database.Users.Add(newUser);
 
-                if (existingUserWithSameEmail != null)
+                // If this is truly a new user, then send him/her a welcome email
+                if (existingUserWithSameEmail == null)
                 {
                     newUser.SendWelcomeEmail();
                 }

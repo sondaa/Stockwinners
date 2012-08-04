@@ -691,7 +691,7 @@
     <Content Include="Views\Information\PrivacyPolicy.cshtml" />
     <Content Include="Views\Information\ContactUs.cshtml" />
     <Content Include="Views\Account\Welcome.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\PasswordReset.cshtml" />
     <Content Include="Views\Account\TrialExpired.cshtml" />
     <Content Include="Views\Shared\_EmailLayout.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPickTypes\Index.cshtml" />

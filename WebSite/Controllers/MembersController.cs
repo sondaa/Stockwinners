@@ -50,6 +50,7 @@ namespace WebSite.Controllers
             return View(currentUser.NotificationSettings);
         }
 
+        [RequireHttps]
         public ActionResult Subscribe()
         {
             // Calculate the set of subscriptions available to the user
@@ -63,6 +64,7 @@ namespace WebSite.Controllers
         }
 
         [HttpPost]
+        [RequireHttps]
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation)
         {
             registrationInformation.AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include("SubscriptionFrequency").Where(st => st.IsAvailableToUsers);

@@ -1,4 +1,0 @@
-﻿@if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole(WebSite.Models.PredefinedRoles.Administrator))
-{
-    <div>@Html.ActionLink("Administer", "Index", "AdministratorHome", new { area = "Administrator" }, null)</div>
-}

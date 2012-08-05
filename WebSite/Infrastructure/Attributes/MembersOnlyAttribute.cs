@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebSite.Database;
 using WebSite.Helpers.Authentication;
 using WebSite.Models;
 
@@ -36,6 +37,12 @@ namespace WebSite.Infrastructure.Attributes
                 if (currentUser.IsBanned)
                 {
                     return false;
+                }
+
+                // Allow all legacy members until we finish their subscription ports
+                if (currentUser.IdentityProvider == (int)IdentityProvider.Stockwinners && currentUser.SignUpDate <= new DateTime(2012, 08, 05))
+                {
+                    return true;
                 }
 
                 // Does the user have an active subscription?

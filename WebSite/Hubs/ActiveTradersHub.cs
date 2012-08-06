@@ -120,6 +120,11 @@ namespace WebSite.Hubs
                     // the rest
                     dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
                 }
+
+                if (bytesRead == 0)
+                {
+                    Thread.Sleep(3000);
+                }
             }
         }
 

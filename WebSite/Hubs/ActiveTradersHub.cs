@@ -94,41 +94,32 @@ namespace WebSite.Hubs
             // Used to track the data received so far (unprocessed data)
             string dataReceived = string.Empty;
 
-
-            // Start receiving the data and loop indefinitely. 
+            // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
             while (true)
             {
-                // Read data in chunks of 1KB each. The async call below will block if no data as present.
+                // Read data in chunks of 1KB each.
                 byte[] data = new byte[1024];
-                int bytesRead = Task<int>.Factory.FromAsync(stream.BeginRead, stream.EndRead, data, 0, data.Length, state: null).Result;
+                int bytesRead = stream.Read(data, 0, data.Length);
 
-                do
+                dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
+
+                // Messages sent from the server are delimited by \n
+                for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
                 {
-                    dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
+                    // Parse from the start of the accumulated data until the first \n found
+                    ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
 
-                    // Messages sent from the server are delimited by \n
-                    for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
+                    if (newsElement != null)
                     {
-                        // Parse from the start of the accumulated data until the first \n found
-                        ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
-
-                        if (newsElement != null)
-                        {
-                            // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
-                            // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
-                            this.AddNewNewsElement(newsElement, notifyClients: splitterIndex == dataReceived.LastIndexOf('\n'));
-                        }
-
-                        // Remove the processed part of the massage from it (and also remove the \n) and continue processing
-                        // the rest
-                        dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
+                        // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
+                        // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
+                        this.AddNewNewsElement(newsElement, notifyClients: splitterIndex == dataReceived.LastIndexOf('\n'));
                     }
 
-                    // Read next chunk
-                    data = new byte[1024];
-                    bytesRead = stream.Read(data, 0, data.Length);
-
-                } while (stream.DataAvailable);
+                    // Remove the processed part of the massage from it (and also remove the \n) and continue processing
+                    // the rest
+                    dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
+                }
             }
         }
 

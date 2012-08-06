@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using SignalR;
 using SignalR.Hubs;
@@ -93,32 +94,41 @@ namespace WebSite.Hubs
             // Used to track the data received so far (unprocessed data)
             string dataReceived = string.Empty;
 
-            // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
+
+            // Start receiving the data and loop indefinitely. 
             while (true)
             {
-                // Read data in chunks of 1KB each.
+                // Read data in chunks of 1KB each. The async call below will block if no data as present.
                 byte[] data = new byte[1024];
-                int bytesRead = stream.Read(data, 0, data.Length);
+                int bytesRead = Task<int>.Factory.FromAsync(stream.BeginRead, stream.EndRead, data, 0, data.Length, state: null).Result;
 
-                dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
-
-                // Messages sent from the server are delimited by \n
-                for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
+                do
                 {
-                    // Parse from the start of the accumulated data until the first \n found
-                    ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
+                    dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
 
-                    if (newsElement != null)
+                    // Messages sent from the server are delimited by \n
+                    for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
                     {
-                        // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
-                        // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
-                        this.AddNewNewsElement(newsElement, notifyClients: splitterIndex == dataReceived.LastIndexOf('\n'));
+                        // Parse from the start of the accumulated data until the first \n found
+                        ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
+
+                        if (newsElement != null)
+                        {
+                            // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
+                            // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
+                            this.AddNewNewsElement(newsElement, notifyClients: splitterIndex == dataReceived.LastIndexOf('\n'));
+                        }
+
+                        // Remove the processed part of the massage from it (and also remove the \n) and continue processing
+                        // the rest
+                        dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
                     }
 
-                    // Remove the processed part of the massage from it (and also remove the \n) and continue processing
-                    // the rest
-                    dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
-                }
+                    // Read next chunk
+                    data = new byte[1024];
+                    bytesRead = stream.Read(data, 0, data.Length);
+
+                } while (stream.DataAvailable);
             }
         }
 
@@ -135,7 +145,7 @@ namespace WebSite.Hubs
 
             // If the new item has a number smaller than the current maximum, then a new day has begun. As such, clear all the data and start from
             // scratch. Also, let clients know about this wonderful phenomenon in history of human beings.
-            if (newsElementsClone.Count > 0 && newNewsElement.ElementId < newsElementsClone.Max.ElementId)
+            if (newsElementsClone.Count > 0 && newNewsElement.ElementId < newsElementsClone.Min.ElementId)
             {
                 newDay = true;
                 newsElementsClone.Clear();

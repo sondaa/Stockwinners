@@ -122,8 +122,11 @@ function ActiveTradersViewModel()
 
     self.resetItems = function ()
     {
-        self.newsElements = [];
-        self.localDataSource.refresh();
+        self.remoteDataSource.refresh(/* options */ null, /* success */function (entities, totalCount)
+        {
+            // Populate the local data source once the remote data source has gotten all its data
+            self.localDataSource.refresh();
+        });
     };
 
     self.refresh = function ()

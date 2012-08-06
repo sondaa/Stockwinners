@@ -59,7 +59,7 @@ namespace WebSite.Helpers
             while (salt.Length < 8)
             {
                 int index = (int)(rand.NextDouble() * ValidSaltCharacters.Length);
-                salt.Append(ValidSaltCharacters.Substring(index, index + 1));
+                salt.Append(ValidSaltCharacters.Substring(index, 1));
             }
 
             return ApacheEncryption.Encrypt(password, salt.ToString());
@@ -83,7 +83,7 @@ namespace WebSite.Helpers
             while (salt.Length < 8)
             {
                 int index = (int)(randgen.NextDouble() * ValidSaltCharacters.Length);
-                salt.Append(ValidSaltCharacters.Substring(index, index + 1));
+                salt.Append(ValidSaltCharacters.Substring(index, 1));
             }
 
             return ApacheEncryption.ApacheEncrypt(password, salt.ToString());

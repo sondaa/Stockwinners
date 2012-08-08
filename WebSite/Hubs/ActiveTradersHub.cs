@@ -87,7 +87,6 @@ namespace WebSite.Hubs
                 // Create a TCP connection to FlyOnTheWall servers
                 using (TcpClient tcpClient = new TcpClient(FlyOnTheWallServerAddress, FlyOnTheWallServerPort))
                 {
-
                     NetworkStream stream = tcpClient.GetStream();
 
                     // Send the initial request which must have HTTP like headers
@@ -127,7 +126,8 @@ namespace WebSite.Hubs
                             // the rest
                             dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
                         }
-                    } while (bytesRead > 0);
+                    } 
+                    while (bytesRead > 0);
 
                     Thread.Sleep(10000);
                 }

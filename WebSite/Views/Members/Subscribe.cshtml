@@ -17,7 +17,7 @@
                 }
                 else
                 {
-                    alert("Please select a subscription plan before proceeding");
+                    alert("Please select a subscription plan before proceeding.");
                 }
             });
             $("#previous-span").click(function (event)
@@ -38,7 +38,7 @@
         @foreach (WebSite.Models.SubscriptionType availableSubscription in Model.AvailableSubscriptionTypes)
         {
             <div style="padding-bottom: 15px;">@(Html.RadioButtonFor(m => m.SelectedSubscriptionTypeId, availableSubscription.SubscriptionTypeId))
-                @(availableSubscription.SubscriptionFrequency.Name) for @(availableSubscription.Price.ToString("C")) per billing cycle.
+                @(availableSubscription.SubscriptionFrequency.Name) for @(availableSubscription.Price.ToString("C")) 
             </div>
         }
         <div style="text-align: right;"><img src="/Images/arrow-right-16.png" style="vertical-align: middle;" /><span id="next-span" style="cursor: pointer; padding-left: 6px;">Next</span></div>
@@ -102,7 +102,7 @@
                         @Html.LabelFor(m => m.CreditCard.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PostalCode, new { tabindex = 11 })
                     </td>
                     <td>
-                        @Html.LabelFor(m => m.CreditCard.BillingAddress.Country) @Html.DropDownListFor(m => m.CreditCard.BillingAddress.CountryId, new SelectList(Model.Countries, "CountryId", "Name", 1730), new { tabindex = 12 })
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.Country) @Html.DropDownListFor(m => m.CreditCard.BillingAddress.CountryId, new SelectList(Model.Countries, "CountryId", "Name", 236), new { tabindex = 12 })
                     </td>
                 </tr>
                 <tr>

@@ -274,7 +274,7 @@ namespace WebSite.Infrastructure
                 null, true, false, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow, DateTime.UtcNow);
         }
 
-        private static string HashPassword(string rawPassword)
+        public static string HashPassword(string rawPassword)
         {
             using (SHA256 hash = SHA256.Create())
             {

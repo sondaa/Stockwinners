@@ -56,7 +56,7 @@ namespace WebSite.Helpers.Authentication
 
                     // TODO: Google is lame and does not support addition of extra data at the end of the call back URL. We need to use an extra
                     // state parameter for which DotNetOpenAuth does not have support yet.
-                    this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL));
+                    this.RequestUserAuthorization(_requestScopes, new Uri(this.GetUrl(callbackURL)));
                 }
                 else if (_identityProvider == IdentityProvider.Facebook)
                 {
@@ -64,11 +64,11 @@ namespace WebSite.Helpers.Authentication
 
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
-                       this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL + "?returnUrl=" + returnUrl));
+                       this.RequestUserAuthorization(_requestScopes, new Uri(this.GetUrl(callbackURL + "?returnUrl=" + returnUrl)));
                     }
                     else
                     {
-                        this.RequestUserAuthorization(_requestScopes, new Uri(callbackURL));
+                        this.RequestUserAuthorization(_requestScopes, new Uri(this.GetUrl(callbackURL)));
                     }
                 }
             }
@@ -94,6 +94,13 @@ namespace WebSite.Helpers.Authentication
             }
 
             return null;
+        }
+
+        private string GetUrl(string path)
+        {
+            Uri requestUri = HttpContext.Current.Request.Url;
+
+            return string.Format("{0}://{1}{2}", requestUri.Scheme, requestUri.Host, path);
         }
 
         /// <summary>

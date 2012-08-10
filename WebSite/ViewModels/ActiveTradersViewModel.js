@@ -122,6 +122,11 @@ function ActiveTradersViewModel()
 
     self.resetItems = function ()
     {
+        // Clear all elements
+        self.remoteDataSource.getEntities().removeAll();
+        self.localDataSource.refresh();
+
+        // Requery the servers
         self.remoteDataSource.refresh(/* options */ null, /* success */function (entities, totalCount)
         {
             // Populate the local data source once the remote data source has gotten all its data

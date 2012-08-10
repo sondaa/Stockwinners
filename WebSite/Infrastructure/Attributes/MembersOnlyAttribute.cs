@@ -26,9 +26,10 @@ namespace WebSite.Infrastructure.Attributes
             bool isRequestAuthenticated = base.AuthorizeCore(httpContext);
 
             // If the user is authenticated, check to see that they either:
-            // 1) have an active subscription
-            // 2) have no subscription but have still paid portions of a cancelled subscription
-            // 3) have a valid trial membership
+            // 1) are an admin
+            // 2) have an active subscription
+            // 3) have no subscription but have still paid portions of a cancelled subscription
+            // 4) have a valid trial membership
             if (isRequestAuthenticated)
             {
                 User currentUser = Authentication.GetCurrentUser();
@@ -37,6 +38,12 @@ namespace WebSite.Infrastructure.Attributes
                 if (currentUser.IsBanned)
                 {
                     return false;
+                }
+
+                // Is the user an admin?
+                if (currentUser.Roles.FirstOrDefault(role => role.Name == PredefinedRoles.Administrator) != null)
+                {
+                    return true;
                 }
 
                 // Allow all legacy members until we finish their subscription ports

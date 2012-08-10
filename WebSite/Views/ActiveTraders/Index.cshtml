@@ -145,7 +145,19 @@
                 return false;
             });
 
-            $.connection.hub.start().done(function ()
+            var hubConnection = $.connection.hub;
+            
+            // When the client reconnects, ensure that we start off of a clean state
+            hubConnection.reconnected(function ()
+            {
+                dataModel.resetItems();
+
+                // Notify the server that we want to listen to items
+                activeTradersHub.clientInitialize();
+            });
+
+            // Start connection to server
+            hubConnection.start().done(function ()
             {
                 // This custom handler will change the way symbols are presented in the UI so that a ; delimited text 
                 // text is space delimited so that the text can be wrapped. Also, we change NOSYMBOL to the empty string so that the

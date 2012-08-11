@@ -1,0 +1,125 @@
+﻿@model WebSite.Models.User
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>User</legend>
+
+        @Html.HiddenFor(model => model.UserId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IdentityProvider)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IdentityProvider)
+            @Html.ValidationMessageFor(model => model.IdentityProvider)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IdentityProviderIssuedUserId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IdentityProviderIssuedUserId)
+            @Html.ValidationMessageFor(model => model.IdentityProviderIssuedUserId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EmailAddress)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EmailAddress)
+            @Html.ValidationMessageFor(model => model.EmailAddress)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.IsBanned)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.IsBanned)
+            @Html.ValidationMessageFor(model => model.IsBanned)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SignUpDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SignUpDate)
+            @Html.ValidationMessageFor(model => model.SignUpDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastLoginDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastLoginDate)
+            @Html.ValidationMessageFor(model => model.LastLoginDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.TrialExpiryDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TrialExpiryDate)
+            @Html.ValidationMessageFor(model => model.TrialExpiryDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubscriptionId, "Subscription")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("SubscriptionId", String.Empty)
+            @Html.ValidationMessageFor(model => model.SubscriptionId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SubscriptionExpiryDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SubscriptionExpiryDate)
+            @Html.ValidationMessageFor(model => model.SubscriptionExpiryDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NotificationSettingsId, "NotificationSettings")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("NotificationSettingsId", String.Empty)
+            @Html.ValidationMessageFor(model => model.NotificationSettingsId)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,19 @@
+@{
+    ViewBag.Title = "Statistics";
+}
+<h2>Statistics</h2>
+<ul style="font-size: 16pt;">
+    <li>Total users <strong>@ViewBag.UsersCount</strong></li>
+    <li>Stockwinners Members <strong>@ViewBag.StockwinnersMembers</strong></li>
+    <li>Google Members <strong>@ViewBag.GoogleMembers</strong></li>
+    <li>Facebook Members <strong>@ViewBag.FacebookMembers</strong></li>
+    <li>Users with an active trial membership <strong>@ViewBag.UsersWithActiveTrial</strong></li>
+    <li>Users with an expired trial membership who are not subscribed either <strong>@ViewBag.UsersWithExpiredTrial</strong></li>
+    <li>Subscribed Members <strong>@ViewBag.SubscribedUsers</strong></li>
+    <li>Monthly Subscribers <strong>@ViewBag.MonthlySubscribers</strong></li>
+    <li>Quarterly Subscribers <strong>@ViewBag.QuarterlySubscribers</strong></li>
+    <li>Yearly Subscribers <strong>@ViewBag.YearlySubscribers</strong></li>
+</ul>
+<img src="@Url.Action("Registrations")" />
+<img src="@Url.Action("TrialExpiries")" />
+<img src="@Url.Action("Subscriptions")" />

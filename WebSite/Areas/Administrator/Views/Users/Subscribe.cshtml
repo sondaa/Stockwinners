@@ -1,0 +1,126 @@
+﻿@model WebSite.Models.Logic.SubscriptionRegistration
+@{
+    ViewBag.Title = "Subscribe";
+}
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function ()
+        {
+            $("#next-span").click(function (event)
+            {
+                if ($("form").validate().element("#SelectedSubscriptionTypeId"))
+                {
+                    $("#subscription-div").hide("fast");
+                    $("#billing-information-div").show("fast");
+                }
+                else
+                {
+                    alert("Please select a subscription plan before proceeding.");
+                }
+            });
+            $("#previous-span").click(function (event)
+            {
+                $("#subscription-div").show("fast");
+                $("#billing-information-div").hide("fast");
+            });
+        });
+    </script>
+}
+<h2>Subscribe</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(false)
+    @Html.Hidden("userId", (object)ViewBag.UserId)
+    <div id="subscription-div">
+    <h3>Subscription Packages</h3>
+        <p class="message-info">Please choose your subscription plan below. Note that our quarterly and yearly subscription packages offer savings over monthly subscriptions. All subscriptions can be cancelled at any time. After cancellation of your subscription, you'll still be able to use your credentials to use our services until your billing period runs out. For example, a monthly subscription package purchased on the 4th of a month and cancelled on the 8th, will allow you to use the website until the 4th day of the upcoming month. We don't issue any refunds for payments we receive.</p>
+        @foreach (WebSite.Models.SubscriptionType availableSubscription in Model.AvailableSubscriptionTypes)
+        {
+            <div style="padding-bottom: 15px;">@(Html.RadioButtonFor(m => m.SelectedSubscriptionTypeId, availableSubscription.SubscriptionTypeId))
+                @(availableSubscription.SubscriptionFrequency.Name) for @(availableSubscription.Price.ToString("C")) 
+            </div>
+        }
+        <div style="text-align: right;"><img src="/Images/arrow-right-16.png" style="vertical-align: middle;" /><span id="next-span" style="cursor: pointer; padding-left: 6px;">Next</span></div>
+    </div>
+    <div id="billing-information-div" style="display: none;">
+        <h3>Billing Information</h3>
+        <table style="width: 80%; margin: 0px auto;">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <h4>Credit Card Information</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CardholderFirstName)@Html.TextBoxFor(m => m.CreditCard.CardholderFirstName, new { tabindex = 1 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CardholderLastName)@Html.TextBoxFor(m => m.CreditCard.CardholderLastName, new { tabindex = 2 })
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.Number) @Html.TextBoxFor(m => m.CreditCard.Number, new { tabindex = 3 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CVV) @Html.TextBoxFor(m => m.CreditCard.CVV, new { tabindex = 4 })
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.ExpirationMonth) @Html.DropDownListFor(m => m.CreditCard.ExpirationMonth, new SelectList(new int[] { 1,2,3,4,5,6,7,8,9,10,11,12 }), new { tabindex = 5 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.ExpirationYear) @Html.DropDownListFor(m => m.CreditCard.ExpirationYear, new SelectList(Enumerable.Range(DateTime.UtcNow.Year, 8)), new { tabindex = 6 })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <h4>Billing Address</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine1) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine1, new { tabindex = 7 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine2) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine2, new { tabindex = 8 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.City) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.City, new { tabindex = 9 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.ProvinceOrState) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.ProvinceOrState, new { tabindex = 10 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PostalCode, new { tabindex = 11 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.Country) @Html.DropDownListFor(m => m.CreditCard.BillingAddress.CountryId, new SelectList(Model.Countries, "CountryId", "Name", 236), new { tabindex = 12 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.PhoneNumber) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PhoneNumber, new { tabindex = 13 })
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: middle;">
+                        <img src="/Images/arrow-left-16.png" style="vertical-align: middle;" /><span id="previous-span" style="padding-left: 6px; cursor: pointer;">Previous</span>
+                    </td>
+                    <td style="text-align: right;">
+                        <input type="submit" value="Register" tabindex="14" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

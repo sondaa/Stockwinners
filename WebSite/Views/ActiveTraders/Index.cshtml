@@ -178,12 +178,12 @@
                             if (separatedSymbols.length <= 2)
                             {
                                 // If up to 2 symbols are being shown, then show the entire text
-                                $(element).text(separatedSymbols.join(" "));
+                                $(element).html("<a href='http://finance.yahoo.com/q?s="+ separatedSymbols.join(" ") + "' target='_blank'>" + separatedSymbols.join(" ") + "</a>");
                             }
                             else
                             {
                                 // If more than 2 symbols exist, add a "..." and show the complete list on hover
-                                $(element).text(separatedSymbols[0] + " ...");
+                                $(element).html("<a href='http://finance.yahoo.com/q?s=" + separatedSymbols[0] + "' target='_blank'>" + separatedSymbols[0] + "</a> ...");
                                 $(element).attr("title", separatedSymbols.join(" "));
                             }
                         }

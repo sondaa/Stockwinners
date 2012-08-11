@@ -156,7 +156,7 @@ namespace WebSite.Hubs
             // Every 5 seconds add a random element
             for (int i = 10; true; i++)
             {
-                this.AddNewNewsElement(new ActiveTradersNewsElement() { Category = "Hot Stocks", ElementId = i % 20, SourceId = "TestSource", Symbol = "AAPL", Text = "Test content " + i }, true);
+                this.AddNewNewsElement(new ActiveTradersNewsElement() { Category = "Hot Stocks", ElementId = i % 20, SourceId = "TestSource", Symbol = ((i & 1) == 0) ? "AAPL" : "AAPL;GOOG", Text = "Test content " + i }, true);
 
                 Thread.Sleep(5000);
             }

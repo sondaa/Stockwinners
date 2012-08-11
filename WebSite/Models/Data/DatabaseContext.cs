@@ -69,5 +69,7 @@ namespace WebSite.Database
         }
 
         #endregion
+
+        public DbSet<NotificationSettings> NotificationSettings { get; set; }
     }
 }

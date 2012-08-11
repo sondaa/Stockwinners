@@ -170,6 +170,7 @@
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\StockPicksController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\UsersController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActiveTradersController.cs" />
     <Compile Include="Areas\Administrator\Controllers\DailyAlertsController.cs" />
@@ -300,6 +301,12 @@
     <Content Include="Areas\Administrator\Views\OptionPicks\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPicks\Delete.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPicks\Legs.cshtml" />
+    <Content Include="Areas\Administrator\Views\Users\Index.cshtml" />
+    <Content Include="Areas\Administrator\Views\Users\Details.cshtml" />
+    <Content Include="Areas\Administrator\Views\Users\Edit.cshtml" />
+    <Content Include="Areas\Administrator\Views\Users\Delete.cshtml" />
+    <Content Include="Content\Performance\Excel.xlsx" />
+    <Content Include="Areas\Administrator\Views\Users\Subscribe.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Images\arrow-left-16.png" />
     <Content Include="Images\arrow-right-16.png" />
@@ -725,6 +732,9 @@
     <Content Include="Views\Picks\StockPicks.cshtml" />
     <Content Include="Views\Picks\OptionPicks.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Areas\Administrator\Views\AdministratorHome\Statistics.cshtml" />
+    <Content Include="Views\Shared\_TrialSubscribePartial.cshtml" />
+    <Content Include="Views\Information\PerformanceDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

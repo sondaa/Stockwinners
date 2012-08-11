@@ -19,7 +19,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Index()
         {
-            var picks = db.OptionPicks.Include(o => o.Type);
+            var picks = db.OptionPicks.Include(o => o.Type).OrderByDescending(optionPick => optionPick.PublishingDate);
             return View(picks.ToList());
         }
 

@@ -49,5 +49,10 @@ namespace WebSite.Controllers
         {
             return View();
         }
+
+        public ActionResult PerformanceDetail()
+        {
+            return View();
+        }
     }
 }

@@ -14,16 +14,10 @@ namespace WebSite.Areas.Administrator.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
-        //
-        // GET: /Administrator/StockPicks/
-
         public ActionResult Index()
         {
-            return View(db.StockPicks.ToList());
+            return View(db.StockPicks.OrderByDescending(stockPick => stockPick.PublishingDate).ToList());
         }
-
-        //
-        // GET: /Administrator/StockPicks/Details/5
 
         public ActionResult Details(int id = 0)
         {
@@ -35,18 +29,12 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(stockpick);
         }
 
-        //
-        // GET: /Administrator/StockPicks/Create
-
         public ActionResult Create()
         {
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name");
 
             return View();
         }
-
-        //
-        // POST: /Administrator/StockPicks/Create
 
         [HttpPost]
         public ActionResult Create(StockPick stockPick, string saveButton, string publishButton)

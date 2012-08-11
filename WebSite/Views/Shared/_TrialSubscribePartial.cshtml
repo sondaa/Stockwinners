@@ -1,0 +1,19 @@
+﻿@if (!Request.IsAuthenticated)
+{
+    <div style="float: right;" class="trial"><img src="/Images/arrow-right-16.png" style="padding-right: 6px; margin: 0px; vertical-align: -3px; width: 16px; height: 16px;" />@Html.ActionLink("Free Trial", "Register", "Account")</div>
+}
+else
+{
+    WebSite.Models.User user = WebSite.Helpers.Authentication.Authentication.GetCurrentUser();
+
+    if (!user.SubscriptionId.HasValue)
+    {
+        // Don't show anything for users that have been ported from the previous system
+        if (user.IdentityProvider == (int)WebSite.Models.IdentityProvider.Stockwinners && user.SignUpDate <= new DateTime(2012, 08, 05))
+        {
+            return;
+        }
+            
+        <div style="float: right;" class="trial"><img src="/Images/arrow-right-16.png" style="padding-right: 6px; margin: 0px; vertical-align: -3px; width: 16px; height: 16px;" />@Html.ActionLink("Subscribe Now", "Subscribe", "Members")</div>    
+    }
+}

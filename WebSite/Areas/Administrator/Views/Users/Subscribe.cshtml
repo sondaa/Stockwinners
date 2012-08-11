@@ -110,7 +110,7 @@
                     <td>
                         @Html.LabelFor(m => m.CreditCard.BillingAddress.PhoneNumber) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PhoneNumber, new { tabindex = 13 })
                     </td>
-                    <td></td>
+                    <td>Subscription Start Date <br />Day: @Html.DropDownList("day", new SelectList(Enumerable.Range(1, 32))) Month: @Html.DropDownList("month", new SelectList(new int[] { 1,2,3,4,5,6,7,8,9,10,11,12 })) Year: @Html.DropDownList("year", new SelectList(Enumerable.Range(DateTime.UtcNow.Year, 4)))</td>
                 </tr>
                 <tr>
                     <td style="vertical-align: middle;">

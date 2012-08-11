@@ -119,7 +119,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         [HttpPost]
         [RequireHttps]
-        public ActionResult Subscribe(SubscriptionRegistration registrationInformation, int userId)
+        public ActionResult Subscribe(SubscriptionRegistration registrationInformation, int userId, int day, int month, int year)
         {
             ViewBag.UserId = userId;
             registrationInformation.AvailableSubscriptionTypes = db.SubscriptionTypes.Include(o => o.SubscriptionFrequency);
@@ -136,7 +136,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 WebSite.Models.User user = db.Users.Find(userId);
                 ISubscriptionGateway gateway = this.GetSubscriptionGateway();
 
-                ISubscriptionRequest subscriptionRequest = this.CreateAuthorizeDotNetSubscriptionRequest(registrationInformation, user);
+                ISubscriptionRequest subscriptionRequest = this.CreateAuthorizeDotNetSubscriptionRequest(registrationInformation, user, new DateTime(year, month, day));
                 ISubscriptionRequest subscriptionResponse = null;
 
                 try
@@ -175,7 +175,7 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(registrationInformation);
         }
 
-        private ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(SubscriptionRegistration registrationInformation, WebSite.Models.User user)
+        private ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(SubscriptionRegistration registrationInformation, WebSite.Models.User user, DateTime startsOn)
         {
             ISubscriptionRequest subscriptionRequest = SubscriptionRequest.CreateNew();
 
@@ -200,7 +200,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
             // Subscription information
             SubscriptionType selectedSubscriptionType = registrationInformation.AvailableSubscriptionTypes.First(st => st.SubscriptionTypeId == registrationInformation.SelectedSubscriptionTypeId);
-            subscriptionRequest.StartsOn = DateTime.UtcNow;
+            subscriptionRequest.StartsOn = startsOn;
             subscriptionRequest.Amount = selectedSubscriptionType.Price;
             subscriptionRequest.SubscriptionName = selectedSubscriptionType.SubscriptionFrequency.Name + " Membership";
 

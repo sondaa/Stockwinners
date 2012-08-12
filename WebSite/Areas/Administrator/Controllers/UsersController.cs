@@ -239,7 +239,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         private ISubscriptionGateway GetSubscriptionGateway()
         {
-            return new SubscriptionGateway(ConfigurationManager.AppSettings["AuthorizeNETAPILoginID"], ConfigurationManager.AppSettings["AuthorizeNETTransactionKey"], ServiceMode.Test);
+            return new SubscriptionGateway(ConfigurationManager.AppSettings["AuthorizeNETAPILoginID"], ConfigurationManager.AppSettings["AuthorizeNETTransactionKey"], bool.Parse(ConfigurationManager.AppSettings["AuthorizeNETTestMode"]) ? ServiceMode.Test : ServiceMode.Live);
         }
 
         protected override void Dispose(bool disposing)

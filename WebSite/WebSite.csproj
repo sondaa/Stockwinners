@@ -735,6 +735,9 @@
     <Content Include="Areas\Administrator\Views\AdministratorHome\Statistics.cshtml" />
     <Content Include="Views\Shared\_TrialSubscribePartial.cshtml" />
     <Content Include="Views\Information\PerformanceDetail.cshtml" />
+    <Content Include="WaIISHost.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -20,9 +20,9 @@ namespace WebSite.Models.Data.Picks
         public int OptionPickTypeId { get; set; }
         public virtual OptionPickType Type { get; set; }
 
-        public override void Email()
+        public override void Email(bool isPreview = false)
         {
-            Helpers.Email.Send(this);
+            Helpers.Email.Send(this, isPreview);
         }
     }
 }

@@ -4,64 +4,100 @@ using System.Linq;
 using System.Web;
 using WebSite.Models.Data;
 using WebSite.Models.Data.Picks;
-using Mvc.Mailer;
 using System.Net.Mail;
 using WebSite.Database;
 using WebSite.Models;
+using ActionMailer.Net.Mvc;
+using System.Configuration;
 
 namespace WebSite.Helpers
 {
     public class Email
     {
-        public static void Send(StockPick stockPick)
+        public static void Send(StockPick stockPick, bool isPreview)
         {
-            MailMessage email = new Mailers.Picks().Stock(stockPick);
+            EmailResult email = new Mailers.Picks().Stock(stockPick);
 
             // Add recepients to the email
-            DatabaseContext db = DatabaseContext.GetInstance();
+            IQueryable<User> recipients = null;
 
-            email.To.Add("noreply@stockwinners.com");
-
-            foreach (User user in db.Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveStockPicks))
+            if (isPreview)
             {
-                email.Bcc.Add(user.EmailAddress);
+                recipients = Email.GetAdmins();
+            }
+            else
+            {
+                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveStockPicks);
             }
 
-            email.SendAsync();
+            Email.SendEmail(email, recipients);
         }
 
-        public static void Send(OptionPick optionPick)
+        public static void Send(OptionPick optionPick, bool isPreview)
         {
-            MailMessage email = new Mailers.Picks().Option(optionPick);
+            EmailResult email = new Mailers.Picks().Option(optionPick);
 
             // Add recepients to the email
-            DatabaseContext db = DatabaseContext.GetInstance();
+            IQueryable<User> recipients = null;
 
-            email.To.Add("noreply@stockwinners.com");
-
-            foreach (User user in db.Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveOptionPicks))
+            if (isPreview)
             {
-                email.Bcc.Add(user.EmailAddress);
+                recipients = GetAdmins();
+            }
+            else
+            {
+                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveOptionPicks);
             }
 
-            email.SendAsync();
+            Email.SendEmail(email, recipients);
         }
 
-        public static void Send(DailyAlert dailyAlert)
+        public static void Send(DailyAlert dailyAlert, bool isPreview)
         {
-            MailMessage email = new Mailers.Picks().Alert(dailyAlert);
+            EmailResult email = new Mailers.Picks().Alert(dailyAlert);
 
             // Add recepients to the email
-            DatabaseContext db = DatabaseContext.GetInstance();
+            IQueryable<User> recipients = null;
 
-            email.To.Add("noreply@stockwinners.com");
-
-            foreach (User user in db.Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveDailyAlerts))
+            if (isPreview)
             {
-                email.Bcc.Add(user.EmailAddress);
+                recipients = GetAdmins();
+            }
+            else
+            {
+                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveDailyAlerts);
             }
 
-            email.SendAsync();
+            Email.SendEmail(email, recipients);
+        }
+
+        private static IQueryable<User> GetAdmins()
+        {
+            return from user in DatabaseContext.GetInstance().Users 
+                   where (from role in user.Roles where role.Name == PredefinedRoles.Administrator select role).Count() > 0
+                   select user;
+        }
+
+        private static void SendEmail(EmailResult email, IEnumerable<User> recipients)
+        {
+            foreach (User user in recipients)
+            {
+                email.Mail.Bcc.Add(user.EmailAddress);
+            }
+
+            Email.SendEmail(email);
+        }
+
+        public static void SendEmail(EmailResult email)
+        {
+            if (ConfigurationManager.AppSettings["SendSynchronousEmail"] != null && bool.Parse(ConfigurationManager.AppSettings["SendSynchronousEmail"]))
+            {
+                email.Deliver();
+            }
+            else
+            {
+                email.DeliverAsync();
+            }
         }
     }
 }

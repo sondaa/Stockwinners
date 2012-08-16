@@ -80,6 +80,6 @@ namespace WebSite.Models.Data.Picks
             this.ClosingDate = DateTime.UtcNow;
         }
 
-        public abstract void Email();
+        public abstract void Email(bool isPreview = false);
     }
 }

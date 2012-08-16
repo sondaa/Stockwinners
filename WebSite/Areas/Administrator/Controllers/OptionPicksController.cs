@@ -14,17 +14,11 @@ namespace WebSite.Areas.Administrator.Controllers
     {
         private DatabaseContext db = new DatabaseContext();
 
-        //
-        // GET: /Administrator/OptionPicks/
-
         public ActionResult Index()
         {
             var picks = db.OptionPicks.Include(o => o.Type).OrderByDescending(optionPick => optionPick.PublishingDate);
             return View(picks.ToList());
         }
-
-        //
-        // GET: /Administrator/OptionPicks/Details/5
 
         public ActionResult Details(int id = 0)
         {
@@ -36,17 +30,11 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(optionpick);
         }
 
-        //
-        // GET: /Administrator/OptionPicks/Create
-
         public ActionResult Create()
         {
             ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name");
             return View();
         }
-
-        //
-        // POST: /Administrator/OptionPicks/Create
 
         [HttpPost]
         public ActionResult Create(OptionPick optionPick)
@@ -77,7 +65,7 @@ namespace WebSite.Areas.Administrator.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(OptionPick optionPick, string saveButton, string publishButton)
+        public ActionResult Edit(OptionPick optionPick, string saveButton, string publishButton, string previewButton)
         {
             if (ModelState.IsValid)
             {
@@ -89,12 +77,12 @@ namespace WebSite.Areas.Administrator.Controllers
                 db.Entry(optionPick).State = EntityState.Modified;
                 db.SaveChanges();
 
-                if (publishButton != null)
+                if (publishButton != null || previewButton != null)
                 {
                     // Include the option trade type so that we can include the information in the email
                     optionPick.Type = db.OptionPickTypes.Find(optionPick.OptionPickTypeId);
 
-                    optionPick.Email();
+                    optionPick.Email(isPreview: previewButton != null);
                 }
 
                 return RedirectToAction("Index");

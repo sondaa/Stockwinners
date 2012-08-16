@@ -37,7 +37,7 @@ namespace WebSite.Areas.Administrator.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(StockPick stockPick, string saveButton, string publishButton)
+        public ActionResult Create(StockPick stockPick, string saveButton, string publishButton, string previewButton)
         {
             stockPick.Initialize();
 
@@ -54,6 +54,11 @@ namespace WebSite.Areas.Administrator.Controllers
                 if (publishButton != null)
                 {
                     stockPick.Email();
+                }
+
+                if (previewButton != null)
+                {
+                    stockPick.Email(isPreview: true);
                 }
 
                 return this.RedirectToAction("Index");
@@ -82,7 +87,7 @@ namespace WebSite.Areas.Administrator.Controllers
         // POST: /Administrator/StockPicks/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(StockPick stockPick, string publishButton, string saveButton, string closeButton)
+        public ActionResult Edit(StockPick stockPick, string publishButton, string saveButton, string closeButton, string previewButton)
         {
             if (ModelState.IsValid)
             {
@@ -103,6 +108,11 @@ namespace WebSite.Areas.Administrator.Controllers
                 if (publishButton != null)
                 {
                     stockPick.Email();
+                }
+
+                if (previewButton != null)
+                {
+                    stockPick.Email(isPreview: true);
                 }
 
                 return RedirectToAction("Index");

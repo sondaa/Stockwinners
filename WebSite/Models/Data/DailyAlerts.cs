@@ -50,9 +50,9 @@ namespace WebSite.Models.Data
             this.PublishDate = DateTime.UtcNow;
         }
 
-        public void Email()
+        public void Email(bool isPreview = false)
         {
-            Helpers.Email.Send(this);
+            Helpers.Email.Send(this, isPreview);
         }
     }
 }

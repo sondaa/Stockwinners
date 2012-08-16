@@ -39,6 +39,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ActionMailer.Net">
+      <HintPath>..\packages\ActionMailer.0.7.4\lib\Net40\ActionMailer.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ActionMailer.Net.Mvc">
+      <HintPath>..\packages\ActionMailer.0.7.4\lib\Net40\ActionMailer.Net.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="AuthorizeNet">
       <HintPath>References\AuthorizeNet.dll</HintPath>
     </Reference>
@@ -59,9 +65,6 @@
     <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
-    </Reference>
-    <Reference Include="Mvc.Mailer">
-      <HintPath>..\packages\MvcMailer.1.1\lib\40\Mvc.Mailer.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -697,8 +700,8 @@
     <Content Include="Views\Information\MembershipPolicy.cshtml" />
     <Content Include="Views\Information\PrivacyPolicy.cshtml" />
     <Content Include="Views\Information\ContactUs.cshtml" />
-    <Content Include="Views\Account\Welcome.cshtml" />
-    <Content Include="Views\Account\PasswordResetEmail.cshtml" />
+    <Content Include="Views\Account\WelcomeEmail.html.cshtml" />
+    <Content Include="Views\Account\PasswordResetEmail.html.cshtml" />
     <Content Include="Views\Account\TrialExpired.cshtml" />
     <Content Include="Views\Shared\_EmailLayout.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPickTypes\Index.cshtml" />
@@ -722,16 +725,16 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
-    <Content Include="Views\Picks\StockPickEmail.cshtml" />
-    <Content Include="Views\Picks\OptionPickEmail.cshtml" />
-    <Content Include="Views\Picks\AlertEmail.cshtml" />
+    <Content Include="Views\Picks\StockPickEmail.html.cshtml" />
+    <Content Include="Views\Picks\OptionPickEmail.html.cshtml" />
+    <Content Include="Views\Picks\AlertEmail.html.cshtml" />
     <Content Include="Views\Information\Options101.cshtml" />
     <Content Include="Views\Picks\Portfolio.cshtml" />
     <Content Include="Views\Picks\StockPickDetail.cshtml" />
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />
     <Content Include="Views\Picks\StockPicks.cshtml" />
     <Content Include="Views\Picks\OptionPicks.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPassword.html.cshtml" />
     <Content Include="Areas\Administrator\Views\AdministratorHome\Statistics.cshtml" />
     <Content Include="Views\Shared\_TrialSubscribePartial.cshtml" />
     <Content Include="Views\Information\PerformanceDetail.cshtml" />

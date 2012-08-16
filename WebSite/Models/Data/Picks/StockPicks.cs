@@ -36,9 +36,9 @@ namespace WebSite.Models.Data.Picks
         [Display(Name = "Is this a long position?")]
         public bool IsLongPosition { get; set; }
 
-        public override void Email()
+        public override void Email(bool isPreview = false)
         {
-            Helpers.Email.Send(this);
+            Helpers.Email.Send(this, isPreview);
         }
     }
 }

@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.Mail;
 using System.Web;
+using ActionMailer.Net.Mvc;
 using DataAnnotationsExtensions;
 using WebSite.Models.Data;
-using Mvc.Mailer;
 
 namespace WebSite.Models
 {
@@ -71,11 +71,11 @@ namespace WebSite.Models
 
         public void SendWelcomeEmail()
         {
-            MailMessage mail = new Mailers.Account().Welcome();
+            EmailResult email = new Mailers.Account().Welcome();
 
-            mail.To.Add(this.EmailAddress);
+            email.Mail.To.Add(this.EmailAddress);
 
-            mail.SendAsync();
+            WebSite.Helpers.Email.SendEmail(email);
         }
     }
 
@@ -111,11 +111,11 @@ namespace WebSite.Models
 
         public void SendPasswordResetEmail(string unhashedNewPassword)
         {
-            MailMessage mail = new Mailers.Account().PasswordResetEmail(unhashedNewPassword);
+            EmailResult email = new Mailers.Account().PasswordResetEmail(unhashedNewPassword);
 
-            mail.To.Add(this.EmailAddress);
+            email.Mail.To.Add(this.EmailAddress);
 
-            mail.SendAsync();
+            WebSite.Helpers.Email.SendEmail(email);
         }
     }
 }

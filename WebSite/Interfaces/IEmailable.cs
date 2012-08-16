@@ -7,6 +7,6 @@ namespace WebSite.Interfaces
 {
     interface IEmailable
     {
-        void Email();
+        void Email(bool isPreview = false);
     }
 }

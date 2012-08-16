@@ -2,49 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Mvc.Mailer;
 using System.Net.Mail;
+using ActionMailer.Net.Mvc;
 
 namespace WebSite.Mailers
 { 
     public class Account : MailerBase     
 	{
-		public Account():
-			base()
+		public virtual EmailResult Welcome()
 		{
-			MasterName="_EmailLayout";
-		}
-
-		
-		public virtual MailMessage Welcome()
-		{
-			var mailMessage = new MailMessage{Subject = "Welcome"};
+            Subject = "Welcome";
 			
-			PopulateBody(mailMessage, viewName: "Welcome");
-
-			return mailMessage;
+			return this.Email(viewName: "WelcomeEmail");
 		}
 
 		
-		public virtual MailMessage PasswordResetEmail(string password)
+		public virtual EmailResult PasswordResetEmail(string password)
 		{
-			var mailMessage = new MailMessage{Subject = "Password Reset"};
+			Subject = "Password Reset";
 
             ViewBag.Password = password;
 
-			PopulateBody(mailMessage, viewName: "PasswordResetEmail");
-
-			return mailMessage;
+			return this.Email(viewName: "PasswordResetEmail");
 		}
 
 		
-		public virtual MailMessage TrialExpired()
+		public virtual EmailResult TrialExpired()
 		{
-			var mailMessage = new MailMessage{Subject = "TrialExpired"};
+			Subject = "TrialExpired";
 			
-			PopulateBody(mailMessage, viewName: "TrialExpired");
-
-			return mailMessage;
+			return this.Email(viewName: "TrialExpired");
 		}
 
 		

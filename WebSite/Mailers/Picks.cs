@@ -2,63 +2,54 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Mvc.Mailer;
 using System.Net.Mail;
 using WebSite.Models.Data.Picks;
 using WebSite.Models.Data;
+using ActionMailer.Net.Mvc;
+using WebSite.Models;
+using WebSite.Database;
 
 namespace WebSite.Mailers
 { 
     public class Picks : MailerBase    
-	{
-		public Picks():
-			base()
+	{		
+		public virtual EmailResult Stock(StockPick stockPick)
 		{
-			MasterName="_EmailLayout";
-		}
-		
-		public virtual MailMessage Stock(StockPick stockPick)
-		{
-			var mailMessage = new MailMessage{Subject = "New Stock Pick"};
+            To.Add("noreply@stockwinners.com");
+            Subject = "New Stock Pick";
 
             ViewBag.StockPickContents = stockPick.Description;
             ViewBag.EntryPrice = stockPick.EntryPrice;
             ViewBag.IsLongPosition = stockPick.IsLongPosition;
             ViewBag.Symbol = stockPick.Symbol;
-            ViewBag.PublishingDate = stockPick.PublishingDate.Value;
+            ViewBag.PublishingDate = stockPick.PublishingDate ?? DateTime.UtcNow;
 
-			PopulateBody(mailMessage, viewName: "StockPickEmail");
-
-			return mailMessage;
+            return this.Email(viewName: "StockPickEmail");
 		}
 
 		
-		public virtual MailMessage Option(OptionPick optionPick)
+		public virtual EmailResult Option(OptionPick optionPick)
 		{
-			var mailMessage = new MailMessage{Subject = "New Option Pick"};
+            To.Add("noreply@stockwinners.com");
+			Subject = "New Option Pick";
 
             ViewBag.OptionPickContents = optionPick.Description;
             ViewBag.Symbol = optionPick.Symbol;
             ViewBag.Type = optionPick.Type;
-            ViewBag.PublishingDate = optionPick.PublishingDate.Value;
+            ViewBag.PublishingDate = optionPick.PublishingDate ?? DateTime.UtcNow;
 
-			PopulateBody(mailMessage, viewName: "OptionPickEmail");
-
-			return mailMessage;
+            return this.Email(viewName: "OptionPickEmail");
 		}
 
 		
-		public virtual MailMessage Alert(DailyAlert dailyAlert)
+		public virtual EmailResult Alert(DailyAlert dailyAlert)
 		{
-			var mailMessage = new MailMessage{Subject = "Market Alert"};
+            To.Add("noreply@stockwinners.com");
+			Subject = "Market Alert";
 
             ViewBag.AlertContents = dailyAlert.Content;
 
-			PopulateBody(mailMessage, viewName: "AlertEmail");
-
-			return mailMessage;
+            return this.Email(viewName: "AlertEmail");
 		}
-
-		
 	}
 }

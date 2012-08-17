@@ -54,10 +54,10 @@ namespace WebSite.Infrastructure.Attributes
                 // Does the user have an active subscription?
                 if (currentUser.SubscriptionId.HasValue)
                 {
-                    if (currentUser.Subscription.IsSuspended)
-                    {
-                        return this.AllowSuspendedPayments;
-                    }
+                    //if (currentUser.Subscription.IsSuspended)
+                    //{
+                    //    return this.AllowSuspendedPayments;
+                    //}
 
                     return true;
                 }

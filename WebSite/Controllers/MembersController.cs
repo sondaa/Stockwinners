@@ -63,7 +63,7 @@ namespace WebSite.Controllers
         [HttpPost]
         public ActionResult UpdateSubscription(SubscriptionRegistration subscriptionUpdateInformation)
         {
-
+            return this.View();
         }
 
         [RequireHttps]

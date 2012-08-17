@@ -64,7 +64,7 @@ namespace WebSite.Controllers
             }
 
             // Mark the subscription as suspended
-            subscription.IsSuspended = true;
+            //subscription.IsSuspended = true;
 
             db.SaveChanges();
 

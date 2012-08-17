@@ -183,6 +183,7 @@
     <Compile Include="Areas\Administrator\Controllers\SubscriptionTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\AuthorizeNetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
@@ -741,6 +742,7 @@
     <Content Include="WaIISHost.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Views\Account\SubscriptionSuspendedEmail.html.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

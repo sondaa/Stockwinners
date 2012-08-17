@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using WebSite.Models;
+using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Security.Principal;
 using DotNetOpenAuth.OAuth2;
@@ -81,6 +82,19 @@ namespace WebSite.Helpers.Authentication
             if (loggedInUser != null)
             {
                 return DatabaseContext.GetInstance().Users.First(
+                    u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
+            }
+
+            return null;
+        }
+
+        public static User GetCurrentUserEagerlyLoaded()
+        {
+            LoggedInUserIdentity loggedInUser = Authentication.GetCurrentUserIdentity();
+
+            if (loggedInUser != null)
+            {
+                return DatabaseContext.GetInstance().Users.Include(u => u.Subscription).Include(u => u.Roles).First(
                     u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
             }
 

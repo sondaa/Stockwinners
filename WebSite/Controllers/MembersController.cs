@@ -14,7 +14,7 @@ using WebSite.Models.Logic;
 
 namespace WebSite.Controllers
 {
-    [MembersOnly(AllowExpiredTrials = true)]
+    [MembersOnly(AllowExpiredTrials = true, AllowSuspendedPayments = true)]
     public class MembersController : Controller
     {
         public ActionResult Index()
@@ -48,6 +48,22 @@ namespace WebSite.Controllers
             }
 
             return View(currentUser.NotificationSettings);
+        }
+
+        /// <summary>
+        /// Used to update a suspended subscription due to failing payment.
+        /// </summary>
+        [RequireHttps]
+        public ActionResult UpdateSubscription()
+        {
+            return this.View();
+        }
+
+        [RequireHttps]
+        [HttpPost]
+        public ActionResult UpdateSubscription(SubscriptionRegistration subscriptionUpdateInformation)
+        {
+
         }
 
         [RequireHttps]
@@ -243,7 +259,6 @@ namespace WebSite.Controllers
             ViewBag.SavedSuccessfully = false;
             ViewBag.IsTrialMember = !user.SubscriptionId.HasValue;
             ViewBag.IsUsingCancelledSubscription = ViewBag.IsTrialMember && user.SubscriptionExpiryDate.HasValue && user.SubscriptionExpiryDate.Value >= DateTime.UtcNow;
-            ViewBag.IsLegacyMember = user.IdentityProvider == (int)IdentityProvider.Stockwinners && user.SignUpDate <= new DateTime(2012, 08, 05);
 
             // If the user is not a trial member, then obtain his/her subscription information
             if (!ViewBag.IsTrialMember || ViewBag.IsUsingCancelledSubscription)

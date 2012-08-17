@@ -31,8 +31,6 @@
         });
     </script>
 }
-@if (!ViewBag.IsLegacyMember)
-{
 <h2>Subscription Settings</h2>
 <div id="cancellation-dialog-div">
     Are you sure you want to cancel your subscription?
@@ -58,7 +56,6 @@ else
     <span>You have an active @ViewBag.SubscriptionFrequency subscription. <a href="#" id="cancellation-link-a">Cancel Subscription</a></span>
 }
 </div>
-}
 <h2>Notification Settings</h2>
 @if (ViewBag.SavedSuccessfully)
 {

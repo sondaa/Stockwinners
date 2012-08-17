@@ -20,6 +20,11 @@ namespace WebSite.Infrastructure.Attributes
         /// </summary>
         public bool AllowExpiredTrials { get; set; }
 
+        /// <summary>
+        /// Whether to allow members whose subscription payment is suspended.
+        /// </summary>
+        public bool AllowSuspendedPayments { get; set; }
+
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             // Use the default logic to determine if the user is currently logged in
@@ -32,7 +37,7 @@ namespace WebSite.Infrastructure.Attributes
             // 4) have a valid trial membership
             if (isRequestAuthenticated)
             {
-                User currentUser = Authentication.GetCurrentUser();
+                User currentUser = Authentication.GetCurrentUserEagerlyLoaded();
 
                 // Don't allow banned users to do anything
                 if (currentUser.IsBanned)
@@ -46,15 +51,14 @@ namespace WebSite.Infrastructure.Attributes
                     return true;
                 }
 
-                // Allow all legacy members until we finish their subscription ports
-                if (currentUser.IdentityProvider == (int)IdentityProvider.Stockwinners && currentUser.SignUpDate <= new DateTime(2012, 08, 05))
-                {
-                    return true;
-                }
-
                 // Does the user have an active subscription?
                 if (currentUser.SubscriptionId.HasValue)
                 {
+                    if (currentUser.Subscription.IsSuspended)
+                    {
+                        return this.AllowSuspendedPayments;
+                    }
+
                     return true;
                 }
 

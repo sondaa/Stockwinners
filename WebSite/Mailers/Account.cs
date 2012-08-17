@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Net.Mail;
 using ActionMailer.Net.Mvc;
+using WebSite.Models;
 
 namespace WebSite.Mailers
 { 
@@ -34,6 +35,11 @@ namespace WebSite.Mailers
 			return this.Email(viewName: "TrialExpired");
 		}
 
-		
+        public virtual EmailResult PaymentSuspendedEmail(User affectedUser)
+        {
+            Subject = "Subscription Suspended";
+
+            return this.Email(viewName: "SubscriptionSuspendedEmail", model: affectedUser);
+        }
 	}
 }

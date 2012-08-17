@@ -28,6 +28,12 @@ namespace WebSite.Models
         [ForeignKey("CreditCard")]
         public int CreditCardId { get; set; }
         public virtual CreditCard CreditCard { get; set; }
+
+        /// <summary>
+        /// Is this subscription suspended because of invalid payments?
+        /// </summary>
+        [Required]
+        public bool IsSuspended { get; set; }
     }
 
     public class SubscriptionType

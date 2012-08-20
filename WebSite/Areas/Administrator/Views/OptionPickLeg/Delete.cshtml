@@ -1,33 +1,52 @@
 ﻿@model WebSite.Models.Data.Picks.OptionPickLeg
 
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
 <fieldset>
     <legend>OptionPickLeg</legend>
-    
+
     <div class="display-label">
-        @Html.DisplayNameFor(model => model.Name)
+         @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
     </div>
-    
+
     <div class="display-label">
-            @Html.DisplayNameFor(model => model.EntryPrice)
+         @Html.DisplayNameFor(model => model.EntryPrice)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.EntryPrice)
     </div>
-    
+
     <div class="display-label">
-            @Html.DisplayNameFor(model => model.ExitPrice)
+         @Html.DisplayNameFor(model => model.ExitPrice)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.ExitPrice)
     </div>
-    
+
     <div class="display-label">
-            @Html.DisplayNameFor(model => model.Quantity)
+         @Html.DisplayNameFor(model => model.ClosingDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ClosingDate)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Quantity)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Quantity)
     </div>
 </fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" />
+    </p>
+}

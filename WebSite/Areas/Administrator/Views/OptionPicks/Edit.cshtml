@@ -7,7 +7,7 @@
 <h2>Edit</h2>
 
 @using (Html.BeginForm()) {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
 
     <fieldset>
         <legend>OptionPick</legend>
@@ -69,17 +69,40 @@
         </div>
         <div class="editor-field">
             @Html.DisplayFor(model => model.ClosingDate)
-            @Html.HiddenFor(model => model.ClosingDate)
+            @Html.EditorFor(model => model.ClosingDate) (leave empty to denote today's date)
             @Html.ValidationMessageFor(model => model.ClosingDate)
         </div>
-        <div>Legs
-            @foreach (WebSite.Models.Data.Picks.OptionPickLeg leg in Model.Legs)
-            {
-                Html.DisplayFor(m => leg);
-            }
-            @Html.ActionLink("Edit Legs", "Legs", new { optionPickId = Model.PickId })
-            
-        </div>
+        <h3>Legs</h3>
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <td>Quantity</td>
+                    <td>Name</td>
+                    <td>Entry Price</td>
+                    <td>Exit Price</td>
+                    <td>Actions</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (WebSite.Models.Data.Picks.OptionPickLeg leg in Model.Legs)
+                {
+                    <tr>
+                        <td>@leg.Quantity</td>
+                        <td>@leg.Name</td>
+                        <td>@leg.EntryPrice.ToString("C")</td>
+                        <td>@(leg.ExitPrice.HasValue ? leg.ExitPrice.Value.ToString("C") : "")</td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", "OptionPickLeg", new { id = leg.OptionPickLegId }, null)
+                            @Html.ActionLink("Delete", "Delete", "OptionPickLeg", new { id = leg.OptionPickLegId }, null)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (!Model.ClosingDate.HasValue)
+        {
+            @Html.ActionLink("Add Leg", "Create", "OptionPickLeg", new { optionPickId = Model.PickId }, null)
+        }
         <p>
             <input type="submit" name="submitButton" value="Save Changes" />
         </p>
@@ -90,6 +113,12 @@
             </p>
             <p>
                 <input type="submit" name="previewButton" value="Save Changes and Send Preview Email to Admins" />
+            </p>
+        }
+        else if (!Model.ClosingDate.HasValue)
+        {
+            <p>
+                <input type="submit" name="closeButton" value="Close This Trade" />
             </p>
         }
     </fieldset>

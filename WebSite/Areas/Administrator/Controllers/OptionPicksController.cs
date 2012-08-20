@@ -7,9 +7,12 @@ using System.Web;
 using System.Web.Mvc;
 using WebSite.Models.Data.Picks;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
+using WebSite.Models;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
+    [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class OptionPicksController : Controller
     {
         private DatabaseContext db = new DatabaseContext();
@@ -55,7 +58,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            OptionPick optionPick = db.OptionPicks.Find(id);
+            OptionPick optionPick = db.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
             if (optionPick == null)
             {
                 return HttpNotFound();
@@ -65,13 +68,30 @@ namespace WebSite.Areas.Administrator.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(OptionPick optionPick, string saveButton, string publishButton, string previewButton)
+        public ActionResult Edit(OptionPick optionPick, string saveButton, string publishButton, string previewButton, string closeButton)
         {
             if (ModelState.IsValid)
             {
                 if (publishButton != null)
                 {
                     optionPick.Publish();
+                }
+                else if (closeButton != null)
+                {
+                    // Verify that all legs are closed already
+
+                    foreach (var leg in new DatabaseContext().OptionPicks.Find(optionPick.PickId).Legs)
+                    {
+                        if (!leg.ClosingDate.HasValue)
+                        {
+                            return this.RedirectToAction("Edit", new { id = optionPick.PickId });
+                        }
+                    }
+
+                    if (!optionPick.ClosingDate.HasValue)
+                    {
+                        optionPick.ClosingDate = DateTime.UtcNow;
+                    }
                 }
 
                 db.Entry(optionPick).State = EntityState.Modified;

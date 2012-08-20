@@ -7,9 +7,12 @@ using System.Web;
 using System.Web.Mvc;
 using WebSite.Models.Data.Picks;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
+using WebSite.Models;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
+    [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class StockPicksController : Controller
     {
         private DatabaseContext db = new DatabaseContext();

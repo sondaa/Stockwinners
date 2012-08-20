@@ -9,11 +9,13 @@ using System.Data.Objects;
 using System.Linq;
 using System.Web.Mvc;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
 using WebSite.Models.Logic;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
+    [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class UsersController : Controller
     {
         private DatabaseContext db = new DatabaseContext();

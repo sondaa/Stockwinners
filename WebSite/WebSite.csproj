@@ -173,6 +173,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administrator\AdministratorAreaRegistration.cs" />
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\OptionPickLegController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\StockPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\UsersController.cs" />
@@ -314,7 +315,6 @@
     <Content Include="Areas\Administrator\Views\OptionPicks\Create.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPicks\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPicks\Delete.cshtml" />
-    <Content Include="Areas\Administrator\Views\OptionPicks\Legs.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\Index.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\Details.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\Edit.cshtml" />
@@ -369,6 +369,9 @@
     <Content Include="Images\Social Networks\twitter-32.png" />
     <Content Include="Images\Social Networks\twitter-follow.gif" />
     <Content Include="Areas\Administrator\Views\Users\TrialExpired.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPickLeg\Create.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPickLeg\Edit.cshtml" />
+    <Content Include="Areas\Administrator\Views\OptionPickLeg\Delete.cshtml" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.0.js" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
@@ -725,7 +728,6 @@
     <Content Include="Areas\Administrator\Views\DailyAlerts\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\DailyAlerts\Delete.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
-    <Content Include="Views\Shared\DisplayTemplates\OptionPickLeg.cshtml" />
     <Content Include="Views\Picks\StockPickEmail.html.cshtml" />
     <Content Include="Views\Picks\OptionPickEmail.html.cshtml" />
     <Content Include="Views\Picks\AlertEmail.html.cshtml" />
@@ -749,6 +751,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="References\" />
+    <Folder Include="Views\Shared\DisplayTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

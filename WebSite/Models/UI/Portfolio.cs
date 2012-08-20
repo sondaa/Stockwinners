@@ -11,5 +11,7 @@ namespace WebSite.Models.UI
         public IEnumerable<StockPick> Stocks { get; set; }
 
         public IEnumerable<OptionPick> Options { get; set; }
+
+        public IEnumerable<StockPick> ClosedStocks { get; set; }
     }
 }

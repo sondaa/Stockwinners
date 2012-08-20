@@ -28,13 +28,36 @@
 
         .grey-background
         {
-            background-color: #CCCCCC;
+            background-color: #deeffc;
+        }
+
+        #body > table
+        {
+             margin: 0px auto; border-spacing: 0px; border-collapse: collapse; border-style: solid; border-width: 1px; border-color: #CCCCCC;
+        }
+
+        #body tr
+        {
+            border-bottom: solid 1px #CCCCCC;
+        }
+
+        #body td
+        {
+            padding-top: 2px;
+        }
+
+        #body h3
+        {
+            padding-top: 10px;
+            padding-bottom: 10px;
         }
     </style>
 }
 <h2>Portfolio</h2>
+@if (Request.IsAuthenticated)
+{
 <h3 style="margin-left: 6%;">Stocks</h3>
-<table style="text-align: center; width: 70%; margin: 0px auto; border-spacing: 0px; border-collapse: collapse;">
+<table style="text-align: center; width: 70%;">
     <tbody>
         @{ 
             int stockIndex = 0; 
@@ -68,7 +91,7 @@
     </tbody>
 </table>
 <h3 style="margin-left:6%;">Options</h3>
-<table style="text-align: center; width: 50%; margin: 0px auto; border-spacing: 0px; border-collapse: collapse;">
+<table style="text-align: center; width: 50%;">
     <tbody>
         @{
             int optionIndex = 0;
@@ -86,6 +109,62 @@
                     <td>@optionPick.PublishingDate.Value.ToShortDateString()</td>
                 </tr>
                 optionIndex++;
+            }
+        }
+    </tbody>
+</table>
+}
+else
+{
+    <p class="message-info">Since you are not logged in, you are only seeing our stock positions that have been closed. To see our current portfolio with our stock and option picks, please log in.</p>
+}
+<h3>Stock positions closed within the last 31 days</h3>
+<table style="text-align: center; width: 90%;">
+    <thead>
+        <tr>
+            <td>Symbol</td>
+            <td>Entry Price</td>
+            <td>Exit Price</td>
+            <td>Published On</td>
+            <td>Closed On</td>
+            <td>Type</td>
+            <td>Gain/Loss</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{ 
+            int closedStockIndex = 0; 
+            foreach (var stockPick in Model.ClosedStocks)
+            {
+                string background = string.Empty;
+
+                if ((closedStockIndex & 1) > 0)
+                {
+                    background = "grey-background";
+                }
+               
+                <tr class="clickable-row @(background)" data-bind="click: function() { window.location.href = '@Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId })'; }">
+                    <td>@stockPick.Symbol</td>
+                    <td>@stockPick.EntryPrice.ToString("C")</td>
+                    <td>@stockPick.ExitPrice.Value.ToString("C")</td>
+                    <td>@stockPick.PublishingDate.Value.ToShortDateString()</td>
+                    <td>@stockPick.ClosingDate.Value.ToShortDateString()</td>
+                    @{
+                        decimal gainLoss = ((stockPick.ExitPrice.Value - stockPick.EntryPrice) * 100) / stockPick.EntryPrice;
+                    }
+                    @if (stockPick.IsLongPosition)
+                    {
+                        <td style="color: #21892a">Long</td>
+                        <td style="color: @(gainLoss > 0 ? "#21892a" : "#ad2222")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                    }
+                    else
+                    {
+                        <td style="color: #ad2222">Short</td>
+                        <td style="color: @(gainLoss > 0 ? "#ad2222" : "#21892a")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                    }
+                </tr>
+        
+                closedStockIndex++;
             }
         }
     </tbody>

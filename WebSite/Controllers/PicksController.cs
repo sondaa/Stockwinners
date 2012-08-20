@@ -4,14 +4,17 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebSite.Database;
+using System.Data.Entity;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models.Data.Picks;
+using System.Data.Objects;
 
 namespace WebSite.Controllers
 {
     [MembersOnly]
     public class PicksController : Controller
     {
+        [AllowAnonymous]
         public ActionResult Portfolio()
         {
             DatabaseContext db = DatabaseContext.GetInstance();
@@ -19,7 +22,8 @@ namespace WebSite.Controllers
             Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
             {
                 Stocks = db.StockPicks.Include("Type").Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
-                Options = db.OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value)
+                Options = db.OptionPicks.Include("Type").Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value),
+                ClosedStocks = db.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.PublishingDate.Value)
             };
 
             return View(portfolio);

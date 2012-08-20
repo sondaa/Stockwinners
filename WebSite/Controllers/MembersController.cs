@@ -56,13 +56,65 @@ namespace WebSite.Controllers
         [RequireHttps]
         public ActionResult UpdateSubscription()
         {
+            ViewBag.Countries = DatabaseContext.GetInstance().Countries;
+
             return this.View();
         }
 
         [RequireHttps]
         [HttpPost]
-        public ActionResult UpdateSubscription(SubscriptionRegistration subscriptionUpdateInformation)
+        public ActionResult UpdateSubscription(CreditCard newCreditCard)
         {
+            if (ModelState.IsValid)
+            {
+                User currentUser = Authentication.GetCurrentUserEagerlyLoaded();
+
+                // Create a new subscription with the old settings
+                ISubscriptionRequest subscriptionRequest = CreateAuthorizeDotNetSubscriptionRequest(newCreditCard, currentUser.Subscription.SubscriptionType);
+                ISubscriptionRequest subscriptionResponse = null;
+
+                ISubscriptionGateway subscriptionGateway = this.GetSubscriptionGateway();
+
+                try
+                {
+                    // Cancel the curret subscription
+                    subscriptionGateway.CancelSubscription(currentUser.Subscription.AuthorizeNETSubscriptionId);
+
+                    // Add the new subscription now
+                    subscriptionResponse = subscriptionGateway.CreateSubscription(subscriptionRequest);
+
+                    // Subscription was updated successfully
+
+                    // Encrypt the card's number
+                    newCreditCard.Encrypt();
+
+                    DatabaseContext db = DatabaseContext.GetInstance();
+
+                    // Construct a subscription for the user
+                    Subscription userSubscription = new Subscription()
+                    {
+                        ActivationDate = DateTime.UtcNow,
+                        AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
+                        CancellationDate = null,
+                        SubscriptionTypeId = currentUser.Subscription.SubscriptionTypeId,
+                        CreditCard = newCreditCard
+                    };
+
+                    // Associate the subscription with the user
+                    currentUser.AddSubscription(userSubscription);
+
+                    db.SaveChanges();
+
+                    return this.RedirectToAction("Index");
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
+            }
+
+            ViewBag.Countries = DatabaseContext.GetInstance().Countries;
+
             return this.View();
         }
 
@@ -128,8 +180,7 @@ namespace WebSite.Controllers
                 };
 
                 // Associate the subscription with the user
-                currentUser.Subscription = userSubscription;
-                currentUser.Subscriptions.Add(userSubscription);
+                currentUser.AddSubscription(userSubscription);
 
                 db.SaveChanges();
 
@@ -146,45 +197,60 @@ namespace WebSite.Controllers
 
         private static ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(SubscriptionRegistration registrationInformation)
         {
-            ISubscriptionRequest subscriptionRequest = SubscriptionRequest.CreateNew();
-
-            // Billing address information
-            string countryName = DatabaseContext.GetInstance().Countries.Find(registrationInformation.CreditCard.BillingAddress.CountryId).Name;
-            subscriptionRequest.BillingAddress = new AuthorizeNet.Address()
-            {
-                City = registrationInformation.CreditCard.BillingAddress.City,
-                Country = countryName,
-                First = registrationInformation.CreditCard.CardholderFirstName,
-                Last = registrationInformation.CreditCard.CardholderLastName,
-                Phone = registrationInformation.CreditCard.BillingAddress.PhoneNumber,
-                State = registrationInformation.CreditCard.BillingAddress.ProvinceOrState,
-                Street =
-                    registrationInformation.CreditCard.BillingAddress.AddressLine1 +
-                    (!string.IsNullOrEmpty(registrationInformation.CreditCard.BillingAddress.AddressLine2) ?
-                        (Environment.NewLine + registrationInformation.CreditCard.BillingAddress.AddressLine2) :
-                        string.Empty)
-                ,
-                Zip = registrationInformation.CreditCard.BillingAddress.PostalCode
-            };
-
             // Subscription information
             SubscriptionType selectedSubscriptionType = registrationInformation.AvailableSubscriptionTypes.First(st => st.SubscriptionTypeId == registrationInformation.SelectedSubscriptionTypeId);
+
+            return CreateAuthorizeDotNetSubscriptionRequest(registrationInformation.CreditCard, selectedSubscriptionType);
+        }
+
+        private static ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(CreditCard creditCard, SubscriptionType subscriptionType)
+        {
+            ISubscriptionRequest request = SubscriptionRequest.CreateNew();
+
+            // Billing address information
+            string countryName = DatabaseContext.GetInstance().Countries.Find(creditCard.BillingAddress.CountryId).Name;
+            SetSubscriptionBillingAddress(request, creditCard, countryName);
+
+            // Subscription information
+            SetSubscriptionBasics(request, subscriptionType);
+
+            // Credit card information
+            SetSubscriptionCreditCardInformation(request, creditCard);
+
+            // Customer information
+            WebSite.Models.User currentUser = Authentication.GetCurrentUser();
+            request.CustomerEmail = currentUser.EmailAddress;
+            request.CustomerID = currentUser.UserId.ToString();
+
+            return request;
+        }
+
+        private static void SetSubscriptionCreditCardInformation(ISubscriptionRequest subscriptionRequest, CreditCard creditCard)
+        {
+            subscriptionRequest.CardCode = creditCard.CVV;
+            subscriptionRequest.CardExpirationMonth = creditCard.ExpirationMonth;
+            subscriptionRequest.CardExpirationYear = creditCard.ExpirationYear;
+            subscriptionRequest.CardNumber = creditCard.Number;
+        }
+
+        private static void SetSubscriptionBasics(ISubscriptionRequest subscriptionRequest, SubscriptionType subscriptionType)
+        {
             subscriptionRequest.StartsOn = DateTime.UtcNow;
-            subscriptionRequest.Amount = selectedSubscriptionType.Price;
-            subscriptionRequest.SubscriptionName = selectedSubscriptionType.SubscriptionFrequency.Name + " Membership";
+            subscriptionRequest.Amount = subscriptionType.Price;
+            subscriptionRequest.SubscriptionName = subscriptionType.SubscriptionFrequency.Name + " Membership";
 
             // Subscription interval
-            if (selectedSubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly)
+            if (subscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly)
             {
                 subscriptionRequest.BillingInterval = 1;
                 subscriptionRequest.BillingIntervalUnits = BillingIntervalUnits.Months;
             }
-            else if (selectedSubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly)
+            else if (subscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly)
             {
                 subscriptionRequest.BillingInterval = 365 / 4;
                 subscriptionRequest.BillingIntervalUnits = BillingIntervalUnits.Days;
             }
-            else if (selectedSubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly)
+            else if (subscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly)
             {
                 subscriptionRequest.BillingInterval = 365;
                 subscriptionRequest.BillingIntervalUnits = BillingIntervalUnits.Days;
@@ -193,18 +259,26 @@ namespace WebSite.Controllers
             {
                 // TODO: Log Error! We should never hit this case.
             }
+        }
 
-            // Credit card information
-            subscriptionRequest.CardCode = registrationInformation.CreditCard.CVV;
-            subscriptionRequest.CardExpirationMonth = registrationInformation.CreditCard.ExpirationMonth;
-            subscriptionRequest.CardExpirationYear = registrationInformation.CreditCard.ExpirationYear;
-            subscriptionRequest.CardNumber = registrationInformation.CreditCard.Number;
-
-            // Customer information
-            WebSite.Models.User currentUser = Authentication.GetCurrentUser();
-            subscriptionRequest.CustomerEmail = currentUser.EmailAddress;
-            subscriptionRequest.CustomerID = currentUser.UserId.ToString();
-            return subscriptionRequest;
+        private static void SetSubscriptionBillingAddress(ISubscriptionRequest subscriptionRequest, CreditCard creditCard, string countryName)
+        {
+            subscriptionRequest.BillingAddress = new AuthorizeNet.Address()
+            {
+                City = creditCard.BillingAddress.City,
+                Country = countryName,
+                First = creditCard.CardholderFirstName,
+                Last = creditCard.CardholderLastName,
+                Phone = creditCard.BillingAddress.PhoneNumber,
+                State = creditCard.BillingAddress.ProvinceOrState,
+                Street =
+                    creditCard.BillingAddress.AddressLine1 +
+                    (!string.IsNullOrEmpty(creditCard.BillingAddress.AddressLine2) ?
+                        (Environment.NewLine + creditCard.BillingAddress.AddressLine2) :
+                        string.Empty)
+                ,
+                Zip = creditCard.BillingAddress.PostalCode
+            };
         }
 
         public ActionResult CancelSubscription()
@@ -259,6 +333,7 @@ namespace WebSite.Controllers
             ViewBag.SavedSuccessfully = false;
             ViewBag.IsTrialMember = !user.SubscriptionId.HasValue;
             ViewBag.IsUsingCancelledSubscription = ViewBag.IsTrialMember && user.SubscriptionExpiryDate.HasValue && user.SubscriptionExpiryDate.Value >= DateTime.UtcNow;
+            ViewBag.IsUsingSuspendedSubscription = user.SubscriptionId.HasValue && user.Subscription.IsSuspended;
 
             // If the user is not a trial member, then obtain his/her subscription information
             if (!ViewBag.IsTrialMember || ViewBag.IsUsingCancelledSubscription)

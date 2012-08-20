@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using WebSite.Database;
@@ -32,6 +32,7 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.MonthlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
             ViewBag.QuarterlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
             ViewBag.YearlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
+            ViewBag.MembersWithSuspendedPayment = db.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended);
 
             return this.View();
         }

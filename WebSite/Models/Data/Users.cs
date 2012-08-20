@@ -8,6 +8,7 @@ using System.Web;
 using ActionMailer.Net.Mvc;
 using DataAnnotationsExtensions;
 using WebSite.Models.Data;
+using WebSite.Models.Data.Picks;
 
 namespace WebSite.Models
 {
@@ -29,6 +30,7 @@ namespace WebSite.Models
         [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         [Email]
+        [Display(Name = "Email")]
         public string EmailAddress { get; set; }
 
         [Required]
@@ -45,9 +47,11 @@ namespace WebSite.Models
 
         // Telemetry
         [Required]
+        [Display(Name = "Signed Up On")]
         public DateTime SignUpDate { get; set; }
 
         [Required]
+        [Display(Name = "Last Login Date")]
         public DateTime LastLoginDate { get; set; }
 
         // Trial related
@@ -69,6 +73,12 @@ namespace WebSite.Models
         public int NotificationSettingsId { get; set; }
         public virtual NotificationSettings NotificationSettings { get; set; }
 
+        // To support subscribing to multiple picks
+        public virtual ICollection<Pick> SubscribedPicks { get; set; }
+
+        // Set of credit cards the user has ever used
+        public virtual ICollection<CreditCard> CreditCards { get; set; }
+
         public void SendWelcomeEmail()
         {
             EmailResult email = new Mailers.Account().Welcome();
@@ -76,6 +86,22 @@ namespace WebSite.Models
             email.Mail.To.Add(this.EmailAddress);
 
             WebSite.Helpers.Email.SendEmail(email);
+        }
+
+        /// <summary>
+        /// Returns true if the user's trial membership still has time left.
+        /// </summary>
+        public bool IsTrialValid()
+        {
+            return this.TrialExpiryDate >= DateTime.UtcNow;
+        }
+
+        public void AddSubscription(Subscription subscription)
+        {
+            // Associate the subscription with the user
+            this.Subscription = subscription;
+            this.Subscriptions.Add(subscription);
+            this.CreditCards.Add(subscription.CreditCard);
         }
     }
 

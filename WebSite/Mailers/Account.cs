@@ -39,6 +39,8 @@ namespace WebSite.Mailers
         {
             Subject = "Subscription Suspended";
 
+            To.Add(affectedUser.EmailAddress);
+
             return this.Email(viewName: "SubscriptionSuspendedEmail", model: affectedUser);
         }
 	}

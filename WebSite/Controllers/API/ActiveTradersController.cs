@@ -13,7 +13,6 @@ namespace WebSite.Controllers.API
 {
     public class ActiveTradersController : ApiController
     {
-        [Queryable]
         public IQueryable<ActiveTradersNewsElement> GetNewsElements()
         {
             // Call into the active traders hub and return the current set of news elements

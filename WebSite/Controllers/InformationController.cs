@@ -53,5 +53,10 @@ namespace WebSite.Controllers
         {
             return View();
         }
+
+        public ActionResult PressRelease()
+        {
+            return View();
+        }
     }
 }

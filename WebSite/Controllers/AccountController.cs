@@ -57,6 +57,23 @@ namespace WebSite.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+
+            WebSite.Models.User user = Authentication.GetCurrentUserEagerlyLoaded();
+
+            if (user != null)
+            {
+                if (user.SubscriptionId.HasValue)
+                {
+                    // The user has a subscription, are they routed to the login page because they have a suspended subscription?
+                    ViewBag.HasSuspendedSubscription = user.Subscription.IsSuspended;
+                }
+                else
+                {
+                    // The user does not have a subscription, are they routed to this page because they have an expired trial membership?
+                    ViewBag.TrialExpired = !user.IsTrialValid();
+                }
+            }
+
             return View();
         }
 
@@ -78,6 +95,7 @@ namespace WebSite.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
 

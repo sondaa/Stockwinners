@@ -102,14 +102,6 @@
             @Html.ValidationMessageFor(model => model.SubscriptionExpiryDate)
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.NotificationSettingsId, "NotificationSettings")
-        </div>
-        <div class="editor-field">
-            @Html.DropDownList("NotificationSettingsId", String.Empty)
-            @Html.ValidationMessageFor(model => model.NotificationSettingsId)
-        </div>
-
         <p>
             <input type="submit" value="Save" />
         </p>

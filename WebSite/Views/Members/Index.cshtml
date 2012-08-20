@@ -51,6 +51,10 @@ else if (ViewBag.IsUsingCancelledSubscription)
 {
     <span>You have cancelled your subscription but may use the website until @ViewBag.SubscriptionExpiryDate. Please @Html.ActionLink("resubscribe", "Subscribe") to continue using the website after @ViewBag.SubscriptionExpiryDate.</span>
 }
+else if (ViewBag.IsUsingSuspendedSubscription)
+{
+    <span class="message-error">Your last payment was not successful. Please @Html.ActionLink("update your subscription information", "UpdateSubscription") to continue using the website.</span>
+}
 else
 {
     <span>You have an active @ViewBag.SubscriptionFrequency subscription. <a href="#" id="cancellation-link-a">Cancel Subscription</a></span>

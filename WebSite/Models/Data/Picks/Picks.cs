@@ -64,6 +64,11 @@ namespace WebSite.Models.Data.Picks
         /// </summary>
         public virtual ICollection<PickUpdate> Updates { get; set; }
 
+        /// <summary>
+        /// Collection of users who are interested in hearing updates about this particular pick.
+        /// </summary>
+        public virtual ICollection<User> Subscribers { get; set; }
+
         public void Publish()
         {
             this.IsPublished = true;

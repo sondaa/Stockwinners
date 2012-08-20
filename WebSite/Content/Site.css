@@ -485,10 +485,12 @@ fieldset
 
 .message-error
 {
+    border: 1px solid;
     clear: both;
     color: #e80c4d;
     font-size: 1.1em;
     font-weight: bold;
+    padding: 10px 20px;
     margin: 20px 0 10px 0;
 }
 

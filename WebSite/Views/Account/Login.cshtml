@@ -5,9 +5,17 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
-@if (!string.IsNullOrEmpty(ViewBag.ReturnUrl))
+@if (ViewBag.HasSuspendedSubscription != null && ViewBag.HasSuspendedSubscription)
 {
-    <p class="message-info">The page you are trying to visit requires an account. Please sign in or activate your free 2 weeks trial membership below. If using Facebook or Google, Stockwinners.com will only access your name and email address from your social network provider.</p>
+    <p class="message-error">Your last payment was not successful. Please @Html.ActionLink("update your payment details", "UpdateSubscription", "Members") to continue using the website.</p>
+}
+else if (ViewBag.TrialExpired != null && ViewBag.TrialExpired)
+{
+    <p class="message-error">Your trial has expired. Please @Html.ActionLink("subscribe", "Subscribe", "Members") to continue using the website.</p>
+}
+else if (!string.IsNullOrEmpty(ViewBag.ReturnUrl))
+{
+    <p class="message-error">The page you are trying to visit requires an account. Please sign in or activate your free 2 weeks trial membership below. If using Facebook or Google, Stockwinners.com will only access your name and email address from your social network provider.</p>
 }
 <p class="message-info" style="text-align: center;">By logging in, you agree to our @Html.ActionLink("Membership Policy", "MembershipPolicy", "Information") and @Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information").</p>
 @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))

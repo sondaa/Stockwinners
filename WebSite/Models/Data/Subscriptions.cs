@@ -32,8 +32,8 @@ namespace WebSite.Models
         /// <summary>
         /// Is this subscription suspended because of invalid payments?
         /// </summary>
-        //[Required]
-        //public bool IsSuspended { get; set; }
+        [Required]
+        public bool IsSuspended { get; set; }
     }
 
     public class SubscriptionType

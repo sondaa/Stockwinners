@@ -1,17 +1,15 @@
-﻿using System;
+﻿using ActionMailer.Net.Mvc;
+using AuthorizeNet;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using WebSite.Models;
 using WebSite.Database;
+using WebSite.Models;
 using WebSite.Models.Logic;
-using AuthorizeNet;
-using WebSite.Controllers;
-using WebSite.Helpers.Authentication;
-using System.Configuration;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
@@ -21,8 +19,9 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Index()
         {
-            var users = db.Users.Include(u => u.Subscription).Include(u => u.NotificationSettings);
-            return View(users.ToList());
+            var users = db.Users.Include(u => u.Subscription);
+
+            return View(users);
         }
 
         public ActionResult Details(int id = 0)
@@ -35,28 +34,6 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(user);
         }
 
-        public ActionResult Create()
-        {
-            ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId");
-            ViewBag.NotificationSettingsId = new SelectList(db.NotificationSettings, "NotificationSettingId", "NotificationSettingId");
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Create(User user)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Users.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
-            ViewBag.NotificationSettingsId = new SelectList(db.NotificationSettings, "NotificationSettingId", "NotificationSettingId", user.NotificationSettingsId);
-            return View(user);
-        }
-
         public ActionResult Edit(int id = 0)
         {
             User user = db.Users.Find(id);
@@ -65,7 +42,6 @@ namespace WebSite.Areas.Administrator.Controllers
                 return HttpNotFound();
             }
             ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
-            ViewBag.NotificationSettingsId = new SelectList(db.NotificationSettings, "NotificationSettingId", "NotificationSettingId", user.NotificationSettingsId);
             return View(user);
         }
 
@@ -79,7 +55,6 @@ namespace WebSite.Areas.Administrator.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
-            ViewBag.NotificationSettingsId = new SelectList(db.NotificationSettings, "NotificationSettingId", "NotificationSettingId", user.NotificationSettingsId);
             return View(user);
         }
 
@@ -100,6 +75,34 @@ namespace WebSite.Areas.Administrator.Controllers
             db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult SuspendedMembers()
+        {
+            IEnumerable<User> usersWithSuspendedPayments = from user in db.Users.Include(u => u.Subscription) where user.Subscription != null && user.Subscription.IsSuspended select user;
+
+            ViewBag.Title = "Members with Suspended Payments";
+
+            return this.View(viewName: "Index", model: usersWithSuspendedPayments);
+        }
+
+        /// <summary>
+        /// Suspends the given member's account.
+        /// </summary>
+        public ActionResult Suspend(int userId)
+        {
+            User user = db.Users.Find(userId);
+
+            // Suspend account
+            user.Subscription.IsSuspended = true;
+            db.SaveChanges();
+
+            // Email the user
+            EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(user);
+
+            WebSite.Helpers.Email.SendEmail(email);
+
+            return this.RedirectToAction("SuspendedMembers");
         }
 
         [RequireHttps]
@@ -164,8 +167,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 };
 
                 // Associate the subscription with the user
-                user.Subscription = userSubscription;
-                user.Subscriptions.Add(userSubscription);
+                user.AddSubscription(userSubscription);
 
                 db.SaveChanges();
 
@@ -241,6 +243,7 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             return new SubscriptionGateway(ConfigurationManager.AppSettings["AuthorizeNETAPILoginID"], ConfigurationManager.AppSettings["AuthorizeNETTransactionKey"], bool.Parse(ConfigurationManager.AppSettings["AuthorizeNETTestMode"]) ? ServiceMode.Test : ServiceMode.Live);
         }
+
 
         protected override void Dispose(bool disposing)
         {

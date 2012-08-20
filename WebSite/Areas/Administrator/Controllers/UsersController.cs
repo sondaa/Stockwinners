@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Objects;
 using System.Linq;
 using System.Web.Mvc;
 using WebSite.Database;
@@ -84,6 +85,24 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.Title = "Members with Suspended Payments";
 
             return this.View(viewName: "Index", model: usersWithSuspendedPayments);
+        }
+
+        /// <summary>
+        /// Email all users whose trial expires today.
+        /// </summary>
+        public ActionResult TrialExpired()
+        {
+            // Construct the "trial expired" email
+            EmailResult email = new WebSite.Mailers.Account().TrialExpired();
+
+            // Look up all users whole trial expires today
+            IEnumerable<User> usersWithExpiredTrial = from user in DatabaseContext.GetInstance().Users
+                                                      where !user.SubscriptionId.HasValue && EntityFunctions.DiffDays(user.TrialExpiryDate, EntityFunctions.CreateDateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0)) == 0
+                                                      select user;
+
+            WebSite.Helpers.Email.SendEmail(email, usersWithExpiredTrial);
+
+            return this.View();
         }
 
         /// <summary>
@@ -243,7 +262,6 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             return new SubscriptionGateway(ConfigurationManager.AppSettings["AuthorizeNETAPILoginID"], ConfigurationManager.AppSettings["AuthorizeNETTransactionKey"], bool.Parse(ConfigurationManager.AppSettings["AuthorizeNETTestMode"]) ? ServiceMode.Test : ServiceMode.Live);
         }
-
 
         protected override void Dispose(bool disposing)
         {

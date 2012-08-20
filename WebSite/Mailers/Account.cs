@@ -26,19 +26,18 @@ namespace WebSite.Mailers
 
 			return this.Email(viewName: "PasswordResetEmail");
 		}
-
 		
 		public virtual EmailResult TrialExpired()
 		{
-			Subject = "TrialExpired";
-			
-			return this.Email(viewName: "TrialExpired");
+			Subject = "Trial Membership Conclusion";
+            To.Add("noreply@stockwinners.com");
+
+			return this.Email(viewName: "TrialExpiredEmail");
 		}
 
         public virtual EmailResult PaymentSuspendedEmail(User affectedUser)
         {
             Subject = "Subscription Suspended";
-
             To.Add(affectedUser.EmailAddress);
 
             return this.Email(viewName: "SubscriptionSuspendedEmail", model: affectedUser);

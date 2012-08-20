@@ -78,14 +78,21 @@ namespace WebSite.Helpers
                    select user;
         }
 
-        private static void SendEmail(EmailResult email, IEnumerable<User> recipients)
+        public static void SendEmail(EmailResult email, IEnumerable<User> recipients)
         {
+            bool hasRecepients = false;
+
             foreach (User user in recipients)
             {
+                hasRecepients = true;
+
                 email.Mail.Bcc.Add(user.EmailAddress);
             }
 
-            Email.SendEmail(email);
+            if (hasRecepients)
+            {
+                Email.SendEmail(email);
+            }
         }
 
         public static void SendEmail(EmailResult email)

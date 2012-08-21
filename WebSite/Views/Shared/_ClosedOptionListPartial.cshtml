@@ -1,0 +1,51 @@
+﻿@model IEnumerable<WebSite.Models.Data.Picks.OptionPick>
+<table style="text-align: center; width: 90%;">
+    <thead>
+        <tr>
+            <td>Symbol</td>
+            <td>Entry Price</td>
+            <td>Exit Price</td>
+            <td>Published On</td>
+            <td>Closed On</td>
+            <td>Type</td>
+            <td>Gain/Loss</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{ 
+            int closedOptionIndex = 0; 
+            foreach (var optionPick in Model)
+            {
+                string background = string.Empty;
+
+                if ((closedOptionIndex & 1) > 0)
+                {
+                    background = "grey-background";
+                }
+               
+                <tr class="clickable-row @(background)" onclick="window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })';">
+                    <td>@optionPick.Symbol</td>
+                    <td>@optionPick.Cost().ToString("C")</td>
+                    <td>@optionPick.Proceeds().ToString("C")</td>
+                    <td>@optionPick.PublishingDate.Value.ToShortDateString()</td>
+                    <td>@optionPick.ClosingDate.Value.ToShortDateString()</td>
+                    <td>@optionPick.Type.Name</td>
+                    @{
+                        decimal change = optionPick.Change();
+                    }
+                    @if (change >= 0)
+                    {
+                        <td style="color: #21892a;">@(change.ToString("F"))%</td>
+                    }
+                    else
+                    {
+                        <td style="color: #ad2222">@(change.ToString("F"))%</td>
+                    }
+                </tr>
+        
+                closedOptionIndex++;
+            }
+        }
+
+    </tbody>
+</table>

@@ -24,5 +24,55 @@ namespace WebSite.Models.Data.Picks
         {
             Helpers.Email.Send(this, isPreview);
         }
+
+        public decimal Cost()
+        {
+            decimal purchasePrice = 0;
+
+            foreach (var leg in Legs)
+            {
+                purchasePrice += leg.Quantity * leg.EntryPrice;
+            }
+
+            return purchasePrice;
+        }
+
+        public decimal Proceeds()
+        {
+            // Trade must be closed before we can determine its profit/loss
+            if (!this.ClosingDate.HasValue)
+            {
+                return 0;
+            }
+
+            decimal salePrice = 0;
+
+            foreach (var leg in Legs)
+            {
+                // All trade legs must be closed before we can calculate its profit/loss
+                if (!leg.ClosingDate.HasValue || !leg.ExitPrice.HasValue)
+                {
+                    return 0;
+                }
+
+                salePrice += leg.Quantity * leg.ExitPrice.Value;
+            }
+
+            return salePrice;
+        }
+
+        public decimal Change()
+        {
+            // Trade must be closed before we can determine its profit/loss
+            if (!this.ClosingDate.HasValue)
+            {
+                return 0;
+            }
+
+            decimal purchasePrice = this.Cost();
+            decimal salePrice = this.Proceeds();
+
+            return (salePrice - purchasePrice) * 100 / purchasePrice;
+        }
     }
 }

@@ -747,11 +747,13 @@
     <Content Include="Views\Account\SubscriptionSuspendedEmail.html.cshtml" />
     <Content Include="Views\Information\PressRelease.cshtml" />
     <Content Include="Views\Members\UpdateSubscription.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\StockPick.cshtml" />
+    <Content Include="Views\Shared\_ClosedStockListPartial.cshtml" />
+    <Content Include="Views\Shared\_ClosedOptionListPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="References\" />
-    <Folder Include="Views\Shared\DisplayTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

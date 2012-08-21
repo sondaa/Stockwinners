@@ -13,5 +13,7 @@ namespace WebSite.Models.UI
         public IEnumerable<OptionPick> Options { get; set; }
 
         public IEnumerable<StockPick> ClosedStocks { get; set; }
+
+        public IEnumerable<OptionPick> ClosedOptions { get; set; }
     }
 }

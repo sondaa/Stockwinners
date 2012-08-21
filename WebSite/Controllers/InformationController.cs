@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Objects;
 using System.Linq;
-using System.Net.Mail;
-using System.Web;
 using System.Web.Mvc;
+using WebSite.Database;
 
 namespace WebSite.Controllers
 {
@@ -31,7 +31,17 @@ namespace WebSite.Controllers
 
         public ActionResult PhilosophyAndPerformance()
         {
-            return View();
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
+            {
+                Stocks = null,
+                Options = null,
+                ClosedStocks = db.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
+                ClosedOptions = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(optionPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(optionPick => optionPick.PublishingDate.Value)
+            };
+
+            return View(portfolio);
         }
 
         public ActionResult MembershipPolicy()

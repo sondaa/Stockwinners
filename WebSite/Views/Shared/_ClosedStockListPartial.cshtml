@@ -1,0 +1,51 @@
+﻿@model IEnumerable<WebSite.Models.Data.Picks.StockPick>
+<table style="text-align: center; width: 90%;">
+    <thead>
+        <tr>
+            <td>Symbol</td>
+            <td>Entry Price</td>
+            <td>Exit Price</td>
+            <td>Published On</td>
+            <td>Closed On</td>
+            <td>Type</td>
+            <td>Gain/Loss</td>
+        </tr>
+    </thead>
+    <tbody>
+        @{ 
+            int closedStockIndex = 0; 
+            foreach (var stockPick in Model)
+            {
+                string background = string.Empty;
+
+                if ((closedStockIndex & 1) > 0)
+                {
+                    background = "grey-background";
+                }
+               
+                <tr class="clickable-row @(background)" onclick="window.location.href = '@Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId })';">
+                    <td>@stockPick.Symbol</td>
+                    <td>@stockPick.EntryPrice.ToString("C")</td>
+                    <td>@stockPick.ExitPrice.Value.ToString("C")</td>
+                    <td>@stockPick.PublishingDate.Value.ToShortDateString()</td>
+                    <td>@stockPick.ClosingDate.Value.ToShortDateString()</td>
+                    @{
+                        decimal gainLoss = ((stockPick.ExitPrice.Value - stockPick.EntryPrice) * 100) / stockPick.EntryPrice;
+                    }
+                    @if (stockPick.IsLongPosition)
+                    {
+                        <td style="color: #21892a">Long</td>
+                        <td style="color: @(gainLoss > 0 ? "#21892a" : "#ad2222")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                    }
+                    else
+                    {
+                        <td style="color: #ad2222">Short</td>
+                        <td style="color: @(gainLoss > 0 ? "#ad2222" : "#21892a")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                    }
+                </tr>
+        
+                closedStockIndex++;
+            }
+        }
+    </tbody>
+</table>

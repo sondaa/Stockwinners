@@ -1,7 +1,53 @@
+@model WebSite.Models.UI.Portfolio
 @{
     ViewBag.Title = "Philosophy and Performance";
 }
-<h2>Performance</h2>
+@section Styles
+{
+    <style type="text/css">
+        .clickable-row
+        {
+            cursor: pointer;
+        }
+
+            .clickable-row:hover
+            {
+                background-color: #3b85e0;
+            }
+
+        .grey-background
+        {
+            background-color: #deeffc;
+        }
+
+        #body > table
+        {
+             margin: 0px auto; border-spacing: 0px; border-collapse: collapse; border-style: solid; border-width: 1px; border-color: #CCCCCC;
+        }
+
+        #body tr
+        {
+            border-bottom: solid 1px #CCCCCC;
+        }
+
+        #body td
+        {
+            padding-top: 2px;
+        }
+
+        #body h3
+        {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+}
+<h2>Recent Performance</h2>
+<h3>Stock positions closed within the last 31 days</h3>
+@Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
+<h3>Option positions closed within the last 31 days</h3>
+@Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
+<h2>Year-to-date Performance</h2>
 <p class="text-material">Our 2012 performance is presented below and is compared to the S&P 500 Index benchmark.</p>
 <div style="text-align: center">
     <img src="/Images/Performance/2012.JPG" /></div>

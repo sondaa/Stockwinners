@@ -2,8 +2,7 @@
 @{
     ViewBag.Title = Model.Symbol;
 }
-<h2>@(Model.IsLongPosition ? "Long" : "Short") Position on @(Model.Symbol) @@ @(Model.EntryPrice.ToString("C")) on @(Model.PublishingDate.Value.ToShortDateString()) (@Model.Type.Name)</h2>
-@(Html.Raw(Model.Description))
+@Html.DisplayForModel()
 <div style="text-align: right;">
     <img src="/Images/arrow-left-16.png" style="vertical-align: middle; padding-right: 7px;" />@Html.ActionLink("Back to Portfolio", "Portfolio", "Picks")
 </div>

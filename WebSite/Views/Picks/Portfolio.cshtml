@@ -1,6 +1,10 @@
 @model WebSite.Models.UI.Portfolio
 @{
-    ViewBag.Title = "Portfolio";
+    ViewBag.Title = "Stocks and Options Portfolio";
+}
+@section Description
+{
+    <meta name="description" content="Portfolio of stock and options selections showcasing both open and closed positions in year @DateTime.UtcNow.Year." />
 }
 @section Styles
 {

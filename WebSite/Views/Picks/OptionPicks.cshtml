@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Option Picks";
 }
+@section Description
+{
+    <meta name="description" content="List of option picks during @DateTime.UtcNow.Year." />
+}
 <h2>Option Picks</h2>
 @foreach (WebSite.Models.Data.Picks.OptionPick optionPick in Model)
 {

@@ -64,7 +64,7 @@ namespace WebSite.Controllers
             return View();
         }
 
-        public ActionResult PressRelease()
+        public ActionResult SiteMap()
         {
             return View();
         }

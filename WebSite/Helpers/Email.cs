@@ -9,6 +9,7 @@ using WebSite.Database;
 using WebSite.Models;
 using ActionMailer.Net.Mvc;
 using System.Configuration;
+using System.Data.Entity;
 
 namespace WebSite.Helpers
 {
@@ -27,7 +28,7 @@ namespace WebSite.Helpers
             }
             else
             {
-                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveStockPicks);
+                recipients = GetActiveUsers().Where(u => u.NotificationSettings.ReceiveStockPicks);
             }
 
             Email.SendEmail(email, recipients);
@@ -46,7 +47,7 @@ namespace WebSite.Helpers
             }
             else
             {
-                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveOptionPicks);
+                recipients = GetActiveUsers().Where(u => u.NotificationSettings.ReceiveOptionPicks);
             }
 
             Email.SendEmail(email, recipients);
@@ -65,7 +66,7 @@ namespace WebSite.Helpers
             }
             else
             {
-                recipients = DatabaseContext.GetInstance().Users.Include("NotificationSettings").Where(u => u.NotificationSettings.ReceiveDailyAlerts);
+                recipients = GetActiveUsers().Where(u => u.NotificationSettings.ReceiveDailyAlerts);
             }
 
             Email.SendEmail(email, recipients);
@@ -76,6 +77,11 @@ namespace WebSite.Helpers
             return from user in DatabaseContext.GetInstance().Users 
                    where (from role in user.Roles where role.Name == PredefinedRoles.Administrator select role).Count() > 0
                    select user;
+        }
+
+        private static IQueryable<User> GetActiveUsers()
+        {
+            return DatabaseContext.GetInstance().Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(u => (u.Subscription != null && !u.Subscription.IsSuspended) || (u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow));
         }
 
         public static void SendEmail(EmailResult email, IEnumerable<User> recipients)

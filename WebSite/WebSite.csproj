@@ -745,11 +745,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Account\SubscriptionSuspendedEmail.html.cshtml" />
-    <Content Include="Views\Information\PressRelease.cshtml" />
     <Content Include="Views\Members\UpdateSubscription.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\StockPick.cshtml" />
     <Content Include="Views\Shared\_ClosedStockListPartial.cshtml" />
     <Content Include="Views\Shared\_ClosedOptionListPartial.cshtml" />
+    <Content Include="Views\Information\SiteMap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

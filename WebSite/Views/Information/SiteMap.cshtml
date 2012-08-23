@@ -1,0 +1,41 @@
+@{
+    ViewBag.Title = "Site Map";
+}
+@section Description
+{
+    <meta name="description" content="Summary of most important sections of the site." />
+}
+<h2>Site Map</h2>
+<ul>
+    <li>
+        Picks
+        <ul>
+            <li>@Html.ActionLink("Stock Picks", "StockPicks", "Picks")</li>
+            <li>@Html.ActionLink("Option Picks", "OptionPicks", "Picks")</li>
+            <li>@Html.ActionLink("Portfolio", "Portfolio", "Picks")</li>
+        </ul>
+    </li>
+    <li>
+        News
+        <ul>
+            <li>@Html.ActionLink("Real-time Active Traders", "Index", "ActiveTraders")</li>
+        </ul>
+    </li>
+    <li>
+        Education
+        <ul>
+            <li>@Html.ActionLink("Stock Market Basics", "Market101", "Information")</li>
+            <li>@Html.ActionLink("Option Trading Basics", "Options101", "Information")</li>
+            <li>@Html.ActionLink("Technical Chart Reading", "ChartReading", "Information")</li>
+            <li>@Html.ActionLink("Buying on Margin", "BuyingOnMargin", "Information")</li>
+        </ul>
+    </li>
+    <li>
+        Information
+        <ul>
+            <li>@Html.ActionLink("Membership Policy", "MembershipPolicy", "Information")</li>
+            <li>@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information")</li>
+            <li>@Html.ActionLink("Contact Us", "ContactUs", "Information")</li>
+        </ul>
+    </li>
+</ul>

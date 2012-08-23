@@ -22,7 +22,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Index()
         {
-            var users = db.Users.Include(u => u.Subscription);
+            var users = db.Users.Include(u => u.Subscription).OrderByDescending(u => u.SignUpDate);
 
             return View(users);
         }

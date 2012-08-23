@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Stock Picks";
 }
+@section Description
+{
+    <meta name="description" content="List of stock selections during @DateTime.UtcNow.Year." />
+}
 <h2>Stock Picks</h2>
 @if (!Request.IsAuthenticated)
 {

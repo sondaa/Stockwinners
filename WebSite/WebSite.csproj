@@ -369,6 +369,7 @@
     <Content Include="Images\Social Networks\google.gif" />
     <Content Include="Images\Social Networks\twitter-16.png" />
     <Content Include="Images\Social Networks\twitter-32.png" />
+    <Content Include="Images\Social Networks\twitter-email.png" />
     <Content Include="Images\Social Networks\twitter-follow.gif" />
     <Content Include="Areas\Administrator\Views\Users\TrialExpired.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPickLeg\Create.cshtml" />

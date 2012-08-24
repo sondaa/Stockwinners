@@ -185,6 +185,8 @@
     <Compile Include="Areas\Administrator\Controllers\StockPickTypesController.cs" />
     <Compile Include="Areas\Administrator\Controllers\SubscriptionTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
+    <Compile Include="Controllers\API\FollowPickController.cs" />
+    <Compile Include="Controllers\API\IgnorePickController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\AuthorizeNetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

@@ -40,7 +40,7 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult Registrations()
         {
             DatabaseContext db = DatabaseContext.GetInstance();
-            Chart chart = new Chart(300, 300);
+            Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Registrations in the past month");
 
@@ -64,7 +64,7 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult TrialExpiries()
         {
             DatabaseContext db = DatabaseContext.GetInstance();
-            Chart chart = new Chart(300, 300);
+            Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Trial Expiries during past and future 2 weeks");
 
@@ -88,7 +88,7 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult Subscriptions()
         {
             DatabaseContext db = DatabaseContext.GetInstance();
-            Chart chart = new Chart(300, 300);
+            Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Subscription Activations in the past month");
 

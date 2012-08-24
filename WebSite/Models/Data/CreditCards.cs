@@ -35,17 +35,14 @@ namespace WebSite.Models
 
         [Required]
         [Display(Name = "Expiration Month")]
-        [Digits(ErrorMessage = "Expiration month must be 1 or 2 digits")]
         public short ExpirationMonth { get; set; }
 
         [Required]
         [Display(Name = "Expiration Year")]
-        [Digits(ErrorMessage = "Expiration year must be 4 digits.")]
         public short ExpirationYear { get; set; }
 
         [MaxLength(4, ErrorMessage = "CVV must be at most 4 digits.")]
         [MinLength(3, ErrorMessage = "CVV must be at least 3 digits.")]
-        [DataAnnotationsExtensions.Digits(ErrorMessage = "CVV must consist of digits only.")]
         public string CVV { get; set; }
 
         [ForeignKey("BillingAddress")]

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AuthorizeNet;
+using System;
 using System.Configuration;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using AuthorizeNet;
 using WebSite.Database;
 using WebSite.Helpers.Authentication;
 using WebSite.Infrastructure.Attributes;
@@ -124,7 +123,7 @@ namespace WebSite.Controllers
             // Calculate the set of subscriptions available to the user
             SubscriptionRegistration registration = new SubscriptionRegistration()
             {
-                AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include("SubscriptionFrequency").Where(st => st.IsAvailableToUsers),
+                AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers),
                 Countries = DatabaseContext.GetInstance().Countries.AsEnumerable()
             };
 
@@ -135,7 +134,7 @@ namespace WebSite.Controllers
         [RequireHttps]
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation)
         {
-            registrationInformation.AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include("SubscriptionFrequency").Where(st => st.IsAvailableToUsers);
+            registrationInformation.AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers);
             registrationInformation.Countries = DatabaseContext.GetInstance().Countries.AsEnumerable();
 
             if (registrationInformation.SelectedSubscriptionTypeId == 0)

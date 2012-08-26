@@ -85,7 +85,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
 
-            return this.View(stockPick);
+            return this.View(viewName: "Edit", model: stockPick);
         }
 
         //

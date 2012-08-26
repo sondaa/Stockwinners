@@ -56,12 +56,15 @@ namespace WebSite.Areas.Administrator.Controllers
         public override ActionResult Edit(int id = 0)
         {
             OptionPick optionPick = db.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
+
             if (optionPick == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
-            return View(optionPick);
+
+            return this.View(viewName: "Edit", model: optionPick);
         }
 
         [HttpPost]

@@ -1,7 +1,15 @@
 ﻿@model IEnumerable<WebSite.Models.User>
 
 <h2>@(ViewBag.Title ?? "List of Members")</h2>
-
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 20%;text-align: center;">@Html.ActionLink("Active Trial Members", "ActiveTrialMembers")</td>
+        <td style="width: 20%;text-align: center;">@Html.ActionLink("Expired Trial Members", "ExpiredTrialMembers")</td>
+        <td style="width: 20%;text-align: center;">@Html.ActionLink("Members with Active Subscriptions", "SubscribedMembers")</td>
+        <td style="width: 20%;text-align: center;">@Html.ActionLink("Members with Suspended Subscriptions", "SuspendedMembers")</td>
+        <td style="width: 20%;text-align: center;">@Html.ActionLink("All Users", "AllUsers")</td>
+    </tr>
+</table>
 <table style="width: 100%;">
     <tr>
         <th>

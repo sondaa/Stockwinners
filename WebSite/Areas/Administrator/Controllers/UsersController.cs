@@ -22,9 +22,37 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Index()
         {
-            var users = db.Users.Include(u => u.Subscription).OrderByDescending(u => u.SignUpDate);
+            return this.ActiveTrialMembers();
+        }
 
-            return View(users);
+        public ActionResult ActiveTrialMembers()
+        {
+            ViewBag.Title = "Members with Active Trials";
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow).OrderByDescending(u => u.SignUpDate));
+        }
+
+        public ActionResult ExpiredTrialMembers()
+        {
+            ViewBag.Title = "Members with Expired Trials";
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate < DateTime.UtcNow).OrderByDescending(u => u.SignUpDate));
+        }
+
+        public ActionResult AllUsers()
+        {
+            ViewBag.Title = "All Users";
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).OrderByDescending(u => u.SignUpDate));
+        }
+
+        public ActionResult SubscribedMembers()
+        {
+            ViewBag.Title = "Members with Active Subscriptions";
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && !u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
+        }
+
+        public ActionResult SuspendedMembers()
+        {
+            ViewBag.Title = "Members with Suspended Payments";
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult Details(int id = 0)
@@ -78,15 +106,6 @@ namespace WebSite.Areas.Administrator.Controllers
             db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        public ActionResult SuspendedMembers()
-        {
-            IEnumerable<User> usersWithSuspendedPayments = from user in db.Users.Include(u => u.Subscription) where user.Subscription != null && user.Subscription.IsSuspended select user;
-
-            ViewBag.Title = "Members with Suspended Payments";
-
-            return this.View(viewName: "Index", model: usersWithSuspendedPayments);
         }
 
         /// <summary>

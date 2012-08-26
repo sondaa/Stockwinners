@@ -175,6 +175,7 @@
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPickLegController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPicksController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\PicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\StockPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\UsersController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -185,8 +186,7 @@
     <Compile Include="Areas\Administrator\Controllers\StockPickTypesController.cs" />
     <Compile Include="Areas\Administrator\Controllers\SubscriptionTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
-    <Compile Include="Controllers\API\FollowPickController.cs" />
-    <Compile Include="Controllers\API\IgnorePickController.cs" />
+    <Compile Include="Controllers\API\PickSubscriptionController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\AuthorizeNetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -210,6 +210,10 @@
     <Compile Include="Migrations\201208190548484_TrackingUsersPreviousCreditCards.cs" />
     <Compile Include="Migrations\201208190548484_TrackingUsersPreviousCreditCards.Designer.cs">
       <DependentUpon>201208190548484_TrackingUsersPreviousCreditCards.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208251823505_Enforcing-PickUpdate-OneToMany.cs" />
+    <Compile Include="Migrations\201208251823505_Enforcing-PickUpdate-OneToMany.Designer.cs">
+      <DependentUpon>201208251823505_Enforcing-PickUpdate-OneToMany.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
@@ -241,6 +245,7 @@
     <Compile Include="Models\Data\Subscriptions.cs" />
     <Compile Include="Models\Data\Users.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
+    <Compile Include="Models\UI\PickSubscription.cs" />
     <Compile Include="Models\UI\Portfolio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -375,7 +380,10 @@
     <Content Include="Areas\Administrator\Views\OptionPickLeg\Create.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPickLeg\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\OptionPickLeg\Delete.cshtml" />
+    <Content Include="Areas\Administrator\Views\Shared\SubmitUpdate.cshtml" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
+    <Content Include="Images\Subscriptions\follow-off.png" />
+    <Content Include="Images\Subscriptions\follow-on.png" />
     <Content Include="Scripts\jquery-1.8.0.js" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.js" />
@@ -394,6 +402,7 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\picks\subscription.js" />
     <Content Include="Scripts\tinymce\jquery.tinymce.js" />
     <Content Include="Scripts\tinymce\langs\en.js" />
     <Content Include="Scripts\tinymce\license.txt" />
@@ -753,6 +762,10 @@
     <Content Include="Views\Shared\_ClosedStockListPartial.cshtml" />
     <Content Include="Views\Shared\_ClosedOptionListPartial.cshtml" />
     <Content Include="Views\Information\SiteMap.cshtml" />
+    <Content Include="Views\Shared\_PickSubscriptionPartial.cshtml" />
+    <Content Include="Views\Picks\PickUpdateEmail.html.cshtml" />
+    <Content Include="Views\Shared\_PickUpdatesPartial.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\OptionPick.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -763,6 +776,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201208251823505_Enforcing-PickUpdate-OneToMany.resx">
+      <DependentUpon>201208251823505_Enforcing-PickUpdate-OneToMany.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,6 +1,7 @@
 ﻿@model WebSite.Models.Data.Picks.StockPick
-<h2>@(Model.IsLongPosition ? "Long" : "Short") Position on @(Model.Symbol) @@ @(Model.EntryPrice.ToString("C")) on @(Model.PublishingDate.Value.ToShortDateString()) (@Model.Type.Name)</h2>
+<h2>@(Model.IsLongPosition ? "Long" : "Short") Position on @(Model.Symbol) @@ @(Model.EntryPrice.ToString("C")) on @(Model.PublishingDate.HasValue ? Model.PublishingDate.Value.ToShortDateString() : "Unpublished") (@Model.Type.Name)</h2>
 @(Html.Raw(Model.Description))
+@Html.Partial("_PickUpdatesPartial", Model)
 @if (Model.ClosingDate.HasValue)
 {
     decimal movePercent = (Model.ExitPrice.Value - Model.EntryPrice) * 100 / Model.EntryPrice;

@@ -35,6 +35,14 @@ namespace WebSite.Migrations
 
         private static void SeedAdministrators(DatabaseContext context)
         {
+            StockwinnersMember ameen = new StockwinnersMember() { EmailAddress = "ameen.tayyebi@gmail.com", FirstName = "Ameen", LastName = "Tayyebi", IsLegacyMember = false, Password = WebSite.Infrastructure.MembershipProvider.HashPassword("madmoney") };
+            StockwinnersMember mehdi = new StockwinnersMember() { EmailAddress = "s.mehdi.ghaffari@gmail.com", FirstName = "Mehdi", LastName = "Ghaffari", IsLegacyMember = false, Password = WebSite.Infrastructure.MembershipProvider.HashPassword("madmoney") };
+            StockwinnersMember dayee = new StockwinnersMember() { EmailAddress = "seyed@stockwinners.com", FirstName = "Mohammad", LastName = "Mohammadi", IsLegacyMember = false, Password = WebSite.Infrastructure.MembershipProvider.HashPassword("madmoney") };
+
+            context.StockwinnersMembers.AddOrUpdate(member => member.EmailAddress, ameen);
+            context.StockwinnersMembers.AddOrUpdate(member => member.EmailAddress, mehdi);
+            context.StockwinnersMembers.AddOrUpdate(member => member.EmailAddress, dayee);
+
             // Make any user with ameen.tayyebi@gmail.com or s.mehdi.ghaffari@gmail.com or seyed@stockwinners.com an admin
             string[] adminEmails = new string[] { "ameen.tayyebi@gmail.com", "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com" };
             Role adminRole = context.Roles.First(role => role.Name == PredefinedRoles.Administrator);

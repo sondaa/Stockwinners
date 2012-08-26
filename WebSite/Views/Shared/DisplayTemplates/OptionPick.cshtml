@@ -1,0 +1,4 @@
+﻿@model WebSite.Models.Data.Picks.OptionPick
+<h2>@(Model.Type.Name) on @(Model.Symbol) on @(Model.PublishingDate.HasValue ? Model.PublishingDate.Value.ToShortDateString() : "Unpublished")</h2>
+@(Html.Raw(Model.Description))
+@Html.Partial("_PickUpdatesPartial", Model)

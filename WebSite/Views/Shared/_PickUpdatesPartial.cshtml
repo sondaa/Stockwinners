@@ -1,0 +1,10 @@
+﻿@model WebSite.Models.Data.Picks.Pick
+@if (Model.Updates.Count > 0)
+{
+    <h3>Updates</h3>
+    foreach (var pickUpdate in Model.Updates)
+    {
+        <h4>@(TimeZoneInfo.ConvertTimeFromUtc(pickUpdate.IssueDate, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")))</h4>
+        @Html.Raw(pickUpdate.Description)
+    }
+}

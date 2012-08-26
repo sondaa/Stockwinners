@@ -13,23 +13,20 @@ using WebSite.Models;
 namespace WebSite.Areas.Administrator.Controllers
 {
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
-    public class StockPicksController : Controller
+    public class StockPicksController : PicksController<StockPick>
     {
         private DatabaseContext db = new DatabaseContext();
-
-        public ActionResult Index()
-        {
-            return View(db.StockPicks.OrderByDescending(stockPick => stockPick.PublishingDate).ToList());
-        }
 
         public ActionResult Details(int id = 0)
         {
             StockPick stockpick = db.StockPicks.Find(id);
+
             if (stockpick == null)
             {
                 return HttpNotFound();
             }
-            return View(stockpick);
+
+            return this.View(stockpick);
         }
 
         public ActionResult Create()
@@ -51,8 +48,11 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Publish();
                 }
 
-                db.Picks.Add(stockPick);
+                db.StockPicks.Add(stockPick);
                 db.SaveChanges();
+
+                db.Entry(stockPick).Reference(pick => pick.Type).Load();
+                db.Entry(stockPick).Collection(pick => pick.Updates).Load();
 
                 if (publishButton != null)
                 {
@@ -64,26 +64,28 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Email(isPreview: true);
                 }
 
-                return this.RedirectToAction("Index");
+                return this.Index();
             }
 
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
 
-            return View(stockPick);
+            return this.View(stockPick);
         }
 
         //
         // GET: /Administrator/StockPicks/Edit/5
 
-        public ActionResult Edit(int id = 0)
+        public override ActionResult Edit(int id = 0)
         {
             StockPick stockPick = db.StockPicks.Find(id);
             if (stockPick == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
-            return View(stockPick);
+
+            return this.View(stockPick);
         }
 
         //
@@ -108,6 +110,9 @@ namespace WebSite.Areas.Administrator.Controllers
 
                 db.SaveChanges();
 
+                db.Entry(stockPick).Reference(pick => pick.Type).Load();
+                db.Entry(stockPick).Collection(pick => pick.Updates).Load();
+
                 if (publishButton != null)
                 {
                     stockPick.Email();
@@ -118,10 +123,12 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Email(isPreview: true);
                 }
 
-                return RedirectToAction("Index");
+                return this.Index();
             }
+
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
-            return View(stockPick);
+
+            return this.View(stockPick);
         }
 
         //
@@ -153,6 +160,14 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             db.Dispose();
             base.Dispose(disposing);
+        }
+
+        protected override IQueryable<StockPick> Picks
+        {
+            get
+            {
+                return db.StockPicks;
+            }
         }
     }
 }

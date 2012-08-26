@@ -1,0 +1,9 @@
+﻿@model WebSite.Models.UI.PickSubscription
+@if (Model.Subscriptions.Any(pick => pick.PickId == Model.Pick.PickId))
+{
+    <img id="@(Model.Pick.PickId)" class="follow-image" src="/Images/Subscriptions/follow-on.png" style="vertical-align: middle;" />
+}
+else
+{
+    <img id="@(Model.Pick.PickId)" class="follow-image" src="/Images/Subscriptions/follow-off.png" style="vertical-align: middle;" />
+}

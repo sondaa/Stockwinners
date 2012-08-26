@@ -60,7 +60,7 @@ namespace WebSite.Controllers
 
         public ActionResult OptionPicks()
         {
-            return this.View(DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
+            return this.View(DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
         }
 
         [AllowAnonymous]
@@ -71,11 +71,11 @@ namespace WebSite.Controllers
             // If the user is logged in, show them current picks, otherwise show them closed picks
             if (Request.IsAuthenticated)
             {
-                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue);
+                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue);
             }
             else
             {
-                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue);
+                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue);
             }
 
             return this.View(stockPicks.OrderByDescending(stockPick => stockPick.PublishingDate.Value));

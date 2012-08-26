@@ -46,14 +46,34 @@
         }
     </style>
 }
+@section Scripts
+{
+    @Scripts.Render("~/bundles/subscription")
+}
 <h2>Portfolio</h2>
 @if (Request.IsAuthenticated)
 {
+    WebSite.Models.User currentUser = WebSite.Helpers.Authentication.Authentication.GetCurrentUser();
+    
+    // Load user's subscriptions eagerly before looping over stocks and options
+    WebSite.Database.DatabaseContext.GetInstance().Entry(currentUser).Collection(user => user.SubscribedPicks).Load();
+    
 <h3 style="margin-left: 6%;">Stocks</h3>
 <table style="text-align: center; width: 70%;">
+    <thead>
+        <tr>
+            <td>Symbol</td>
+            <td>Price</td>
+            <td>Entered On</td>
+            <td>Reason</td>
+            <td>Type</td>
+            <td>Follow</td>
+        </tr>
+    </thead>
     <tbody>
         @{ 
             int stockIndex = 0; 
+                        
             foreach (var stockPick in Model.Stocks)
             {
                 string background = string.Empty;
@@ -62,20 +82,23 @@
                 {
                     background = "grey-background";
                 }
+
+                string detailLink = "window.location.href = '" + Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId }) + "';";
                
-                <tr class="clickable-row @(background)" onclick="window.location.href = '@Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId })';">
-                    <td>@stockPick.Symbol</td>
-                    <td>@stockPick.EntryPrice.ToString("C")</td>
-                    <td>@stockPick.PublishingDate.Value.ToShortDateString()</td>
-                    <td>@stockPick.Type.Name</td>
+                <tr class="clickable-row @(background)">
+                    <td onclick="@detailLink">@stockPick.Symbol</td>
+                    <td onclick="@detailLink">@stockPick.EntryPrice.ToString("C")</td>
+                    <td onclick="@detailLink">@stockPick.PublishingDate.Value.ToShortDateString()</td>
+                    <td onclick="@detailLink">@stockPick.Type.Name</td>
                     @if (stockPick.IsLongPosition)
                     {
-                        <td style="color: #21892a">Long</td>
+                        <td onclick="@detailLink" style="color: #21892a">Long</td>
                     }
                     else
                     {
-                        <td style="color: #ad2222">Short</td>
+                        <td onclick="@detailLink" style="color: #ad2222">Short</td>
                     }
+                    <td>@Html.Partial("_PickSubscriptionPartial", new WebSite.Models.UI.PickSubscription { Pick = stockPick, Subscriptions = currentUser.SubscribedPicks })</td>
                 </tr>
         
                 stockIndex++;
@@ -84,7 +107,16 @@
     </tbody>
 </table>
 <h3 style="margin-left:6%;">Options</h3>
-<table style="text-align: center; width: 50%;">
+<table style="text-align: center; width: 70%;">
+    <thead>
+        <tr>
+            <td>Underlying Symbol</td>
+            <td>Strategy Type</td>
+            <td>Price</td>
+            <td>Entered On</td>
+            <td>Follow</td>
+        </tr>
+    </thead>
     <tbody>
         @{
             int optionIndex = 0;
@@ -95,11 +127,15 @@
                 {
                     background = "grey-background";
                 }
+
+                string detailLink = "window.location.href = '" + Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId }) + "';";
                 
-                <tr class="clickable-row @(background)" onclick="window.location.href = '@Url.Action("OptionPickDetail", "Picks", new { optionPickId = optionPick.PickId })';">
-                    <td>@optionPick.Symbol</td>
-                    <td>@optionPick.Type.Name</td>
-                    <td>@optionPick.PublishingDate.Value.ToShortDateString()</td>
+                <tr class="clickable-row @(background)">
+                    <td onclick="@(detailLink)">@optionPick.Symbol</td>
+                    <td onclick="@(detailLink)">@optionPick.Type.Name</td>
+                    <td onclick="@(detailLink)">@optionPick.Cost().ToString("C")</td>
+                    <td onclick="@(detailLink)">@optionPick.PublishingDate.Value.ToShortDateString()</td>
+                    <td>@Html.Partial("_PickSubscriptionPartial", new WebSite.Models.UI.PickSubscription { Pick = optionPick, Subscriptions = currentUser.SubscribedPicks })</td>
                 </tr>
                 optionIndex++;
             }

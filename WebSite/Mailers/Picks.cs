@@ -16,31 +16,18 @@ namespace WebSite.Mailers
 		public virtual EmailResult Stock(StockPick stockPick)
 		{
             To.Add("noreply@stockwinners.com");
-            Subject = "New Stock Pick";
+            Subject = "New Stock Pick (" + stockPick.Symbol + ")";
 
-            ViewBag.StockPickContents = stockPick.Description;
-            ViewBag.EntryPrice = stockPick.EntryPrice;
-            ViewBag.IsLongPosition = stockPick.IsLongPosition;
-            ViewBag.Symbol = stockPick.Symbol;
-            ViewBag.PublishingDate = stockPick.PublishingDate ?? DateTime.UtcNow;
-
-            return this.Email(viewName: "StockPickEmail");
+            return this.Email(viewName: "StockPickEmail", model: stockPick);
 		}
 
-		
 		public virtual EmailResult Option(OptionPick optionPick)
 		{
             To.Add("noreply@stockwinners.com");
-			Subject = "New Option Pick";
+			Subject = "New Option Pick (" + optionPick.Symbol + ")";
 
-            ViewBag.OptionPickContents = optionPick.Description;
-            ViewBag.Symbol = optionPick.Symbol;
-            ViewBag.Type = optionPick.Type;
-            ViewBag.PublishingDate = optionPick.PublishingDate ?? DateTime.UtcNow;
-
-            return this.Email(viewName: "OptionPickEmail");
+            return this.Email(viewName: "OptionPickEmail", model: optionPick);
 		}
-
 		
 		public virtual EmailResult Alert(DailyAlert dailyAlert)
 		{
@@ -51,5 +38,13 @@ namespace WebSite.Mailers
 
             return this.Email(viewName: "AlertEmail");
 		}
+
+        public virtual EmailResult PickUpdate(PickUpdate pickUpdate)
+        {
+            To.Add("noreply@stockwinners.com");
+            Subject = "Update on " + pickUpdate.Pick.Symbol;
+
+            return this.Email(viewName: "PickUpdateEmail", model: pickUpdate);
+        }
 	}
 }

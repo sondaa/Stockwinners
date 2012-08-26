@@ -81,7 +81,15 @@ namespace WebSite.Helpers
 
         private static IQueryable<User> GetActiveUsers()
         {
-            return DatabaseContext.GetInstance().Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(u => (u.Subscription != null && !u.Subscription.IsSuspended) || (u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow));
+            return DatabaseContext.GetInstance().Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(ActiveUserPredicate);
+        }
+
+        public static System.Linq.Expressions.Expression<Func<User, bool>> ActiveUserPredicate 
+        {
+            get
+            {
+                return u => (u.Subscription != null && !u.Subscription.IsSuspended) || (u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow);
+            }
         }
 
         public static void SendEmail(EmailResult email, IEnumerable<User> recipients)

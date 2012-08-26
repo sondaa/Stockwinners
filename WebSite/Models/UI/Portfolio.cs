@@ -8,9 +8,9 @@ namespace WebSite.Models.UI
 {
     public class Portfolio
     {
-        public IEnumerable<StockPick> Stocks { get; set; }
+        public IQueryable<StockPick> Stocks { get; set; }
 
-        public IEnumerable<OptionPick> Options { get; set; }
+        public IQueryable<OptionPick> Options { get; set; }
 
         public IEnumerable<StockPick> ClosedStocks { get; set; }
 

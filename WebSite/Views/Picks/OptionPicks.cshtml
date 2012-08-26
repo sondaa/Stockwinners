@@ -9,7 +9,6 @@
 <h2>Option Picks</h2>
 @foreach (WebSite.Models.Data.Picks.OptionPick optionPick in Model)
 {
-    <h3>@(optionPick.Type.Name) on @(optionPick.Symbol) on @(optionPick.PublishingDate.Value.ToShortDateString())</h3>
-    @(Html.Raw(optionPick.Description))
+    @Html.DisplayFor(model => optionPick)
     <div class="separator"></div>
 }

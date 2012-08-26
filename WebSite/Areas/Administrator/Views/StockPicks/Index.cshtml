@@ -3,9 +3,17 @@
 @{
     ViewBag.Title = "Stock Picks";
 }
+<h2>Stock Picks</h2>
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<table style="width: 100%;">
+    <tr>
+        <td style="text-align: center; width: 33%;">@Html.ActionLink("View Closed Positions", "ClosedPositions")</td>
+        <td style="text-align: center; width: 33%;">@Html.ActionLink("View Open Positions", "OpenPositions")</td>
+        <td style="text-align: center; width: 34%;">@Html.ActionLink("View All Positions", "AllPositions")</td>
+    </tr>
+</table>
 <table>
     <tr>
         <th>
@@ -52,7 +60,8 @@
         <td>
             @Html.ActionLink("Edit", "Edit", new {  id=item.PickId }) |
             @Html.ActionLink("Details", "Details", new { id=item.PickId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.PickId })
+            @Html.ActionLink("Delete", "Delete", new { id=item.PickId }) |
+            @Html.ActionLink("Issue Update", "SubmitUpdate", new { pickId = item.PickId })
         </td>
     </tr>
 }

@@ -13,24 +13,20 @@ using WebSite.Models;
 namespace WebSite.Areas.Administrator.Controllers
 {
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
-    public class OptionPicksController : Controller
+    public class OptionPicksController : PicksController<OptionPick>
     {
         private DatabaseContext db = new DatabaseContext();
 
-        public ActionResult Index()
-        {
-            var picks = db.OptionPicks.Include(o => o.Type).OrderByDescending(optionPick => optionPick.PublishingDate);
-            return View(picks.ToList());
-        }
-
         public ActionResult Details(int id = 0)
         {
-            OptionPick optionpick = db.OptionPicks.Find(id);
-            if (optionpick == null)
+            OptionPick optionPick = db.OptionPicks.Find(id);
+
+            if (optionPick == null)
             {
                 return HttpNotFound();
             }
-            return View(optionpick);
+
+            return View(optionPick);
         }
 
         public ActionResult Create()
@@ -49,14 +45,15 @@ namespace WebSite.Areas.Administrator.Controllers
                 db.OptionPicks.Add(optionPick);
                 db.SaveChanges();
 
-                return RedirectToAction("Edit", new { id = optionPick.PickId });
+                return this.Edit(optionPick.PickId);
             }
 
             ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
-            return View(optionPick);
+
+            return this.View(optionPick);
         }
 
-        public ActionResult Edit(int id = 0)
+        public override ActionResult Edit(int id = 0)
         {
             OptionPick optionPick = db.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
             if (optionPick == null)
@@ -79,8 +76,9 @@ namespace WebSite.Areas.Administrator.Controllers
                 else if (closeButton != null)
                 {
                     // Verify that all legs are closed already
+                    db.Entry(optionPick).Collection(pick => pick.Legs).Load();
 
-                    foreach (var leg in new DatabaseContext().OptionPicks.Find(optionPick.PickId).Legs)
+                    foreach (var leg in optionPick.Legs)
                     {
                         if (!leg.ClosingDate.HasValue)
                         {
@@ -97,11 +95,12 @@ namespace WebSite.Areas.Administrator.Controllers
                 db.Entry(optionPick).State = EntityState.Modified;
                 db.SaveChanges();
 
+                db.Entry(optionPick).Collection(pick => pick.Legs).Load();
+                db.Entry(optionPick).Collection(pick => pick.Updates).Load();
+                db.Entry(optionPick).Reference(pick => pick.Type).Load();
+
                 if (publishButton != null || previewButton != null)
                 {
-                    // Include the option trade type so that we can include the information in the email
-                    optionPick.Type = db.OptionPickTypes.Find(optionPick.OptionPickTypeId);
-
                     optionPick.Email(isPreview: previewButton != null);
                 }
 
@@ -135,6 +134,14 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             db.Dispose();
             base.Dispose(disposing);
+        }
+
+        protected override IQueryable<OptionPick> Picks
+        {
+            get 
+            {
+                return db.OptionPicks.Include(optionPick => optionPick.Type).Include(optionPick => optionPick.Legs);
+            }
         }
     }
 }

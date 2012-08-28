@@ -166,7 +166,7 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             get
             {
-                return db.StockPicks;
+                return db.StockPicks.Include(stockPick => stockPick.Subscribers);
             }
         }
     }

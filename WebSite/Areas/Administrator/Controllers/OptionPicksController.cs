@@ -143,7 +143,7 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             get 
             {
-                return db.OptionPicks.Include(optionPick => optionPick.Type).Include(optionPick => optionPick.Legs);
+                return db.OptionPicks.Include(optionPick => optionPick.Type).Include(optionPick => optionPick.Legs).Include(optionPick => optionPick.Subscribers);
             }
         }
     }

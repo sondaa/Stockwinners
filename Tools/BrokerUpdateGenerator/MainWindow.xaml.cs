@@ -70,7 +70,7 @@ namespace WpfApplication1
         private void btnGenerate_Click(object sender, RoutedEventArgs e)
         {
             // Get the list of elements from our servers
-            WebRequest webRequest = WebRequest.Create("http://marketwinner.cloudapp.net/api/activetraders");
+            WebRequest webRequest = WebRequest.Create("http://marketwinner.cloudapp.net/api/activetraders/getnewselements");
             List<ActiveTradersNewsElement> newsElements = null;
 
             using (WebResponse response = webRequest.GetResponse())

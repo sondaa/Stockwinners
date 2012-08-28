@@ -4,6 +4,7 @@ using System.Data.Objects;
 using System.Linq;
 using System.Web.Mvc;
 using WebSite.Database;
+using WebSite.Infrastructure.Attributes;
 
 namespace WebSite.Controllers
 {
@@ -38,10 +39,16 @@ namespace WebSite.Controllers
                 Stocks = null,
                 Options = null,
                 ClosedStocks = db.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
-                ClosedOptions = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(optionPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(optionPick => optionPick.PublishingDate.Value)
+                ClosedOptions = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue).Take(15).OrderByDescending(optionPick => optionPick.PublishingDate.Value)
             };
 
             return View(portfolio);
+        }
+
+        [MembersOnly]
+        public ActionResult Alerts()
+        {
+            return this.View(DatabaseContext.GetInstance().DailyAlerts.Where(alert => alert.IsPublished).Take(14).OrderByDescending(alert => alert.PublishDate));
         }
 
         public ActionResult MembershipPolicy()

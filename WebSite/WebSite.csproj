@@ -749,7 +749,7 @@
     <Content Include="Views\Picks\OptionPickDetail.cshtml" />
     <Content Include="Views\Picks\StockPicks.cshtml" />
     <Content Include="Views\Picks\OptionPicks.cshtml" />
-    <Content Include="Views\Account\ResetPassword.html.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Areas\Administrator\Views\AdministratorHome\Statistics.cshtml" />
     <Content Include="Views\Shared\_TrialSubscribePartial.cshtml" />
     <Content Include="Views\Information\PerformanceDetail.cshtml" />
@@ -766,6 +766,7 @@
     <Content Include="Views\Picks\PickUpdateEmail.html.cshtml" />
     <Content Include="Views\Shared\_PickUpdatesPartial.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPick.cshtml" />
+    <Content Include="Views\Information\Alerts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

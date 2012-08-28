@@ -50,17 +50,17 @@
         }
     </style>
 }
-<h2>Recent Performance</h2>
-<h3>Stock positions closed within the last 31 days</h3>
-@Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
-<h3>Option positions closed within the last 31 days</h3>
-@Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
 <h2>Year-to-date Performance</h2>
 <p class="text-material">Our 2012 performance is presented below and is compared to the S&P 500 Index benchmark.</p>
 <div style="text-align: center">
     <img src="/Images/Performance/2012.JPG" /></div>
-<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal $131,534.3 as of July 31, 2012, a yield of over 31.5%. Same investment in the S&P 500 in the same time frame would have yielded 8.1% or $108,100.</p>
-<p class="text-material">To download our holdings information in Excel file format, <a href="/Content/Performance/Excel.xlsx">click here</a>. To view a detail list of our portfolio holdings and pick history in your browser, @Html.ActionLink("click here", "PerformanceDetail", "Information", new { target = "_blank" }).</p>
+<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal $143,874.85 as of August 24th, 2012, a yield of over 43.8%. Same investment in the S&P 500 in the same time frame would have yielded 10.9% or $110,900.</p>
+<p class="text-material">To download our holdings information in Excel file format, <a href="/Content/Performance/Excel.xlsx">click here</a>.</p>
+<h2>Recent Performance</h2>
+<h3>Stock positions closed within the last 31 days</h3>
+@Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
+<h3>Option positions closed recently (last 15 trades)</h3>
+@Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
 <h2>Our Philosophy</h2>
 <p class="text-material">Our philosophy is to lock in profits on a stock, once it has gained ten percents. Investors who elect to keep positions open after that point should adjust stop-loss levels upward, to protect their gains. Never chase rumors. Never fall in love with a stock. Be ready to lock in profits. Always do your homework.</p>
 <p class="text-material">The true measure of any successful trading and/or investing is how much success YOU have! and how much money you can make from your own investments. Your success rate can and most likely will be different from our record. Past performance is no guaranty of future performance.</p>

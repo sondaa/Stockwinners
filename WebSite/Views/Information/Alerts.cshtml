@@ -1,0 +1,23 @@
+@model IEnumerable<WebSite.Models.Data.DailyAlert>
+@{
+    ViewBag.Title = "Market Alerts";
+}
+@section Description
+{
+    <meta name="description" content="Summary of our market alerts issued daily." />
+}
+@section Text
+{
+    Stockwinners.com provides day trading stock tips and option trading strategies that help investors build profitable portfolios. We focus on stocks to buy right now for day trading stocks. A lot of our selections are also featured by successful fund managers such as Jim Cramer.
+}
+<h2>Market Alerts</h2><br />
+<table style="width: 100%;">
+    <tbody>
+    @foreach (WebSite.Models.Data.DailyAlert alert in Model)
+    {
+        <tr><td style="text-align: right;">@(TimeZoneInfo.ConvertTime(alert.PublishDate.Value, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")))</td></tr>
+        <tr><td>@Html.Raw(alert.Content)</td></tr>
+        <tr><td><div class="separator"></div></td></tr>
+    }
+    </tbody>
+</table>

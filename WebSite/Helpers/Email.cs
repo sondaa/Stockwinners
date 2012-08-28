@@ -94,16 +94,23 @@ namespace WebSite.Helpers
 
         public static void SendEmail(EmailResult email, IEnumerable<User> recipients)
         {
-            bool hasRecepients = false;
+            int emailCount = 0;
 
             foreach (User user in recipients)
             {
-                hasRecepients = true;
-
                 email.Mail.Bcc.Add(user.EmailAddress);
+                emailCount++;
+
+                if (emailCount >= 90)
+                {
+                    Email.SendEmail(email);
+
+                    email.Mail.Bcc.Clear();
+                    emailCount = 0;
+                }
             }
 
-            if (hasRecepients)
+            if (emailCount > 0)
             {
                 Email.SendEmail(email);
             }

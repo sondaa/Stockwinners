@@ -143,7 +143,7 @@ namespace WebSite.Controllers
                         IdentityProviderIssuedId = memberId.ToString()
                     });
 
-                    return RedirectToAction("Index", "Home");
+                    return this.RedirectToAction("RegistrationSuccess");
                 }
                 else
                 {
@@ -153,6 +153,11 @@ namespace WebSite.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public ActionResult RegistrationSuccess()
+        {
+            return this.View();
         }
 
         //

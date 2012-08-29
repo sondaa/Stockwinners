@@ -767,6 +767,7 @@
     <Content Include="Views\Shared\_PickUpdatesPartial.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\OptionPick.cshtml" />
     <Content Include="Views\Information\Alerts.cshtml" />
+    <Content Include="Views\Account\RegistrationSuccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -88,7 +88,14 @@ namespace WebSite.Helpers
         {
             get
             {
-                return u => (u.Subscription != null && !u.Subscription.IsSuspended) || (u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow);
+                // Users that:
+                // 1) Have a subscription and their subscription is not suspended
+                // 2) Don't have a subscription but have a valid trial account
+                // 3) Don't have a subscription but are using remainder time from their last subscription
+                return u => 
+                    (u.Subscription != null && !u.Subscription.IsSuspended) || 
+                    (u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow) || 
+                    (u.Subscription == null && u.SubscriptionExpiryDate.HasValue && u.SubscriptionExpiryDate >= DateTime.UtcNow);
             }
         }
 

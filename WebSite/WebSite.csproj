@@ -328,6 +328,7 @@
     <Content Include="Areas\Administrator\Views\Users\Delete.cshtml" />
     <Content Include="Content\Performance\Excel.xlsx" />
     <Content Include="Areas\Administrator\Views\Users\Subscribe.cshtml" />
+    <Content Include="Images\Account\Subscribe.png" />
     <Content Include="Images\arrow-left-16.png" />
     <Content Include="Images\arrow-right-16.png" />
     <Content Include="Images\Chart Reading\bvsn_121399_fig2.gif" />

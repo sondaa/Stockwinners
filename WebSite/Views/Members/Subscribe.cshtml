@@ -38,7 +38,7 @@
     @Html.ValidationSummary(false)
     <div id="subscription-div">
     <h3>Subscription Packages</h3>
-        <p class="message-info">Please choose your subscription plan below. Note that our quarterly and yearly subscription packages offer savings over monthly subscriptions. All subscriptions can be cancelled at any time. After cancellation of your subscription, you'll still be able to use your credentials to use our services until your billing period runs out. For example, a monthly subscription package purchased on the 4th of a month and cancelled on the 8th, will allow you to use the website until the 4th day of the upcoming month. We don't issue any refunds for payments we receive.</p>
+        <p class="message-info">Please choose your subscription plan below. Note that our yearly subscription package offers savings over monthly subscriptions. All subscriptions can be cancelled at any time. After cancellation of your subscription, you'll still be able to use your credentials to use our services until your billing period runs out. For example, a monthly subscription package purchased on the 4th of a month and cancelled on the 8th, will allow you to use the website until the 4th day of the following month. We don't issue any refunds for payments we receive.</p>
         @foreach (WebSite.Models.SubscriptionType availableSubscription in Model.AvailableSubscriptionTypes)
         {
             <div style="padding-bottom: 15px;">@(Html.RadioButtonFor(m => m.SelectedSubscriptionTypeId, availableSubscription.SubscriptionTypeId))

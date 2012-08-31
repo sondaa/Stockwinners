@@ -1,4 +1,37 @@
 ﻿@model WebSite.Models.Data.Picks.OptionPick
+@using WebSite.Models.Data.Picks
 <h2>@(Model.Type.Name) on @(Model.Symbol) on @(Model.PublishingDate.HasValue ? Model.PublishingDate.Value.ToShortDateString() : "Unpublished")</h2>
 @(Html.Raw(Model.Description))
+<h3>Trade</h3>
+<ul>
+    @foreach (var leg in Model.Legs)
+    {
+        <li>@((leg.Quantity > 0) ? "Buy" : "Sell") @(Math.Abs(leg.Quantity)) @(Enum.GetName(typeof(OptionPickLegExpirationMonth), (OptionPickLegExpirationMonth)leg.ExpirationMonth)) @(leg.StrikePrice.ToString("C")) @(Enum.GetName(typeof(OptionPickLegType), (OptionPickLegType)leg.Type)) at @(leg.EntryPrice.ToString("C"))</li>
+    }
+    <li>For a net @((Model.Cost() >= 0) ? "debit" : "credit") of @(Model.Cost().ToString("C"))</li>
+</ul>
+<h3>Profit/Loss Analysis</h3>
+@{
+    decimal maxProfit = Model.MaximumProfit();
+    decimal maxLoss = Model.MaximumLoss();
+}
+<ul>
+    <li>Breakeven at @(string.Join(" and ", Model.BreakevenPoints().Select(val => val.ToString("C"))))</li>
+    <li>Maximum profit is @(maxProfit == decimal.MaxValue ? "unbound" : maxProfit.ToString("C"))</li>
+    <li>Maximum loss is @(maxLoss == decimal.MinValue ? "unbound" : maxLoss.ToString("C"))</li>
+</ul>
+<h3>Expiry Graph</h3>
+<img src="@Url.Action("OptionPickExpiryGraph", "Picks", new { pickId = Model.PickId })" />
 @Html.Partial("_PickUpdatesPartial", Model)
+@if (Model.ClosingDate.HasValue)
+{
+    decimal change = Model.Change();
+    if (change >= 0m)
+    {
+        <h2>Position closed on @(Model.ClosingDate.Value.ToShortDateString()) at price of @(Model.Proceeds().ToString("C")) with a <span style="font-weight: 400; color: green;">@change.ToString("F")% gain</span> in @((Model.ClosingDate.Value - Model.PublishingDate.Value).Days) days.</h2>
+    }
+    else
+    {
+        <h2>Position closed on @(Model.ClosingDate.Value.ToShortDateString()) at price of @(Model.Proceeds().ToString("C")) with a <span style="font-weight: 400; color: red;">@change.ToString("F")% loss</span> in @((Model.ClosingDate.Value - Model.PublishingDate.Value).Days) days.</h2>        
+    }
+}

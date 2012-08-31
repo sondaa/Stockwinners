@@ -102,6 +102,7 @@
     <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -215,6 +216,14 @@
     <Compile Include="Migrations\201208251823505_Enforcing-PickUpdate-OneToMany.Designer.cs">
       <DependentUpon>201208251823505_Enforcing-PickUpdate-OneToMany.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201208301703301_AddingDetailsToOptionPickLeg.cs" />
+    <Compile Include="Migrations\201208301703301_AddingDetailsToOptionPickLeg.Designer.cs">
+      <DependentUpon>201208301703301_AddingDetailsToOptionPickLeg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.cs" />
+    <Compile Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.Designer.cs">
+      <DependentUpon>201208301727049_AddingTypeAndMonthToOptionPickLeg.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -228,6 +237,8 @@
     <Compile Include="Infrastructure\RoleProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Data\NotificationSettings.cs" />
+    <Compile Include="Models\Data\Picks\OptionPickLegExpirationMonth.cs" />
+    <Compile Include="Models\Data\Picks\OptionPickLegType.cs" />
     <Compile Include="Models\Data\Picks\OptionPicks.cs" />
     <Compile Include="Models\Data\Picks\OptionPickLeg.cs" />
     <Compile Include="Models\Data\Picks\OptionPickTypes.cs" />
@@ -783,6 +794,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201208251823505_Enforcing-PickUpdate-OneToMany.resx">
       <DependentUpon>201208251823505_Enforcing-PickUpdate-OneToMany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201208301703301_AddingDetailsToOptionPickLeg.resx">
+      <DependentUpon>201208301703301_AddingDetailsToOptionPickLeg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.resx">
+      <DependentUpon>201208301727049_AddingTypeAndMonthToOptionPickLeg.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

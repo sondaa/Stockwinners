@@ -77,7 +77,10 @@
             <thead>
                 <tr>
                     <td>Quantity</td>
-                    <td>Name</td>
+                    <td>Type</td>
+                    <td>Strike</td>
+                    <td>Expiry Month</td>
+                    <td>Expiry Year</td>
                     <td>Entry Price</td>
                     <td>Exit Price</td>
                     <td>Actions</td>
@@ -88,7 +91,10 @@
                 {
                     <tr>
                         <td>@leg.Quantity</td>
-                        <td>@leg.Name</td>
+                        <td>@(Enum.GetName(typeof(WebSite.Models.Data.Picks.OptionPickLegType), (WebSite.Models.Data.Picks.OptionPickLegType)leg.Type))</td>
+                        <td>@(leg.StrikePrice.ToString("C"))</td>
+                        <td>@(Enum.GetName(typeof(WebSite.Models.Data.Picks.OptionPickLegExpirationMonth), (WebSite.Models.Data.Picks.OptionPickLegExpirationMonth)leg.ExpirationMonth))</td>
+                        <td>@leg.ExpirationYear</td>
                         <td>@leg.EntryPrice.ToString("C")</td>
                         <td>@(leg.ExitPrice.HasValue ? leg.ExitPrice.Value.ToString("C") : "")</td>
                         <td>

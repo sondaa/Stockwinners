@@ -8,6 +8,8 @@ using System.Data.Entity;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models.Data.Picks;
 using System.Data.Objects;
+using System.Web.UI.DataVisualization.Charting;
+using System.IO;
 
 namespace WebSite.Controllers
 {
@@ -48,7 +50,7 @@ namespace WebSite.Controllers
         {
             DatabaseContext db = DatabaseContext.GetInstance();
 
-            OptionPick pick = db.OptionPicks.Include(o => o.Type).FirstOrDefault(optionPick => optionPick.PickId == optionPickId);
+            OptionPick pick = db.OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).FirstOrDefault(optionPick => optionPick.PickId == optionPickId);
 
             if (pick == null)
             {
@@ -58,9 +60,36 @@ namespace WebSite.Controllers
             return this.View(pick);
         }
 
+        [AllowAnonymous]
+        public FileContentResult OptionPickExpiryGraph(int pickId)
+        {
+            DatabaseContext db = DatabaseContext.GetInstance();
+
+            OptionPick optionPick = db.OptionPicks.Find(pickId);
+
+            Chart expiryGraph = optionPick.ExpiryGraph();
+
+            expiryGraph.Width = 400;
+            expiryGraph.Height = 400;
+            expiryGraph.RenderType = RenderType.ImageTag;
+
+            expiryGraph.ChartAreas.Add(new ChartArea("Test"));
+            expiryGraph.ChartAreas[0].BackColor = System.Drawing.Color.White;
+            expiryGraph.BackColor = System.Drawing.Color.White;
+
+            MemoryStream imageStream = new MemoryStream();
+
+            expiryGraph.ImageType = ChartImageType.Png;
+            expiryGraph.SaveImage(imageStream);
+
+            imageStream.Seek(0, SeekOrigin.Begin);
+
+            return this.File(imageStream.ToArray(), "image/png");
+        }
+
         public ActionResult OptionPicks()
         {
-            return this.View(DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
+            return this.View(DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
         }
 
         [AllowAnonymous]

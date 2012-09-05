@@ -4,9 +4,11 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Data.Entity;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
+using System.Data.Objects;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
@@ -27,14 +29,26 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.GoogleMembers = db.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Google);
             ViewBag.FacebookMembers = db.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Facebook);
             ViewBag.UsersWithActiveTrial = db.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate >= DateTime.UtcNow);
-            ViewBag.UsersWithExpiredTrial = db.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
+            ViewBag.UsersWithExpiredTrial = db.Users.Count(user => !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
+            ViewBag.UsersWithCancelledSubscriptions = db.Users.Count(user => user.SubscriptionExpiryDate.HasValue);
             ViewBag.SubscribedUsers = db.Users.Count(user => user.SubscriptionId.HasValue);
-            ViewBag.MonthlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
-            ViewBag.QuarterlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
-            ViewBag.YearlySubscribers = db.Users.Include("Subscription").Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
+            ViewBag.MonthlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
+            ViewBag.QuarterlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
+            ViewBag.YearlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
             ViewBag.MembersWithSuspendedPayment = db.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended);
+            ViewBag.MonthlyIncome = this.Income(PredefinedSubscriptionFrequencies.Monthly);
+            ViewBag.QuarterlyIncome = this.Income(PredefinedSubscriptionFrequencies.Quarterly);
+            ViewBag.YearlyIncome = this.Income(PredefinedSubscriptionFrequencies.Yearly);
 
             return this.View();
+        }
+
+        private decimal Income(string subscriptionFrequency)
+        {
+            return (from user
+                   in DatabaseContext.GetInstance().Users.Include(u => u.Subscription).Include("SubscriptionType")
+                   where user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == subscriptionFrequency
+                   select user.Subscription.SubscriptionType.Price).DefaultIfEmpty().Sum();
         }
 
         public ActionResult Registrations()

@@ -2,7 +2,7 @@
 @using WebSite.Models.Data.Picks
 <h2>@(Model.Type.Name) on @(Model.Symbol) on @(Model.PublishingDate.HasValue ? Model.PublishingDate.Value.ToShortDateString() : "Unpublished")</h2>
 @(Html.Raw(Model.Description))
-<h3>Trade</h3>
+@*<h3>Trade</h3>
 <ul>
     @foreach (var leg in Model.Legs)
     {
@@ -17,11 +17,11 @@
 }
 <ul>
     <li>Breakeven at @(string.Join(" and ", Model.BreakevenPoints().Select(val => val.ToString("C"))))</li>
-    <li>Maximum profit is @(maxProfit == decimal.MaxValue ? "unbound" : maxProfit.ToString("C"))</li>
-    <li>Maximum loss is @(maxLoss == decimal.MinValue ? "unbound" : maxLoss.ToString("C"))</li>
+    <li>Maximum profit is @(maxProfit == decimal.MaxValue ? "unlimited" : maxProfit.ToString("C"))</li>
+    <li>Maximum loss is @(maxLoss == decimal.MinValue ? "unlimited" : maxLoss.ToString("C"))</li>
 </ul>
 <h3>Expiry Graph</h3>
-<img src="@Url.Action("OptionPickExpiryGraph", "Picks", new { pickId = Model.PickId })" />
+<img src="@Url.Action("OptionPickExpiryGraph", "Picks", new { pickId = Model.PickId })" />*@
 @Html.Partial("_PickUpdatesPartial", Model)
 @if (Model.ClosingDate.HasValue)
 {

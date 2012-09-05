@@ -34,7 +34,7 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult ExpiredTrialMembers()
         {
             ViewBag.Title = "Members with Expired Trials";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate < DateTime.UtcNow).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate < DateTime.UtcNow && !u.SubscriptionExpiryDate.HasValue).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult AllUsers()

@@ -8,21 +8,10 @@
     <script type="text/javascript">
         $(function ()
         {
-            // Remove validation for number fields as its causing trouble for some of our customers
-            $("#CreditCard_ExpirationMonth").rules("remove");
-            $("#CreditCard_ExpirationYear").rules("remove");
-
             $("#next-span").click(function (event)
             {
-                if ($("form").validate().element("#SelectedSubscriptionTypeId"))
-                {
-                    $("#subscription-div").hide("fast");
-                    $("#billing-information-div").show("fast");
-                }
-                else
-                {
-                    alert("Please select a subscription plan before proceeding.");
-                }
+                $("#subscription-div").hide("fast");
+                $("#billing-information-div").show("fast");
             });
             $("#previous-span").click(function (event)
             {

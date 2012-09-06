@@ -122,5 +122,41 @@ namespace WebSite.Areas.Administrator.Controllers
 
             return this.File(chart.GetBytes("png"), "image/png");
         }
+
+        public ActionResult TrialVersusSubscription()
+        {
+            string Vanilla3D = @"
+                <Chart BackColor=""#555"" BackGradientStyle=""TopBottom"" BorderColor=""181, 64, 1"" BorderWidth=""2"" BorderlineDashStyle=""Solid"" Palette=""SemiTransparent"" AntiAliasing=""All"">
+                    <ChartAreas>
+                        <ChartArea Name=""Default"" _Template_=""All"" BackColor=""Transparent"" BackSecondaryColor=""White"" BorderColor=""64, 64, 64, 64"" BorderDashStyle=""Solid"" ShadowColor=""Transparent"">
+                            <Area3DStyle LightStyle=""Simplistic"" Enable3D=""True"" Inclination=""30"" IsClustered=""False"" IsRightAngleAxes=""False"" Perspective=""10"" Rotation=""-30"" WallWidth=""0"" />
+                        </ChartArea>
+                    </ChartAreas>
+                </Chart>";
+
+            DatabaseContext db = DatabaseContext.GetInstance();
+            Chart chart = new Chart(800, 600, theme: Vanilla3D);
+
+            chart.AddTitle("Trial Expiries versus Subscription Activation");
+
+            List<string> dates = new List<string>(31);
+            List<int> countsTrial = new List<int>(31);
+            List<int> countsSubscription = new List<int>(31);
+
+            for (int i = 15; i >= 0; i--)
+            {
+                DateTime date = DateTime.Today - TimeSpan.FromDays(i);
+                DateTime dateTomorrow = date.AddDays(1);
+
+                dates.Add(date.ToShortDateString());
+                countsTrial.Add(db.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
+                countsSubscription.Add(db.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
+            }
+
+            chart.AddSeries(xValue: dates, yValues: countsTrial, legend: "Trial Expiry");
+            chart.AddSeries(xValue: dates, yValues: countsSubscription, legend: "Subscription Activations");
+
+            return this.File(chart.GetBytes("png"), "image/png");
+        }
     }
 }

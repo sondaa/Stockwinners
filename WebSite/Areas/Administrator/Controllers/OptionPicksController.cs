@@ -79,6 +79,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 else if (closeButton != null)
                 {
                     // Verify that all legs are closed already
+                    db.OptionPicks.Attach(optionPick);
                     db.Entry(optionPick).Collection(pick => pick.Legs).Load();
 
                     foreach (var leg in optionPick.Legs)

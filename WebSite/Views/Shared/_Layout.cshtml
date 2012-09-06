@@ -32,6 +32,12 @@
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
     @RenderSection("styles", required: false)
+    <!-- Exchanges -->
+    <script type="text/javascript">
+        $(function () {
+            var url = "http://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent('select * from ') + "&format=json&callback=?";
+        });
+    </script>
     <!-- Google Analytics -->
     <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -52,8 +58,11 @@
                 <table style="width: 100%; padding: 0px; margin: 0px;">
                     <tr>
                         <td style="padding: 0px;"><a href="/" style="padding: 0px;"><img src="~/Images/Logo.gif" alt="Stockwinners.com" style="border-width: 0px;" /></a></td>
-                        <td style="padding: 0px; text-align: right;">
+                        <td style="padding: 0px; text-align: right; vertical-align: top;">
                             @Html.Partial("_LoginPartial")
+                            <div id="div-exchanges" style="display: none;">
+                                <div id="div-nasdaq" /><div id="div-dowjones" /><div id="div-standardpoors" />
+                            </div>
                         </td>
                     </tr>
                 </table>

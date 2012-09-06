@@ -33,7 +33,12 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name");
 
-            return View();
+            StockPick model = new StockPick();
+
+            // By default, set the pick to be a long position
+            model.IsLongPosition = true;
+
+            return this.View(model);
         }
 
         [HttpPost]

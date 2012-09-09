@@ -35,7 +35,42 @@
     <!-- Exchanges -->
     <script type="text/javascript">
         $(function () {
-            var url = "http://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent('select * from ') + "&format=json&callback=?";
+            var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Change%2C%20PercentChange%20from%20yahoo.finance.quotes%20where%20symbol%20in%20('%5EIXIC'%2C%20'%5EGSPC'%2C%20'DIA')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
+
+            updateIndexQuote = function (data, indexName)
+            {
+                $("#span-" + indexName + "-price").html(data.LastTradePriceOnly);
+                $("#span-" + indexName + "-change").html(data.Change);
+                $("#span-" + indexName + "-percent").html(data.PercentChange);
+
+                var positive = data.Change >= 0;
+
+                $("#span-" + indexName + "-change").toggleClass("green-quote", positive);
+                $("#span-" + indexName + "-change").toggleClass("red-quote", !positive);
+                $("#span-" + indexName + "-percent").toggleClass("green-quote", positive);
+                $("#span-" + indexName + "-percent").toggleClass("red-quote", !positive);
+            };
+
+            fetchQuotes = function()
+            {
+                $.getJSON(url, function (data)
+                {
+                    if (data.query.results)
+                    {
+                        updateIndexQuote(data.query.results.quote[0], "nasdaq");
+                        updateIndexQuote(data.query.results.quote[1], "sp");
+                        updateIndexQuote(data.query.results.quote[2], "djia");
+
+                        $("#div-exchanges").show();
+                    }
+                });
+            };
+
+            // Get quotes on lead
+            fetchQuotes.call();
+
+            // Update the quotes every two seconds
+            window.setInterval(fetchQuotes, 2000);
         });
     </script>
     <!-- Google Analytics -->
@@ -54,15 +89,23 @@
 <body>
     <div class="page-box">
         <div id="header">
-            <div id="logo-bar" style="padding: 3px 10px 0px 2px;">
-                <table style="width: 100%; padding: 0px; margin: 0px;">
+            <div id="logo-bar" style="padding: 3px 5px 0px 2px;">
+                <table style="width: 100%; padding: 0px; margin: 0px; border-spacing: 0px; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 0px;"><a href="/" style="padding: 0px;"><img src="~/Images/Logo.gif" alt="Stockwinners.com" style="border-width: 0px;" /></a></td>
-                        <td style="padding: 0px; text-align: right; vertical-align: top;">
-                            @Html.Partial("_LoginPartial")
-                            <div id="div-exchanges" style="display: none;">
-                                <div id="div-nasdaq" /><div id="div-dowjones" /><div id="div-standardpoors" />
-                            </div>
+                        <td rowspan="2" style="padding: 0px; vertical-align: top;"><a href="/" style="padding: 0px;"><img src="~/Images/Logo.gif" alt="Stockwinners.com" style="border-width: 0px;" /></a></td>
+                        <td style="padding: 3px 3px 0px 0px; text-align: right; vertical-align: top;">
+                                @Html.Partial("_LoginPartial")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0px 0px 4px 0px; text-align: right; vertical-align: bottom;">
+                            <table id="div-exchanges" style="font-size: 8pt; display: none; padding: 0px; border-spacing: 0px; border-collapse: collapse; float: right;">
+                                <tr><td style="text-align: center; padding: 0px; padding-right: 15px;">DJIA SPDR</td><td style="text-align: center; padding: 0px; padding-right: 15px;">NASDAQ</td><td style="text-align: center; padding: 0px;">S&amp;P 500</td></tr>
+                                <tr>
+                                    <td style="padding: 0px; padding-right: 15px;"><span id="span-djia-price"></span> <span id="span-djia-change"></span> <span id="span-djia-percent"></span></td>
+                                    <td style="padding: 0px; padding-right: 15px;"><span id="span-nasdaq-price"></span> <span id="span-nasdaq-change"></span> <span id="span-nasdaq-percent"></td>
+                                    <td style="padding: 0px;"><span id="span-sp-price"></span> <span id="span-sp-change"></span> <span id="span-sp-percent"></span></td></tr>
+                            </table>
                         </td>
                     </tr>
                 </table>

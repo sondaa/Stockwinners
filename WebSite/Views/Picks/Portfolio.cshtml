@@ -49,6 +49,90 @@
 @section Scripts
 {
     @Scripts.Render("~/bundles/subscription")
+
+    <script type="text/javascript">
+        $(function ()
+        {
+            var stockRows = $("#tbody-stock-picks > tr");
+            var symbols = new Array();
+
+            // Build query
+            $.each(stockRows, function (index, value)
+            {
+                symbols[index] = "'" + value.getAttribute("data-symbol") + "'";
+            });
+            var symbolList = symbols.join("%2C%20"); // , html encoded
+            var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Symbol%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(" + symbolList + ")&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
+
+            updateQuote = function (data)
+            {
+                var symbolRow = undefined;
+                
+                // Find the row that needs to be updated
+                $.each(stockRows, function(index, item)
+                {
+                    if (item.getAttribute("data-symbol") == data.Symbol.toLowerCase())
+                    {
+                        // Found the item in question, stop iterating
+                        symbolRow = $(item);
+                        return false;
+                    }
+
+                    return true;
+                });
+
+                if (symbolRow)
+                {
+                    var entryPrice = symbolRow.attr("data-entry-price");
+                    var price = data.LastTradePriceOnly;
+                    var change = ((price - entryPrice) / entryPrice) * 100;
+
+                    // If the position is short, then flip the profit/loss
+                    if (symbolRow.attr("data-position-type") == "False")
+                    {
+                        change = change * -1;
+                    }
+
+                    symbolRow.find("[data-field='price']").html("$" + price);
+                    
+                    var changeCell = symbolRow.find("[data-field='change']");
+                        
+                    changeCell.html(change.toFixed(2) + "%");
+
+                    if (change >= 0)
+                    {
+                        changeCell.addClass("green-quote");
+                        changeCell.removeClass("red-quote");
+                    }
+                    else
+                    {
+                        changeCell.addClass("red-quote");
+                        changeCell.addClass("green-quote");
+                    }
+                }
+            };
+
+            fetchQuotes = function ()
+            {
+                $.getJSON(url, function (data)
+                {
+                    if (data.query.results)
+                    {
+                        $.each(data.query.results.quote, function (index, quoteInformation)
+                        {
+                            updateQuote(quoteInformation);
+                        });
+                    }
+                });
+            };
+
+            // Get quotes on lead
+            fetchQuotes.call();
+
+            // Update the quotes every two seconds
+            window.setInterval(fetchQuotes, 2000);
+        });
+    </script>
 }
 <h2>Portfolio</h2>
 @if (Request.IsAuthenticated)
@@ -58,19 +142,21 @@
     // Load user's subscriptions eagerly before looping over stocks and options
     WebSite.Database.DatabaseContext.GetInstance().Entry(currentUser).Collection(user => user.SubscribedPicks).Load();
     
-<h3 style="margin-left: 6%;">Stocks</h3>
-<table style="text-align: center; width: 70%;">
+<h3>Stocks</h3>
+<table style="text-align: center; width: 90%;">
     <thead>
         <tr>
             <td>Symbol</td>
-            <td>Price</td>
+            <td>Entry Price</td>
+            <td>Current Price</td>
+            <td>Change</td>
             <td>Entered On</td>
             <td>Reason</td>
             <td>Type</td>
             <td>Follow</td>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="tbody-stock-picks">
         @{ 
             int stockIndex = 0; 
                         
@@ -85,9 +171,11 @@
 
                 string detailLink = "window.location.href = '" + Url.Action("StockPickDetail", "Picks", new { stockPickId = stockPick.PickId }) + "';";
                
-                <tr class="clickable-row @(background)">
+                <tr class="clickable-row @(background)" data-symbol="@stockPick.Symbol.ToLower()" data-entry-price="@stockPick.EntryPrice" data-position-type="@stockPick.IsLongPosition">
                     <td onclick="@detailLink">@stockPick.Symbol</td>
                     <td onclick="@detailLink">@stockPick.EntryPrice.ToString("C")</td>
+                    <td onclick="@(detailLink)" data-field="price"></td>
+                    <td onclick="@(detailLink)" data-field="change"></td>
                     <td onclick="@detailLink">@stockPick.PublishingDate.Value.ToShortDateString()</td>
                     <td onclick="@detailLink">@stockPick.Type.Name</td>
                     @if (stockPick.IsLongPosition)
@@ -106,13 +194,13 @@
         }
     </tbody>
 </table>
-<h3 style="margin-left:6%;">Options</h3>
+<h3>Options</h3>
 <table style="text-align: center; width: 70%;">
     <thead>
         <tr>
             <td>Underlying Symbol</td>
             <td>Strategy Type</td>
-            <td>Price</td>
+            <td>Entry Price</td>
             <td>Entered On</td>
             <td>Follow</td>
         </tr>

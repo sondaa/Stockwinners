@@ -277,6 +277,16 @@ input[type="submit"]
         font-size: 1.1em;
     }
 
+.green-quote
+{
+    color: green;
+}
+
+.red-quote
+{
+    color: #ad2222;
+}
+
 /* page titles */
 hgroup.title
 {

@@ -35,12 +35,12 @@
                     @if (stockPick.IsLongPosition)
                     {
                         <td style="color: #21892a">Long</td>
-                        <td style="color: @(gainLoss > 0 ? "#21892a" : "#ad2222")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                        <td style="color: @(gainLoss >= 0 ? "#21892a" : "#ad2222")">@(Math.Abs(gainLoss).ToString("F"))%</td>
                     }
                     else
                     {
                         <td style="color: #ad2222">Short</td>
-                        <td style="color: @(gainLoss > 0 ? "#ad2222" : "#21892a")">@(Math.Abs(gainLoss).ToString("F"))%</td>
+                        <td style="color: @(gainLoss <= 0 ? "#ad2222" : "#21892a")">@(Math.Abs(gainLoss).ToString("F"))%</td>
                     }
                 </tr>
         

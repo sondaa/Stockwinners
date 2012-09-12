@@ -55,6 +55,13 @@
         {
             var stockRows = $("#tbody-stock-picks > tr");
             var symbols = new Array();
+            var intervalId = 0;
+
+            // If there are no picks (the user may not be logged in), then bail out.
+            if (stockRows.length == 0)
+            {
+                return;
+            }
 
             // Build query
             $.each(stockRows, function (index, value)
@@ -62,7 +69,7 @@
                 symbols[index] = "'" + value.getAttribute("data-symbol") + "'";
             });
             var symbolList = symbols.join("%2C%20"); // , html encoded
-            var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Symbol%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(" + symbolList + ")&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
+            var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Symbol%2C%20LastTradeTime%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(" + symbolList + ")&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
 
             updateQuote = function (data)
             {
@@ -122,6 +129,12 @@
                         {
                             updateQuote(quoteInformation);
                         });
+
+                        // If the market is closed, stop requesting quotes
+                        if (intervalId != 0 && Date.parse("01/01/2012 4:00PM") <= Date.parse("01/01/2012 " + data.query.results.quote[0].LastTradeTime))
+                        {
+                            clearInterval(intervalId);
+                        }
                     }
                 });
             };
@@ -130,7 +143,7 @@
             fetchQuotes.call();
 
             // Update the quotes every two seconds
-            window.setInterval(fetchQuotes, 2000);
+            intervalId = window.setInterval(fetchQuotes, 2000);
         });
     </script>
 }

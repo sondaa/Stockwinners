@@ -7,6 +7,10 @@
     <meta name="description" content="List of option picks during @DateTime.UtcNow.Year." />
 }
 <h2>Option Picks</h2>
+@if (!Request.IsAuthenticated)
+{
+    <p class="message-info">You are seeing option picks that have already been closed. Please log in to see option picks that are currently in our portfolio.</p>
+}
 @foreach (WebSite.Models.Data.Picks.OptionPick optionPick in Model)
 {
     @Html.DisplayFor(model => optionPick)

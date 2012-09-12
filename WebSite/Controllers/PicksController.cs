@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using WebSite.Database;
 using System.Data.Entity;
-using WebSite.Infrastructure.Attributes;
-using WebSite.Models.Data.Picks;
 using System.Data.Objects;
-using System.Web.UI.DataVisualization.Charting;
 using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using System.Web.UI.DataVisualization.Charting;
+using WebSite.Database;
+using WebSite.Models.Data.Picks;
 
 namespace WebSite.Controllers
 {
-    [MembersOnly]
     public class PicksController : Controller
     {
-        [AllowAnonymous]
         public ActionResult Portfolio()
         {
             DatabaseContext db = DatabaseContext.GetInstance();
@@ -42,6 +37,10 @@ namespace WebSite.Controllers
             {
                 return this.HttpNotFound("Invalid stock pick information");
             }
+            else if (!pick.ClosingDate.HasValue && !Request.IsAuthenticated)
+            {
+                System.Web.Security.FormsAuthentication.RedirectToLoginPage();
+            }
 
             return this.View(pick);
         }
@@ -56,11 +55,14 @@ namespace WebSite.Controllers
             {
                 return this.HttpNotFound("Invalid option pick information");
             }
+            else if (!pick.ClosingDate.HasValue && !Request.IsAuthenticated)
+            {
+                System.Web.Security.FormsAuthentication.RedirectToLoginPage();
+            }
 
             return this.View(pick);
         }
 
-        [AllowAnonymous]
         public FileContentResult OptionPickExpiryGraph(int pickId)
         {
             DatabaseContext db = DatabaseContext.GetInstance();
@@ -89,10 +91,21 @@ namespace WebSite.Controllers
 
         public ActionResult OptionPicks()
         {
-            return this.View(DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value));
+            IQueryable<OptionPick> optionPicks = null;
+
+            // If the user is logged in, then show them open option picks as well, otherwise, only show closed positions
+            if (Request.IsAuthenticated)
+            {
+                optionPicks = DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue);
+            }
+            else
+            {
+                optionPicks = DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue);
+            }
+
+            return this.View(optionPicks.OrderByDescending(optionPick => optionPick.PublishingDate.Value));
         }
 
-        [AllowAnonymous]
         public ActionResult StockPicks()
         {
             IQueryable<StockPick> stockPicks = null;

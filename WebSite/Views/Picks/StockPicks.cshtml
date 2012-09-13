@@ -6,11 +6,11 @@
 {
     <meta name="description" content="List of stock selections during @DateTime.UtcNow.Year." />
 }
-<h2>Stock Picks</h2>
 @if (!Request.IsAuthenticated)
 {
-    <p class="message-info">You are seeing stock picks that have already been closed. Please log in to see stock picks that are currently in our portfolio.</p>
+    @Html.InformationMessage("You are seeing stock picks that have already been closed. Please log in to see stock picks that are currently in our portfolio.")
 }
+<h2>Stock Picks</h2>
 @foreach (WebSite.Models.Data.Picks.StockPick pick in Model)
 {
     @Html.DisplayFor(m => pick)

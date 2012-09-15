@@ -53,7 +53,7 @@ else if (ViewBag.IsUsingCancelledSubscription)
 }
 else if (ViewBag.IsUsingSuspendedSubscription)
 {
-    <span class="message-error">Your last payment was not successful. Please @Html.ActionLink("update your subscription information", "UpdateSubscription") to continue using the website.</span>
+    @Html.ErrorMessage("Your last payment was not successful. Please " + Html.ActionLink("update your subscription information", "UpdateSubscription") + " to continue using the website.")
 }
 else
 {
@@ -63,7 +63,7 @@ else
 <h2>Notification Settings</h2>
 @if (ViewBag.SavedSuccessfully)
 {
-    <p class="message-success">Changes have been saved.</p>
+    @Html.SuccessMessage("Changes have been saved.")
 }
 @using (Html.BeginForm())
 {

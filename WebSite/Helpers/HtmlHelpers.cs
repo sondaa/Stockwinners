@@ -8,17 +8,17 @@ namespace WebSite.Helpers
 {
     public static class HtmlHelpers
     {
-        public static IHtmlString InformationMessage<T>(this HtmlHelper<T> html, string message)
+        public static IHtmlString InformationMessage(this HtmlHelper html, string message)
         {
             return MessageTable(html, message, "/Images/info.png");
         }
 
-        public static IHtmlString ErrorMessage<T>(this HtmlHelper<T> html, string message)
+        public static IHtmlString ErrorMessage(this HtmlHelper html, string message)
         {
             return MessageTable(html, message, "/Images/error.png");
         }
 
-        public static IHtmlString SuccessMessage<T>(this HtmlHelper<T> html, string message)
+        public static IHtmlString SuccessMessage(this HtmlHelper html, string message)
         {
             return MessageTable(html, message, "/Images/success.png");
         }
@@ -35,9 +35,11 @@ namespace WebSite.Helpers
 
             // Add contents of the message cell
             messageCell.InnerHtml = message;
+            messageCell.Attributes.Add("style", "vertical-align: middle; padding: 5px;");
 
             // Add icon
             iconCell.InnerHtml = "<img src=\"" + iconPath + "\"/>";
+            iconCell.Attributes.Add("style", "vertical-align: top; padding: 5px;");
 
             row.InnerHtml = iconCell.ToString() + messageCell.ToString();
             table.InnerHtml = row.ToString();

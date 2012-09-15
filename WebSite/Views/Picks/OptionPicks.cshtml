@@ -9,7 +9,7 @@
 <h2>Option Picks</h2>
 @if (!Request.IsAuthenticated)
 {
-    <p class="message-info">You are seeing option picks that have already been closed. Please log in to see option picks that are currently in our portfolio.</p>
+    @Html.InformationMessage("You are seeing option picks that have already been closed. Please log in to see option picks that are currently in our portfolio.")
 }
 @foreach (WebSite.Models.Data.Picks.OptionPick optionPick in Model)
 {

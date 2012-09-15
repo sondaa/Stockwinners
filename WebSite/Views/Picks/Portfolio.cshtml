@@ -246,7 +246,7 @@
 }
 else
 {
-    <p class="message-info">Since you are not logged in, you are only seeing our stock and option positions that have been closed. To see our current portfolio with our stock and option picks, please log in.</p>
+    @Html.InformationMessage("Since you are not logged in, you are only seeing our stock and option positions that have been closed. To see our current portfolio with our stock and option picks, please log in.")
 }
 <h3>Stock positions closed within the last 31 days</h3>
 @Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)

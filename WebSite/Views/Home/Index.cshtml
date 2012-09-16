@@ -8,176 +8,89 @@
 @section Styles
 {
     <style type="text/css">
-        .choice
-        {
-            margin: 0px auto;
-            width: 50px;
-            height: 50px;
+        .blue 
+        { 
+            background-color: #6699FF; 
+            
         }
-
-        .selected
+            .blue:hover 
+            { 
+                background-color: #497add; 
+            }
+            
+        .red
         {
-            background-color: #c12222;
+            background-color: #ff8181;
         }
-
-        .not-selected
-        {
-            background-color: #4a9ce1;
-        }
-
-            .not-selected:hover
+            .red:hover
             {
-                background-color: #1b63a0;
-                transition: background-color 0.3s ease-in;
-                -webkit-transition: background-color 0.3s ease-in;  
-                -moz-transition: background-color 0.3s ease-in;  
-                -o-transition: background-color 0.3s ease-in;  
+                background-color:  #d75050;
             }
 
-        .slide-1
+        .green
         {
+            background-color: #73bfbf;
         }
+            .green:hover
+            {
+                background-color: #419696;
+            }
+
+        .yellow
+        {
+            background-color: #ffffcc;
+        }
+            .yellow:hover
+            {
+                background-color: #f2f294;
+            }
+
+        .dark-green
+        {
+            background-color: #009999;
+        }
+            .dark-green:hover
+            {
+                background-color: #096767;
+            }
     </style>
 }
-@section Scripts
-{
-    <script type="text/javascript">
-        var hourLevel = 0;
-        var skillLevel = 0;
+<table class="box-table">
+	<tr>
+		<td colspan="2" style="width: 50%; height: 200px;">
+			<div class="blue" onclick="window.location.href = '@Url.Action("PhilosophyAndPerformance", "Information")';">
+				<span class="box-heading">Philosophy &amp; Performance</span><br/><br />
+				<span>Stockwinners.com is one of the oldest stock advisory services on the web. We have consistently been providing winning picks since 1998! Our year-to-date performance until August 24th 2012 has been 43.8%.</span>
+			</div>
+		</td>
+		<td style="width: 50%; padding-right:8px; height: 200px;">
+			<div class="red" onclick="window.location.href = '@Url.Action("Register", "Account")';">
+				<span class="box-heading">Trial Membership</span><br/><br />
+				<span>We offer a free 2 weeks trial membership with full access to our picks and portfolio so you can try the service free of charge. We require no credit cards and have integrated our website with Facebook and Google so that you can start your trial with a single click.</span>
+			</div>			 
+		</td>
+	</tr>
+</table>
 
-        $(function ()
-        {
-            $(".choice").click(function ()
-            {
-                // Set time spent on the market
-                if (this.getAttribute("data-type") == "hour")
-                {
-                    hourLevel = this.getAttribute("data-value");
-                }
-
-                // Set skill level
-                if (this.getAttribute("data-type") == "skill")
-                {
-                    skillLevel = this.getAttribute("data-value");
-                }
-
-                // Change color to show the value has been chosen
-                $('.choice[data-type="' + this.getAttribute("data-type") + '"]').addClass("not-selected").removeClass("selected");
-                $(this).removeClass("not-selected").addClass("selected");
-
-                // If both value have been seleted, transition onto the next page
-                if (hourLevel != 0 && skillLevel != 0)
-                {
-                    $(".slide-1").hide('fast');
-                }
-            });
-        });
-    </script>
-}
-<table style="width: 100%;">
-    <tr class="slide-1">
-        <td style="width: 100%; font-size: 23pt; font-weight: 400; text-align: center;">Stocks and Options Advisory Service for Modern Day Traders</td>
-    </tr>
-    <tr>
-        <td style="width: 100%; text-align: center;">
-            <img src="~/Images/Home/big-logo.png" /></td>
-    </tr>
-    <tr>
-        <td style="width: 100%;" class="slide-1">
-            <table style="width: 100%;">
-                <tr>
-                    <td style="width: 50%; font-size: 23pt; font-weight: 400; text-align: center; vertical-align: top;">How many hours a day on average do you monitor the market?
-                    </td>
-                    <td style="width: 50%; font-size: 23pt; font-weight: 400; text-align: center; vertical-align: top;">What is your skill level in the market?
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 50%; font-size: 14pt; font-weight: 400; text-align: center;">
-                        <table style="width: 70%; margin: 0px auto;">
-                            <tr>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="1"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="2"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="3"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="4"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="5"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="6"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="7"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="hour" data-value="8"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;">1</td>
-                                <td style="text-align: center;">2</td>
-                                <td style="text-align: center;">3</td>
-                                <td style="text-align: center;">4</td>
-                                <td style="text-align: center;">5</td>
-                                <td style="text-align: center;">6</td>
-                                <td style="text-align: center;">7</td>
-                                <td style="text-align: center;">8</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td style="width: 50%; font-size: 14pt; font-weight: 400; text-align: center;">
-                        <table style="width: 70%; margin: 0px auto;">
-                            <tr>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="1"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="2"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="3"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="4"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="5"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="6"></div>
-                                </td>
-                                <td style="width: 12%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="7"></div>
-                                </td>
-                                <td style="width: 13%;">
-                                    <div class="choice not-selected" data-type="skill" data-value="8"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="8">
-                                    <table style="width: 100%; border-spacing: 0; border-collapse: collapse; padding: 0px;">
-                                        <tr>
-                                            <td style="width: 33%; text-align: left;">Novice
-                                            </td>
-                                            <td style="width: 33%; text-align: center;">Intermediate
-                                            </td>
-                                            <td style="width: 34%; text-align: right;">Advanced
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
+<table class="box-table">
+	<tr>
+		<td style="width: 33%; height: 250px;">
+			<div class="green" onclick="window.location.href = '@Url.Action("StockPicks", "Picks")';">
+				<span class="box-heading">Stock Picks</span><br/><br />
+				<span>We provide daily stock picks based on technical analysis, news, momentum, and rumours that we scout from the market.</span>
+			</div>
+		</td>
+		<td style="width: 33%; height: 250px;">
+			<div class="yellow" onclick="window.location.href = '@Url.Action("OptionPicks", "Picks")';">
+				<span class="box-heading">Option Picks</span><br/><br />
+				<span>Stockwinners.com offers weekly option picks as an alternative investment vehicle to help investors utilize equity options to define risk, enhance yields, and make effective use of leverage to reduce the initial cost of trade.</span>
+			</div>			 				
+		</td>
+		<td style="width: 34%; padding-right:8px; height: 250px;">
+			<div class="dark-green" onclick="window.location.href = '@Url.Action("Index", "ActiveTraders")';">
+				<span class="box-heading">Active Traders</span><br/><br />
+				<span>Our active traders section provides you real-time market moving news. We publish market critical news before they become available elsewhere. We offer a variety of items such as upgrades/downgrades, market chatter, acquisitions, earnings report, lawsuits, approvals, etc.</span>
+			</div>			 					
+		</td>
+	</tr>
 </table>

@@ -12,7 +12,7 @@ using WebSite.Models.Data.Picks;
 
 namespace WebSite.Models
 {
-    public class User
+    public class User : Stockwinners.IUser
     {
         [Required]
         [Key]

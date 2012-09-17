@@ -113,6 +113,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Library\Library.csproj">
+      <Project>{c8b290b6-b8a7-4d41-8383-517b1531c650}</Project>
+      <Name>Library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebSite\WebSite.csproj">
       <Project>{63DE252B-AB42-436F-978B-22CE44F30990}</Project>
       <Name>WebSite</Name>

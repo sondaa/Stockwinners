@@ -15,10 +15,16 @@ using WebSite.Database;
 
 namespace WebSite.Controllers
 {
-
     [Authorize]
     public class AccountController : Controller
     {
+        DatabaseContext _database;
+
+        public AccountController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         [AllowAnonymous]
         public ActionResult ResetPassword()
         {
@@ -44,7 +50,7 @@ namespace WebSite.Controllers
             else
             {
                 // Email the new password to the user
-                DatabaseContext.GetInstance().StockwinnersMembers.First(swMember => swMember.EmailAddress == emailAddress).SendPasswordResetEmail(resetPassword);
+                _database.StockwinnersMembers.First(swMember => swMember.EmailAddress == emailAddress).SendPasswordResetEmail(resetPassword);
 
                 ViewBag.SuccessfulChange = true;
             }

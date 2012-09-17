@@ -74,14 +74,18 @@ namespace WebSite.Helpers
 
         private static IQueryable<User> GetAdmins()
         {
-            return from user in DatabaseContext.GetInstance().Users 
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+            return from user in db.Users 
                    where (from role in user.Roles where role.Name == PredefinedRoles.Administrator select role).Count() > 0
                    select user;
         }
 
         private static IQueryable<User> GetActiveUsers()
         {
-            return DatabaseContext.GetInstance().Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(ActiveUserPredicate);
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+            return db.Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(ActiveUserPredicate);
         }
 
         public static System.Linq.Expressions.Expression<Func<User, bool>> ActiveUserPredicate 

@@ -13,12 +13,18 @@ namespace WebSite.Controllers.API
     [Authorize]
     public class PickSubscriptionController : ApiController
     {
+        DatabaseContext _database;
+
+        public PickSubscriptionController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         [HttpGet]
         public void Follow(int pickId)
         {
             // Locate the pick
-            DatabaseContext db = DatabaseContext.GetInstance();
-            Pick pick = db.Picks.Find(pickId);
+            Pick pick = _database.Picks.Find(pickId);
 
             // Locate the currently logged in user
             Models.User user = Authentication.GetCurrentUser();
@@ -28,7 +34,7 @@ namespace WebSite.Controllers.API
             {
                 user.SubscribedPicks.Add(pick);
 
-                db.SaveChanges();
+                _database.SaveChanges();
             }
         }
 
@@ -36,8 +42,7 @@ namespace WebSite.Controllers.API
         public void Ignore(int pickId)
         {
             // Locate the pick
-            DatabaseContext db = DatabaseContext.GetInstance();
-            Pick pick = db.Picks.Find(pickId);
+            Pick pick = _database.Picks.Find(pickId);
 
             // Locate the currently logged in user
             Models.User user = Authentication.GetCurrentUser();
@@ -47,7 +52,7 @@ namespace WebSite.Controllers.API
             {
                 user.SubscribedPicks.Remove(pick);
 
-                db.SaveChanges();
+                _database.SaveChanges();
             }
         }
     }

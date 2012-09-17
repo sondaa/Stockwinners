@@ -38,13 +38,14 @@ namespace WebSite.Models.Data.Picks
         public void Email()
         {
             // Ensure the pick is retrieved from the database before sending the email
-            DatabaseContext.GetInstance().Entry(this).Reference(pickUpdate => pickUpdate.Pick).Load();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            db.Entry(this).Reference(pickUpdate => pickUpdate.Pick).Load();
 
             // Prepare email message
             EmailResult email = new WebSite.Mailers.Picks().PickUpdate(this);
 
             // Send the message to pick subscribers who have an active membership
-            WebSite.Helpers.Email.SendEmail(email, DatabaseContext.GetInstance().Entry(this.Pick).Collection(pick => pick.Subscribers).Query().Where(WebSite.Helpers.Email.ActiveUserPredicate));
+            WebSite.Helpers.Email.SendEmail(email, db.Entry(this.Pick).Collection(pick => pick.Subscribers).Query().Where(WebSite.Helpers.Email.ActiveUserPredicate));
         }
     }
 }

@@ -6,7 +6,13 @@
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
     <Certificates>
-      <Certificate name="Stockwinners" thumbprint="BB9DC0465C905CB64670DB2D196D16FFB0AB1ED4" thumbprintAlgorithm="sha1"/>
+      <Certificate name="Stockwinners" thumbprint="BB9DC0465C905CB64670DB2D196D16FFB0AB1ED4" thumbprintAlgorithm="sha1" />
     </Certificates>
+  </Role>
+  <Role name="WorkerRole">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+    </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

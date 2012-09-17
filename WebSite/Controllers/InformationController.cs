@@ -10,6 +10,13 @@ namespace WebSite.Controllers
 {
     public class InformationController : Controller
     {
+        DatabaseContext _database;
+
+        public InformationController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         public ActionResult Market101()
         {
             return View();
@@ -32,7 +39,7 @@ namespace WebSite.Controllers
 
         public ActionResult PhilosophyAndPerformance()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = _database;
 
             Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
             {
@@ -48,7 +55,7 @@ namespace WebSite.Controllers
         [MembersOnly]
         public ActionResult Alerts()
         {
-            return this.View(DatabaseContext.GetInstance().DailyAlerts.Where(alert => alert.IsPublished).Take(14).OrderByDescending(alert => alert.PublishDate));
+            return this.View(_database.DailyAlerts.Where(alert => alert.IsPublished).Take(14).OrderByDescending(alert => alert.PublishDate));
         }
 
         public ActionResult MembershipPolicy()

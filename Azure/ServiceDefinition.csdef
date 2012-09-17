@@ -17,7 +17,12 @@
       <Import moduleName="Diagnostics" />
     </Imports>
     <Certificates>
-      <Certificate name="Stockwinners" storeLocation="LocalMachine" storeName="CA"/>
+      <Certificate name="Stockwinners" storeLocation="LocalMachine" storeName="CA" />
     </Certificates>
   </WebRole>
+  <WorkerRole name="WorkerRole" vmsize="Small">
+    <Imports>
+      <Import moduleName="Diagnostics" />
+    </Imports>
+  </WorkerRole>
 </ServiceDefinition>

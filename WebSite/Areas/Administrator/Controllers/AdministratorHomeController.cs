@@ -4,7 +4,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Helpers;
 using System.Web.Mvc;
-using System.Data.Entity;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
@@ -15,6 +14,13 @@ namespace WebSite.Areas.Administrator.Controllers
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class AdministratorHomeController : Controller
     {
+        DatabaseContext _database;
+
+        public AdministratorHomeController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -22,20 +28,18 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Statistics()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
-
-            ViewBag.UsersCount = db.Users.Count();
-            ViewBag.StockwinnersMembers = db.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Stockwinners);
-            ViewBag.GoogleMembers = db.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Google);
-            ViewBag.FacebookMembers = db.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Facebook);
-            ViewBag.UsersWithActiveTrial = db.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate >= DateTime.UtcNow);
-            ViewBag.UsersWithExpiredTrial = db.Users.Count(user => !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
-            ViewBag.UsersWithCancelledSubscriptions = db.Users.Count(user => user.SubscriptionExpiryDate.HasValue);
-            ViewBag.SubscribedUsers = db.Users.Count(user => user.SubscriptionId.HasValue);
-            ViewBag.MonthlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
-            ViewBag.QuarterlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
-            ViewBag.YearlySubscribers = db.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
-            ViewBag.MembersWithSuspendedPayment = db.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended);
+            ViewBag.UsersCount = _database.Users.Count();
+            ViewBag.StockwinnersMembers = _database.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Stockwinners);
+            ViewBag.GoogleMembers = _database.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Google);
+            ViewBag.FacebookMembers = _database.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Facebook);
+            ViewBag.UsersWithActiveTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate >= DateTime.UtcNow);
+            ViewBag.UsersWithExpiredTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
+            ViewBag.UsersWithCancelledSubscriptions = _database.Users.Count(user => user.SubscriptionExpiryDate.HasValue);
+            ViewBag.SubscribedUsers = _database.Users.Count(user => user.SubscriptionId.HasValue);
+            ViewBag.MonthlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
+            ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
+            ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
+            ViewBag.MembersWithSuspendedPayment = _database.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended);
             ViewBag.MonthlyIncome = this.Income(PredefinedSubscriptionFrequencies.Monthly);
             ViewBag.QuarterlyIncome = this.Income(PredefinedSubscriptionFrequencies.Quarterly);
             ViewBag.YearlyIncome = this.Income(PredefinedSubscriptionFrequencies.Yearly);
@@ -46,14 +50,13 @@ namespace WebSite.Areas.Administrator.Controllers
         private decimal Income(string subscriptionFrequency)
         {
             return (from user
-                   in DatabaseContext.GetInstance().Users.Include(u => u.Subscription).Include("SubscriptionType")
+                   in _database.Users.Include(u => u.Subscription).Include("SubscriptionType")
                    where user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == subscriptionFrequency
                    select user.Subscription.SubscriptionType.Price).DefaultIfEmpty().Sum();
         }
 
         public ActionResult Registrations()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
             Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Registrations in the past month");
@@ -67,7 +70,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 DateTime dateTomorrow = date.AddDays(1);
 
                 dates.Add(date.ToShortDateString());
-                counts.Add(db.Users.Count(user => user.SignUpDate >= date && user.SignUpDate < dateTomorrow));
+                counts.Add(_database.Users.Count(user => user.SignUpDate >= date && user.SignUpDate < dateTomorrow));
             }
 
             chart.AddSeries(xValue: dates, yValues: counts);
@@ -77,7 +80,6 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult TrialExpiries()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
             Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Trial Expiries during past and future 2 weeks");
@@ -91,7 +93,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 DateTime dateTomorrow = date.AddDays(1);
 
                 dates.Add(date.ToShortDateString());
-                counts.Add(db.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
+                counts.Add(_database.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
             }
 
             chart.AddSeries(xValue: dates, yValues: counts);
@@ -101,7 +103,6 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Subscriptions()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
             Chart chart = new Chart(800, 600);
 
             chart.AddTitle("Subscription Activations in the past month");
@@ -115,7 +116,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 DateTime dateTomorrow = date.AddDays(1);
 
                 dates.Add(date.ToShortDateString());
-                counts.Add(db.Users.Include("Subscription").Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
+                counts.Add(_database.Users.Include("Subscription").Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
             }
 
             chart.AddSeries(xValue: dates, yValues: counts);
@@ -134,7 +135,6 @@ namespace WebSite.Areas.Administrator.Controllers
                     </ChartAreas>
                 </Chart>";
 
-            DatabaseContext db = DatabaseContext.GetInstance();
             Chart chart = new Chart(800, 600, theme: Vanilla3D);
 
             chart.AddTitle("Trial Expiries versus Subscription Activation");
@@ -149,8 +149,8 @@ namespace WebSite.Areas.Administrator.Controllers
                 DateTime dateTomorrow = date.AddDays(1);
 
                 dates.Add(date.ToShortDateString());
-                countsTrial.Add(db.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
-                countsSubscription.Add(db.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
+                countsTrial.Add(_database.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
+                countsSubscription.Add(_database.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
             }
 
             chart.AddSeries(xValue: dates, yValues: countsTrial, legend: "Trial Expiry");

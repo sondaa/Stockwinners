@@ -9,7 +9,7 @@ using WebSite.Models.Data.Picks;
 
 namespace WebSite.Database
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : Stockwinners.IDatabaseContext
     {
         public DatabaseContext()
             : base("name=DefaultConnection")
@@ -42,30 +42,6 @@ namespace WebSite.Database
         public static bool IsAvailableForCurrentContext()
         {
             return HttpContext.Current.Items.Contains(typeof(DatabaseContext));
-        }
-
-        public static DatabaseContext GetInstance()
-        {
-            if (DatabaseContext.IsAvailableForCurrentContext())
-            {
-                return HttpContext.Current.Items[typeof(DatabaseContext)] as DatabaseContext;
-            }
-            else
-            {
-                DatabaseContext db = new DatabaseContext();
-
-                HttpContext.Current.Items.Add(typeof(DatabaseContext), db);
-
-                return db;
-            }
-        }
-
-        public static void DisposeInstance()
-        {
-            if (DatabaseContext.IsAvailableForCurrentContext())
-            {
-                DatabaseContext.GetInstance().Dispose();
-            }
         }
 
         #endregion

@@ -15,7 +15,7 @@ namespace WebSite.Infrastructure
     {
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
             
             for (int usernameIndex = 0; usernameIndex < usernames.Length; usernameIndex++)
             {
@@ -42,7 +42,7 @@ namespace WebSite.Infrastructure
 
         public override void CreateRole(string roleName)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             db.Roles.Add(new Role() { Name = roleName });
             db.SaveChanges();
@@ -60,12 +60,14 @@ namespace WebSite.Infrastructure
 
         public override string[] GetAllRoles()
         {
-            return (from role in DatabaseContext.GetInstance().Roles select role.Name).ToArray();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+            return (from role in db.Roles select role.Name).ToArray();
         }
 
         public override string[] GetRolesForUser(string username)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
 
@@ -84,7 +86,7 @@ namespace WebSite.Infrastructure
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             User user = db.Users.FirstOrDefault(u => u.EmailAddress == username);
 
@@ -98,7 +100,7 @@ namespace WebSite.Infrastructure
 
         public override void RemoveUsersFromRoles(string[] usernames, string[] roleNames)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             foreach (string username in usernames)
             {
@@ -127,7 +129,9 @@ namespace WebSite.Infrastructure
 
         public override bool RoleExists(string roleName)
         {
-            return DatabaseContext.GetInstance().Roles.FirstOrDefault(role => role.Name == roleName) != null;
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+            return db.Roles.FirstOrDefault(role => role.Name == roleName) != null;
         }
     }
 }

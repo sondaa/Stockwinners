@@ -14,6 +14,8 @@ namespace WebSite.Areas.Administrator.Controllers
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public abstract class PicksController<T> : Controller where T : Pick
     {
+        protected DatabaseContext _database;
+
         public ActionResult SubmitUpdate(int pickId)
         {
             return View(new PickUpdate() { PickId = pickId, IssueDate = DateTime.UtcNow });
@@ -24,10 +26,8 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             if (ModelState.IsValid)
             {
-                DatabaseContext db = DatabaseContext.GetInstance();
-
-                db.PickUpdates.Add(update);
-                db.SaveChanges();
+                _database.PickUpdates.Add(update);
+                _database.SaveChanges();
 
                 // Email the update to subscribers
                 update.Email();

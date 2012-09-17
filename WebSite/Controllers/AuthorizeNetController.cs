@@ -15,6 +15,13 @@ namespace WebSite.Controllers
     /// </summary>
     public class AuthorizeNetController : Controller
     {
+        DatabaseContext _database;
+
+        public AuthorizeNetController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         [HttpPost]
         public void PostBack()
         {
@@ -40,7 +47,7 @@ namespace WebSite.Controllers
             // letting them know something is wrong
             string subscriptionId = Request.Form["x_subscription_id"];
 
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = _database;
 
             // Load the subscription and figure out which user it belongs to
             Subscription subscription = db.Subscriptions.FirstOrDefault(s => s.AuthorizeNETSubscriptionId == subscriptionId);

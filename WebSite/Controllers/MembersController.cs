@@ -16,6 +16,13 @@ namespace WebSite.Controllers
     [MembersOnly(AllowExpiredTrials = true, AllowSuspendedPayments = true)]
     public class MembersController : Controller
     {
+        DatabaseContext _database;
+
+        public MembersController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         public ActionResult Index()
         {
             WebSite.Models.User currentUser = Authentication.GetCurrentUser();
@@ -41,7 +48,7 @@ namespace WebSite.Controllers
                 currentSettings.ReceiveOptionPicks = notificationSettings.ReceiveOptionPicks;
                 currentSettings.ReceiveStockPicks = notificationSettings.ReceiveStockPicks;
 
-                DatabaseContext.GetInstance().SaveChanges();
+                _database.SaveChanges();
 
                 ViewBag.SavedSuccessfully = true;
             }
@@ -55,7 +62,7 @@ namespace WebSite.Controllers
         [RequireHttps]
         public ActionResult UpdateSubscription()
         {
-            ViewBag.Countries = DatabaseContext.GetInstance().Countries;
+            ViewBag.Countries = _database.Countries;
 
             return this.View();
         }
@@ -87,7 +94,7 @@ namespace WebSite.Controllers
                     // Encrypt the card's number
                     newCreditCard.Encrypt();
 
-                    DatabaseContext db = DatabaseContext.GetInstance();
+                    DatabaseContext db = _database;
 
                     // Construct a subscription for the user
                     Subscription userSubscription = new Subscription()
@@ -112,7 +119,7 @@ namespace WebSite.Controllers
                 }
             }
 
-            ViewBag.Countries = DatabaseContext.GetInstance().Countries;
+            ViewBag.Countries = _database.Countries;
 
             return this.View();
         }
@@ -123,8 +130,8 @@ namespace WebSite.Controllers
             // Calculate the set of subscriptions available to the user
             SubscriptionRegistration registration = new SubscriptionRegistration()
             {
-                AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers),
-                Countries = DatabaseContext.GetInstance().Countries.AsEnumerable()
+                AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers),
+                Countries = _database.Countries.AsEnumerable()
             };
 
             return View(registration);
@@ -134,8 +141,8 @@ namespace WebSite.Controllers
         [RequireHttps]
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation)
         {
-            registrationInformation.AvailableSubscriptionTypes = DatabaseContext.GetInstance().SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers);
-            registrationInformation.Countries = DatabaseContext.GetInstance().Countries.AsEnumerable();
+            registrationInformation.AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers);
+            registrationInformation.Countries = _database.Countries.AsEnumerable();
 
             if (registrationInformation.SelectedSubscriptionTypeId == 0)
             {
@@ -163,7 +170,7 @@ namespace WebSite.Controllers
 
                 // If we reach this part of the code, we have successfully scheduled a subscription, make a note of it in our system
                 WebSite.Models.User currentUser = Authentication.GetCurrentUser();
-                DatabaseContext db = DatabaseContext.GetInstance();
+                DatabaseContext db = _database;
 
                 // Encrypt the credit card information of the user
                 registrationInformation.CreditCard.Encrypt();
@@ -207,7 +214,8 @@ namespace WebSite.Controllers
             ISubscriptionRequest request = SubscriptionRequest.CreateNew();
 
             // Billing address information
-            string countryName = DatabaseContext.GetInstance().Countries.Find(creditCard.BillingAddress.CountryId).Name;
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            string countryName = db.Countries.Find(creditCard.BillingAddress.CountryId).Name;
             SetSubscriptionBillingAddress(request, creditCard, countryName);
 
             // Subscription information
@@ -319,7 +327,7 @@ namespace WebSite.Controllers
             currentUser.SubscriptionExpiryDate = subscriptionExpiryDate;
             currentUser.Subscription = null;
 
-            DatabaseContext.GetInstance().SaveChanges();
+            _database.SaveChanges();
 
             ViewBag.SubscriptionExpiryDate = subscriptionExpiryDate.ToLongDateString();
             ViewBag.ActivationDate = activationDate.ToLongDateString();

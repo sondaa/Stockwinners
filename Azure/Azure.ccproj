@@ -48,6 +48,14 @@
       <RoleName>WebSite</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
+    <ProjectReference Include="..\WorkerRole\WorkerRole.csproj">
+      <Name>WorkerRole</Name>
+      <Project>{77790c37-1459-4c73-a1c8-ac0b4c830f99}</Project>
+      <Private>True</Private>
+      <RoleType>Worker</RoleType>
+      <RoleName>WorkerRole</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\MarketWinnerProduction.azurePubxml" />

@@ -81,7 +81,9 @@ namespace WebSite.Helpers.Authentication
 
             if (loggedInUser != null)
             {
-                return DatabaseContext.GetInstance().Users.First(
+                DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+                return db.Users.First(
                     u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
             }
 
@@ -94,7 +96,9 @@ namespace WebSite.Helpers.Authentication
 
             if (loggedInUser != null)
             {
-                return DatabaseContext.GetInstance().Users.Include(u => u.Subscription).Include(u => u.Roles).First(
+                DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+
+                return db.Users.Include(u => u.Subscription).Include(u => u.Roles).First(
                     u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
             }
 
@@ -173,7 +177,7 @@ namespace WebSite.Helpers.Authentication
         {
             bool isAccepted = true;
 
-            DatabaseContext database = DatabaseContext.GetInstance();
+            DatabaseContext database = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             var existingUser = (from user in database.Users
                                 where user.IdentityProvider == (int)userIdentity.IdentityProvider && user.IdentityProviderIssuedUserId == userIdentity.IdentityProviderIssuedId

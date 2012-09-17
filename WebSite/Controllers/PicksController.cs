@@ -12,16 +12,21 @@ namespace WebSite.Controllers
 {
     public class PicksController : Controller
     {
+        DatabaseContext _database;
+
+        public PicksController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         public ActionResult Portfolio()
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
-
             Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
             {
-                Stocks = db.StockPicks.Include(s => s.Type).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
-                Options = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value),
-                ClosedStocks = db.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.ClosingDate.Value),
-                ClosedOptions = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.ClosingDate.Value).Take(20)
+                Stocks = _database.StockPicks.Include(s => s.Type).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value),
+                Options = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.PublishingDate.Value),
+                ClosedStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.ClosingDate.Value),
+                ClosedOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue).OrderByDescending(optionPick => optionPick.ClosingDate.Value).Take(20)
             };
 
             return View(portfolio);
@@ -29,9 +34,7 @@ namespace WebSite.Controllers
 
         public ActionResult StockPickDetail(int stockPickId)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
-
-            StockPick pick = db.StockPicks.Include(s => s.Type).FirstOrDefault(stockPick => stockPick.PickId == stockPickId);
+            StockPick pick = _database.StockPicks.Include(s => s.Type).FirstOrDefault(stockPick => stockPick.PickId == stockPickId);
 
             if (pick == null)
             {
@@ -47,9 +50,7 @@ namespace WebSite.Controllers
 
         public ActionResult OptionPickDetail(int optionPickId)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
-
-            OptionPick pick = db.OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).FirstOrDefault(optionPick => optionPick.PickId == optionPickId);
+            OptionPick pick = _database.OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).FirstOrDefault(optionPick => optionPick.PickId == optionPickId);
 
             if (pick == null)
             {
@@ -65,9 +66,7 @@ namespace WebSite.Controllers
 
         public FileContentResult OptionPickExpiryGraph(int pickId)
         {
-            DatabaseContext db = DatabaseContext.GetInstance();
-
-            OptionPick optionPick = db.OptionPicks.Find(pickId);
+            OptionPick optionPick = _database.OptionPicks.Find(pickId);
 
             Chart expiryGraph = optionPick.ExpiryGraph();
 
@@ -96,11 +95,11 @@ namespace WebSite.Controllers
             // If the user is logged in, then show them open option picks as well, otherwise, only show closed positions
             if (Request.IsAuthenticated)
             {
-                optionPicks = DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue);
+                optionPicks = _database.OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && !optionPick.ClosingDate.HasValue);
             }
             else
             {
-                optionPicks = DatabaseContext.GetInstance().OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue);
+                optionPicks = _database.OptionPicks.Include(o => o.Type).Include(o => o.Updates).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue);
             }
 
             return this.View(optionPicks.OrderByDescending(optionPick => optionPick.PublishingDate.Value));
@@ -113,11 +112,11 @@ namespace WebSite.Controllers
             // If the user is logged in, show them current picks, otherwise show them closed picks
             if (Request.IsAuthenticated)
             {
-                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue);
+                stockPicks = _database.StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue);
             }
             else
             {
-                stockPicks = DatabaseContext.GetInstance().StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue);
+                stockPicks = _database.StockPicks.Include(s => s.Type).Include(s => s.Updates).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue);
             }
 
             return this.View(stockPicks.OrderByDescending(stockPick => stockPick.PublishingDate.Value));

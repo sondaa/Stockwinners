@@ -29,8 +29,6 @@ namespace WebSite
 
         protected void Application_EndRequest()
         {
-            // Clean up the database context if it exists
-            DatabaseContext.DisposeInstance();
         }
     }
 }

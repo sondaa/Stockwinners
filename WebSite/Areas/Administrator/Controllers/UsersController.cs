@@ -117,7 +117,7 @@ namespace WebSite.Areas.Administrator.Controllers
             EmailResult email = new WebSite.Mailers.Account().TrialExpired();
 
             // Look up all users whole trial expires today
-            IEnumerable<User> usersWithExpiredTrial = from user in DatabaseContext.GetInstance().Users
+            IEnumerable<User> usersWithExpiredTrial = from user in db.Users
                                                       where !user.SubscriptionId.HasValue && EntityFunctions.DiffDays(user.TrialExpiryDate, EntityFunctions.CreateDateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0)) == 0
                                                       select user;
 

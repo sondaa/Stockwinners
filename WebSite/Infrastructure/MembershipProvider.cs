@@ -22,7 +22,7 @@ namespace WebSite.Infrastructure
         {
             if (this.ValidateUser(username, oldPassword))
             {
-                DatabaseContext db = DatabaseContext.GetInstance();
+                DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
                 StockwinnersMember member = db.StockwinnersMembers.First(m => m.EmailAddress == username);
 
@@ -52,7 +52,7 @@ namespace WebSite.Infrastructure
         public int CreateStockwinnersMember(string emailAddress, string password, string firstName, string lastName, out MembershipCreateStatus status)
         {
             status = MembershipCreateStatus.Success;
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
             // Is member unique?
             if (db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress) != null)
@@ -97,7 +97,7 @@ namespace WebSite.Infrastructure
         {
             MembershipUserCollection results = new MembershipUserCollection();
             totalRecords = 0;
-            DatabaseContext db = DatabaseContext.GetInstance();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
             StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailToMatch);
 
             if (member != null)
@@ -120,8 +120,9 @@ namespace WebSite.Infrastructure
         {
             totalRecords = 0;
             MembershipUserCollection members = new MembershipUserCollection();
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
-            foreach (StockwinnersMember member in DatabaseContext.GetInstance().StockwinnersMembers)
+            foreach (StockwinnersMember member in db.StockwinnersMembers)
             {
                 members.Add(MembershipProvider.GetMembershipUser(member));
                 totalRecords++;
@@ -206,7 +207,8 @@ namespace WebSite.Infrastructure
 
         public override string ResetPassword(string username, string answer)
         {
-            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username);
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username);
 
             if (member != null)
             {
@@ -214,7 +216,7 @@ namespace WebSite.Infrastructure
                 member.IsLegacyMember = false;
                 member.Password = MembershipProvider.HashPassword(newPassword);
 
-                DatabaseContext.GetInstance().SaveChanges();
+                db.SaveChanges();
 
                 return newPassword;
             }
@@ -234,14 +236,16 @@ namespace WebSite.Infrastructure
 
         public override bool ValidateUser(string username, string password)
         {
-            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username); 
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == username); 
             
             return member != null && MembershipProvider.VerifyPassword(password, member.Password, member.IsLegacyMember);
         }
 
         public StockwinnersMember GetStockwinnersMember(string emailAddress, string password)
         {
-            StockwinnersMember member = DatabaseContext.GetInstance().StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress);
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(m => m.EmailAddress == emailAddress);
 
             if (member != null && MembershipProvider.VerifyPassword(password, member.Password, member.IsLegacyMember))
             {

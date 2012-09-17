@@ -73,9 +73,9 @@ namespace WebSite.Tests.Controllers
             db.SaveChanges();
 
             // Send a fake response from Authorize.NET to suspend the subscription
-            AuthorizeNetController controller = new AuthorizeNetController();
+            //AuthorizeNetController controller = new AuthorizeNetController();
 
-            controller.PostBack();
+            //controller.PostBack();
         }
     }
 }

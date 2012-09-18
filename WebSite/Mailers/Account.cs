@@ -5,10 +5,11 @@ using System.Web;
 using System.Net.Mail;
 using ActionMailer.Net.Mvc;
 using WebSite.Models;
+using Stockwinners.Email;
 
 namespace WebSite.Mailers
-{ 
-    public class Account : MailerBase     
+{
+    public class Account : MailerBase, IAccountEmailFactory
 	{
 		public virtual EmailResult Welcome()
 		{
@@ -16,7 +17,6 @@ namespace WebSite.Mailers
 			
 			return this.Email(viewName: "WelcomeEmail");
 		}
-
 		
 		public virtual EmailResult PasswordResetEmail(string password)
 		{

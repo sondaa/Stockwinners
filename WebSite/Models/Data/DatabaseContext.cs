@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Stockwinners;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -37,13 +39,6 @@ namespace WebSite.Database
         public DbSet<StockPick> StockPicks { get; set; }
         public DbSet<StockPickType> StockPickTypes { get; set; }
 
-        #region Lifetime Management
-
-        public static bool IsAvailableForCurrentContext()
-        {
-            return HttpContext.Current.Items.Contains(typeof(DatabaseContext));
-        }
-
-        #endregion
+        public override IEnumerable<IUser> GetUsers { get { return this.Users; } }
     }
 }

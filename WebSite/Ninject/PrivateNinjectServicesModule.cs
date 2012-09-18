@@ -4,10 +4,14 @@ using System.Linq;
 using System.Web;
 using WebSite.Database;
 using Ninject.Web.Common;
+using Ninject.Modules;
 
 namespace WebSite
 {
-    public class NinjectModule : Ninject.Modules.NinjectModule
+    /// <summary>
+    /// Services profferred by this library that are not available to other components in the system.
+    /// </summary>
+    class PrivateServicesNinjectModule : NinjectModule
     {
         public override void Load()
         {

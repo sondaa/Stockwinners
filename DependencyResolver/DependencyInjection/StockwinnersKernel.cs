@@ -14,17 +14,8 @@ namespace Stockwinners.DependencyInjection
     {
         public StockwinnersKernel()
         {
-            StockwinnersKernel.RegisterServices(this);
-        }
-
-        /// <summary>
-        /// Helper that adds all basic Stockwinners.com services to the Kernel. Intended to be used by custom IKernel
-        /// implementations.
-        /// </summary>
-        /// <param name="kernel"></param>
-        public static void RegisterServices(IKernel kernel)
-        {
-            kernel.Load(new Stockwinners.Library.NinjectModule());
+            this.Load(new Stockwinners.Library.NinjectModule());
+            this.Load(new WebSite.Ninject.PublicNinjectServicesModule());
         }
     }
 }

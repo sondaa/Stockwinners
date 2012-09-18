@@ -1,6 +1,7 @@
 [assembly: WebActivator.PreApplicationStartMethod(typeof(WebSite.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(WebSite.App_Start.NinjectWebCommon), "Stop")]
 
+
 namespace WebSite.App_Start
 {
     using System;
@@ -8,10 +9,10 @@ namespace WebSite.App_Start
 
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
-    using Ninject;
-    using Ninject.Web.Common;
+    using global::Ninject.Web.Common;
     using System.Web.Mvc;
-    using Ninject.Web.Mvc;
+    using global::Ninject.Web.Mvc;
+    using global::Ninject;
 
     public static class NinjectWebCommon 
     {
@@ -49,7 +50,7 @@ namespace WebSite.App_Start
             RegisterServices(kernel);
 
             // Setup Web API Resolver
-            System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = new Stockwinners.DependencyResolver(kernel);
+            System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = new WebSite.DependencyResolver(kernel);
 
             return kernel;
         }
@@ -61,10 +62,10 @@ namespace WebSite.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             // Add core services and implementations
-            Stockwinners.DependencyInjection.StockwinnersKernel.RegisterServices(kernel);
+            kernel.Load(new Stockwinners.Library.NinjectModule());
 
             // Add services offered by the WebSite itself
-            kernel.Load(new WebSite.NinjectModule());
+            kernel.Load(new WebSite.PrivateServicesNinjectModule());
         }        
     }
 }

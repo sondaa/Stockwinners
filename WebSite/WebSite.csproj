@@ -270,7 +270,9 @@
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Models\UI\PickSubscription.cs" />
     <Compile Include="Models\UI\Portfolio.cs" />
-    <Compile Include="NinjectModule.cs" />
+    <Compile Include="Ninject\DependencyResolver.cs" />
+    <Compile Include="Ninject\PrivateNinjectServicesModule.cs" />
+    <Compile Include="Ninject\PublicNinjectServicesModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -820,10 +822,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DependencyResolver\DependencyResolver.csproj">
-      <Project>{6aeed675-ffb3-48c4-a04a-242bf5e7a709}</Project>
-      <Name>DependencyResolver</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{c8b290b6-b8a7-4d41-8383-517b1531c650}</Project>
       <Name>Library</Name>

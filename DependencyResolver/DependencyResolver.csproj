@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DependencyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DependencyInjection\StockwinnersKernel.cs" />
   </ItemGroup>
@@ -56,6 +55,10 @@
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{c8b290b6-b8a7-4d41-8383-517b1531c650}</Project>
       <Name>Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSite\WebSite.csproj">
+      <Project>{63de252b-ab42-436f-978b-22ce44f30990}</Project>
+      <Name>WebSite</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

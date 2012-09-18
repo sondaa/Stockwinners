@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Stockwinners
+namespace WebSite
 {
     /// <summary>
     /// Adapter of Ninject to http dependency resolver.

@@ -1,6 +1,7 @@
 ﻿namespace Stockwinners
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
 
     public abstract class IDatabaseContext : DbContext
@@ -9,6 +10,6 @@
         {
         }
 
-        System.Data.Entity.DbSet<IUser> Users { get; set; }
+        public abstract IEnumerable<IUser> GetUsers { get; }
     }
 }

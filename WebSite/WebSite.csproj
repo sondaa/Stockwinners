@@ -799,6 +799,7 @@
     <Content Include="Views\Shared\DisplayTemplates\OptionPick.cshtml" />
     <Content Include="Views\Information\Alerts.cshtml" />
     <Content Include="Views\Account\RegistrationSuccess.cshtml" />
+    <Content Include="Views\Account\InactiveTrialAccountEmail.html.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

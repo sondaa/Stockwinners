@@ -42,5 +42,12 @@ namespace WebSite.Mailers
 
             return this.Email(viewName: "SubscriptionSuspendedEmail", model: affectedUser);
         }
+
+        public virtual EmailResult InactiveTrialAccount()
+        {
+            Subject = "Inactive Trial Account";
+
+            return this.Email(viewName: "InactiveTrialAccountEmail");
+        }
 	}
 }

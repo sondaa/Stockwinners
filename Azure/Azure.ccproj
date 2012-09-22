@@ -12,6 +12,7 @@
     <AssemblyName>Azure</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
     <Name>Azure</Name>
+    <ValidationIssuesAreErrors>True</ValidationIssuesAreErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

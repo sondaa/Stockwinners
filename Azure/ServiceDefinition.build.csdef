@@ -24,14 +24,16 @@
     </Endpoints>
     <Imports>
       <Import moduleName="Diagnostics" />
+      <Import moduleName="RemoteAccess" />
     </Imports>
     <Certificates>
       <Certificate name="Stockwinners" storeLocation="LocalMachine" storeName="CA" />
     </Certificates>
   </WebRole>
-  <WorkerRole name="WorkerRole" vmsize="Small">
+  <WorkerRole name="WorkerRole" vmsize="ExtraSmall">
     <Imports>
-      <Import moduleName="Diagnostics" />
+      <Import moduleName="RemoteAccess" />
+      <Import moduleName="RemoteForwarder" />
     </Imports>
   </WorkerRole>
 </ServiceDefinition>

@@ -32,31 +32,37 @@ namespace WorkerRole
 
         public override bool OnStart()
         {
-            // Initialize Ninject
-            _kernel = new StockwinnersKernel();
+            this.SetupNinject();
 
-            // Add services proffered by the worker role itself
-            _kernel.Bind<InactiveMembersJob>().ToSelf();
-            _kernel.Bind<LostUserFeedbackRequestJob>().ToSelf();
-            _kernel.Bind<TrialExpiredJob>().ToSelf();
+            this.ScheduleJobs();
 
+            // Set the maximum number of concurrent connections 
+            ServicePointManager.DefaultConnectionLimit = 12;
+
+            // For information on handling configuration changes
+            // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
+
+            return base.OnStart();
+        }
+
+        private void ScheduleJobs()
+        {
             // Initialize Quartz
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             _scheduler = schedulerFactory.GetScheduler();
             _scheduler.JobFactory = new NinjectJobFactory(_kernel);
 
-            DateTimeOffset tomorrowMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
+            DateTimeOffset morning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
                 .AtHourMinuteAndSecond(6, 30, 0)
-                .Build()
-                .AddDays(1);
+                .Build();
 
-            //DateTimeOffset tomorrowMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);
+            //DateTimeOffset morning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
             // Schedule task for trial expiries
             IJobDetail trialExpiryJobDetail = JobBuilder.Create<TrialExpiredJob>().WithIdentity("Trial Expiry Emails").Build();
             ITrigger dailyTriggerForTrialExpiry = TriggerBuilder.Create()
                 .WithIdentity("Daily Trigger (Trial Expiries)")
-                .StartAt(tomorrowMorning)
+                .StartAt(morning)
                 .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
                 .ForJob(trialExpiryJobDetail)
                 .Build();
@@ -66,7 +72,7 @@ namespace WorkerRole
             IJobDetail inactiveMembersJobDetail = JobBuilder.Create<InactiveMembersJob>().WithIdentity("Inactive Member Emails").Build();
             ITrigger dailyTriggerForInactiveMembers = TriggerBuilder.Create()
                 .WithIdentity("Daily Trigger (Inactive Members)")
-                .StartAt(tomorrowMorning)
+                .StartAt(morning)
                 .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
                 .ForJob(inactiveMembersJobDetail)
                 .Build();
@@ -76,7 +82,7 @@ namespace WorkerRole
             IJobDetail userFeedbackJobDetail = JobBuilder.Create<LostUserFeedbackRequestJob>().WithIdentity("User Feedback Emails").Build();
             ITrigger dailyTriggerForUserFeedback = TriggerBuilder.Create()
                 .WithIdentity("Daily Trigger (User Feedback)")
-                .StartAt(tomorrowMorning)
+                .StartAt(morning)
                 .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
                 .ForJob(userFeedbackJobDetail)
                 .Build();
@@ -84,14 +90,17 @@ namespace WorkerRole
 
             // Finally, start the scheduler
             _scheduler.Start();
+        }
 
-            // Set the maximum number of concurrent connections 
-            ServicePointManager.DefaultConnectionLimit = 12;
+        private void SetupNinject()
+        {
+            // Initialize Ninject
+            _kernel = new StockwinnersKernel();
 
-            // For information on handling configuration changes
-            // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
-
-            return base.OnStart();
+            // Add services proffered by the worker role itself
+            _kernel.Bind<InactiveMembersJob>().ToSelf();
+            _kernel.Bind<LostUserFeedbackRequestJob>().ToSelf();
+            _kernel.Bind<TrialExpiredJob>().ToSelf();
         }
     }
 }

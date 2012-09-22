@@ -19,7 +19,7 @@ namespace Stockwinners.Email
 
         public IEmail CreateEmailForAdministrators(string contents, string subject)
         {
-            return new SendGridEmail(contents, subject, new List<string> { "ameen.tayyebi@gmail.com"/*, "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com" */});
+            return new SendGridEmail(contents, subject, new List<string> { "ameen.tayyebi@gmail.com", "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com"});
         }
     }
 }

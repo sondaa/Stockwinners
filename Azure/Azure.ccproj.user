@@ -4,5 +4,7 @@
     <ActivePublishProfile>MarketWinnerProduction</ActivePublishProfile>
     <DeploymentPromptBeforeUpgrading>False</DeploymentPromptBeforeUpgrading>
     <WebRoleHttpsSkipLaunchInBrowser>WebSite</WebRoleHttpsSkipLaunchInBrowser>
+    <LocalProfile>Local</LocalProfile>
+    <DeploymentPromptBeforeDeleting>True</DeploymentPromptBeforeDeleting>
   </PropertyGroup>
 </Project>

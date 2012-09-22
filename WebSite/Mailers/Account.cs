@@ -49,5 +49,12 @@ namespace WebSite.Mailers
 
             return this.Email(viewName: "InactiveTrialAccountEmail");
         }
+
+        public virtual EmailResult LostUserFeedback()
+        {
+            Subject = "Feedback Request";
+
+            return this.Email(viewName: "LostUserFeedbackEmail");
+        }
 	}
 }

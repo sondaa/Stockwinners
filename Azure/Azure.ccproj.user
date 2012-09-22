@@ -3,5 +3,6 @@
   <PropertyGroup>
     <ActivePublishProfile>MarketWinnerProduction</ActivePublishProfile>
     <DeploymentPromptBeforeUpgrading>False</DeploymentPromptBeforeUpgrading>
+    <WebRoleHttpsSkipLaunchInBrowser>WebSite</WebRoleHttpsSkipLaunchInBrowser>
   </PropertyGroup>
 </Project>

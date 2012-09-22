@@ -208,6 +208,7 @@
     <Compile Include="Helpers\ApacheEncryption.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Infrastructure\Attributes\CustomHandleErrorAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />
     <Compile Include="Mailers\Account.cs" />
@@ -235,6 +236,14 @@
     <Compile Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.cs" />
     <Compile Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.Designer.cs">
       <DependentUpon>201208301727049_AddingTypeAndMonthToOptionPickLeg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209202242584_AddingEmailFieldsToUser.cs" />
+    <Compile Include="Migrations\201209202242584_AddingEmailFieldsToUser.Designer.cs">
+      <DependentUpon>201209202242584_AddingEmailFieldsToUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201209212057008_AddingTrackingForTrialExpiryEmails.cs" />
+    <Compile Include="Migrations\201209212057008_AddingTrackingForTrialExpiryEmails.Designer.cs">
+      <DependentUpon>201209212057008_AddingTrackingForTrialExpiryEmails.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
@@ -800,6 +809,8 @@
     <Content Include="Views\Information\Alerts.cshtml" />
     <Content Include="Views\Account\RegistrationSuccess.cshtml" />
     <Content Include="Views\Account\InactiveTrialAccountEmail.html.cshtml" />
+    <Content Include="Views\Account\LostUserFeedbackEmail.html.cshtml" />
+    <Content Include="Views\Home\PageNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -820,6 +831,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201208301727049_AddingTypeAndMonthToOptionPickLeg.resx">
       <DependentUpon>201208301727049_AddingTypeAndMonthToOptionPickLeg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201209202242584_AddingEmailFieldsToUser.resx">
+      <DependentUpon>201209202242584_AddingEmailFieldsToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201209212057008_AddingTrackingForTrialExpiryEmails.resx">
+      <DependentUpon>201209212057008_AddingTrackingForTrialExpiryEmails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

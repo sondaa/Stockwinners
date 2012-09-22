@@ -39,6 +39,6 @@ namespace WebSite.Database
         public DbSet<StockPick> StockPicks { get; set; }
         public DbSet<StockPickType> StockPickTypes { get; set; }
 
-        public override IEnumerable<IUser> GetUsers { get { return this.Users; } }
+        public override IQueryable<IUser> GetUsers { get { return this.Users; } }
     }
 }

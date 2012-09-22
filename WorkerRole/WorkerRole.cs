@@ -35,25 +35,55 @@ namespace WorkerRole
             // Initialize Ninject
             _kernel = new StockwinnersKernel();
 
+            // Add services proffered by the worker role itself
+            _kernel.Bind<InactiveMembersJob>().ToSelf();
+            _kernel.Bind<LostUserFeedbackRequestJob>().ToSelf();
+            _kernel.Bind<TrialExpiredJob>().ToSelf();
+
             // Initialize Quartz
             ISchedulerFactory schedulerFactory = new StdSchedulerFactory();
             _scheduler = schedulerFactory.GetScheduler();
             _scheduler.JobFactory = new NinjectJobFactory(_kernel);
 
-            // Create a trigger that fires once a day
-            ITrigger dailyTrigger = TriggerBuilder.Create()
-                .WithIdentity("Daily Trigger")
-                .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Day))
-                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
-                .Build();
+            DateTimeOffset tomorrowMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
+                .AtHourMinuteAndSecond(6, 30, 0)
+                .Build()
+                .AddDays(1);
+
+            //DateTimeOffset tomorrowMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
             // Schedule task for trial expiries
             IJobDetail trialExpiryJobDetail = JobBuilder.Create<TrialExpiredJob>().WithIdentity("Trial Expiry Emails").Build();
-            _scheduler.ScheduleJob(trialExpiryJobDetail, dailyTrigger);
+            ITrigger dailyTriggerForTrialExpiry = TriggerBuilder.Create()
+                .WithIdentity("Daily Trigger (Trial Expiries)")
+                .StartAt(tomorrowMorning)
+                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                .ForJob(trialExpiryJobDetail)
+                .Build();
+            _scheduler.ScheduleJob(trialExpiryJobDetail, dailyTriggerForTrialExpiry);
 
             // Schedule task for email being sent to inactive members
             IJobDetail inactiveMembersJobDetail = JobBuilder.Create<InactiveMembersJob>().WithIdentity("Inactive Member Emails").Build();
-            _scheduler.ScheduleJob(inactiveMembersJobDetail, dailyTrigger);
+            ITrigger dailyTriggerForInactiveMembers = TriggerBuilder.Create()
+                .WithIdentity("Daily Trigger (Inactive Members)")
+                .StartAt(tomorrowMorning)
+                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                .ForJob(inactiveMembersJobDetail)
+                .Build();
+            _scheduler.ScheduleJob(inactiveMembersJobDetail, dailyTriggerForInactiveMembers);
+
+            // Schedule task for email being sent to people who have not signed up after their trial expiry
+            IJobDetail userFeedbackJobDetail = JobBuilder.Create<LostUserFeedbackRequestJob>().WithIdentity("User Feedback Emails").Build();
+            ITrigger dailyTriggerForUserFeedback = TriggerBuilder.Create()
+                .WithIdentity("Daily Trigger (User Feedback)")
+                .StartAt(tomorrowMorning)
+                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                .ForJob(userFeedbackJobDetail)
+                .Build();
+            _scheduler.ScheduleJob(userFeedbackJobDetail, dailyTriggerForUserFeedback);
+
+            // Finally, start the scheduler
+            _scheduler.Start();
 
             // Set the maximum number of concurrent connections 
             ServicePointManager.DefaultConnectionLimit = 12;

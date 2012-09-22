@@ -21,7 +21,17 @@ namespace Stockwinners.Email
         /// <summary>
         /// Subject of the email to be sent out.
         /// </summary>
-        string Subject { get; set; }
+        string Subject { get; }
+
+        /// <summary>
+        /// Email address of the sender of this email.
+        /// </summary>
+        string FromAddress { get; }
+
+        /// <summary>
+        /// The name of the sender of this email.
+        /// </summary>
+        string FromName { get; }
 
         /// <summary>
         /// Sends the email.

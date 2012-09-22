@@ -17,5 +17,8 @@
         int? SubscriptionId { get; set; }
         DateTime TrialExpiryDate { get; set; }
         int UserId { get; set; }
+        bool SentInactiveReminder { get; set; }
+        bool SentFeedbackRequest { get; set; }
+        bool SentTrialExpiryEmail { get; set; }
     }
 }

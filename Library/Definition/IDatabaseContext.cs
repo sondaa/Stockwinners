@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Linq;
 
     public abstract class IDatabaseContext : DbContext
     {
@@ -10,6 +11,6 @@
         {
         }
 
-        public abstract IEnumerable<IUser> GetUsers { get; }
+        public abstract IQueryable<IUser> GetUsers { get; }
     }
 }

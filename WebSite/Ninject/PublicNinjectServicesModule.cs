@@ -15,7 +15,7 @@ namespace WebSite.Ninject
     {
         public override void Load()
         {
-            this.Bind<IDatabaseContext>().To<IDatabaseContext>();
+            this.Bind<IDatabaseContext>().To<Database.DatabaseContext>();
             this.Bind<IAccountEmailFactory>().To<WebSite.Mailers.Account>();
         }
     }

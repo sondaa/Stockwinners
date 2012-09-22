@@ -79,6 +79,21 @@ namespace WebSite.Models
         // Set of credit cards the user has ever used
         public virtual ICollection<CreditCard> CreditCards { get; set; }
 
+        /// <summary>
+        /// Whether we emailed the user that they have not been active during their trial.
+        /// </summary>
+        public bool SentInactiveReminder { get; set; }
+
+        /// <summary>
+        /// Whether we have emailed the user after they have not signed up after their trial expiry.
+        /// </summary>
+        public bool SentFeedbackRequest { get; set; }
+
+        /// <summary>
+        /// Whether we have emailed the user that their trial has expired.
+        /// </summary>
+        public bool SentTrialExpiryEmail { get; set; }
+
         public void SendWelcomeEmail()
         {
             EmailResult email = new Mailers.Account().Welcome();

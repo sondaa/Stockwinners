@@ -3,22 +3,6 @@
 @{
     ViewBag.Title = "Error";
 }
-
-<hgroup class="title">
-    <h1 class="error">Error.</h1>
-    <h2 class="error">An error occurred while processing your request.</h2>
-
-</hgroup>
-
-<p>Controller: @Model.ActionName</p>
-<p>@Model.ControllerName</p>
-<p>@Model.Exception</p>
-<p>@foreach (var e in (Model.Exception as System.Data.Entity.Validation.DbEntityValidationException).EntityValidationErrors) {
-
-         foreach (var m in e.ValidationErrors)
-         {
-             @m.ErrorMessage<br />
-             @m.PropertyName<br />
-         }
-}
-</p>
+<h2>Error</h2>
+@Html.ErrorMessage("Unfortunately, our website has misbehaved. We are sorry for the inconvenience. A log of the error has been sent to our technicians who will be looking into resolving the issue as soon as possible.")
+Please refresh the page in a few moments or browse back to the <a href="/">homepage</a>.

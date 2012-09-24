@@ -25,7 +25,7 @@ namespace WebSite
 
         public object GetService(Type serviceType)
         {
-            return _kernel.GetService(serviceType);
+            return _kernel.TryGet(serviceType);
         }
 
         public IEnumerable<object> GetServices(Type serviceType)

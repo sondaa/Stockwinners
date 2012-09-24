@@ -414,18 +414,26 @@ label
 
 input[type="text"],
 input[type="password"],
+textarea,
 select
 {
     border: 1px solid #e2e2e2;
     color: #333;
-    font-size: 1.2em;
     margin: 5px 0 6px 0;
     padding: 5px;
     width: 300px;
 }
 
+input[type="text"],
+input[type="password"],
+select
+{
+    font-size: 1.2em;
+}
+
 input[type="text"]:focus,
 input[type="password"]:focus,
+textarea:focus,
 select:focus
 {
     border: 1px solid #7ac0da;
@@ -552,6 +560,7 @@ fieldset
 
 input[type="text"].input-validation-error,
 input[type="password"].input-validation-error,
+textarea.input-validation-error,
 select.input-validation-error
 {
     border: 1px solid #e80c4d;

@@ -277,6 +277,7 @@
     <Compile Include="Models\Data\Subscriptions.cs" />
     <Compile Include="Models\Data\Users.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
+    <Compile Include="Models\UI\FeedbackModel.cs" />
     <Compile Include="Models\UI\PickSubscription.cs" />
     <Compile Include="Models\UI\Portfolio.cs" />
     <Compile Include="Ninject\DependencyResolver.cs" />
@@ -374,6 +375,7 @@
     <Content Include="Images\Chart Reading\imn_071299.gif" />
     <Content Include="Images\Chart Reading\itvu_051199.gif" />
     <Content Include="Images\Chart Reading\jdsu_123199.gif" />
+    <Content Include="Images\enter.png" />
     <Content Include="Images\error.png" />
     <Content Include="Images\exit.png" />
     <Content Include="Images\Home\big-logo.png" />
@@ -811,6 +813,7 @@
     <Content Include="Views\Account\InactiveTrialAccountEmail.html.cshtml" />
     <Content Include="Views\Account\LostUserFeedbackEmail.html.cshtml" />
     <Content Include="Views\Home\PageNotFound.cshtml" />
+    <Content Include="Views\Home\Feedback.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

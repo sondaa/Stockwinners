@@ -1,0 +1,24 @@
+@model WebSite.Models.UI.FeedbackModel
+
+@{
+    ViewBag.Title = "Your thoughts on Stockwinners.com";
+}
+
+<h2>Feedback</h2>
+@if (Model.IsSubmittedSuccessfully)
+{
+    @Html.SuccessMessage("Thank you. Your feedback has been successfully submitted. We highly appreciate your comments. A representative will respond to your inquiry within 2 business days.")
+}
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(false)
+    <table style="width: 80%; margin: 0px auto; border-collapse: collapse; border-spacing: 0px;">
+        <tbody>
+            <tr><td>@Html.LabelFor(m => m.Name)</td><td>@Html.TextBoxFor(m => m.Name)</td></tr>
+            <tr><td>@Html.LabelFor(m => m.EmailAddress)</td><td>@Html.TextBoxFor(m => m.EmailAddress)</td></tr>
+            <tr><td style="vertical-align: top;">@Html.LabelFor(m => m.Message)</td><td>@Html.TextAreaFor(m => m.Message, new { style = "width: 100%; overflow: auto;", rows = "5" })</td></tr>
+            <tr><td colspan="2" style="text-align: right; padding-top: 20px;"><input type="submit" value="Submit Feedback" /></td></tr>
+        </tbody>
+    </table>
+}
+
+

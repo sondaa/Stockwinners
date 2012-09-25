@@ -1,0 +1,89 @@
+@model IEnumerable<WebSite.Models.Data.DailyAlert>
+@{
+    ViewBag.Title = "Market Alerts";
+}
+@section Description
+{
+    <meta name="description" content="Overview of Stockwinners.com's products and services." />
+}
+@section Text
+{
+    Stockwinners.com provides stock and option trading advice for the modern day trader. Our selections have outstanding performance and our readers are exposed to the analysis and research behind all our selections.
+}
+@section Styles
+{
+    <style type="text/css">
+        .content-link 
+        {
+            cursor: pointer;
+        }
+    </style>
+}
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function ()
+        {
+            var self = this;
+
+            // Shows a section of the page. The name of the div should match sectionName
+            self.showTab = function (sectionName)
+            {
+                // hide all sections
+                $(".content-tab").hide("fast");
+
+                // Show the new section
+                $(sectionName).show("fast");
+
+                // Set the heading text
+                $("#h2-heading").html($(sectionName).attr("data-heading"));
+
+                // Set the image
+                $("#img-picture").attr("src", $(sectionName).attr("data-image"));
+            }
+
+            // The reset link should always bring you to the overview
+            $("#div-reset").click(function ()
+            {
+                self.showTab("#div-products-and-services");
+            });
+
+            // Link up the content links
+            $(".content-link").click(function () 
+            { 
+                self.showTab(this.getAttribute("data-selector"));
+            });
+        });
+    </script>
+}
+@section UnpaddedContent
+{
+    <table style="width: 100%; border-collapse: collapse; border-spacing: 0px;">
+    <tr><td style="padding: 0px; vertical-align: top; position: relative; width: 1px;"><img id="img-picture" src="/Images/Services/services.jpg" style="float: left;" /><h2 id="h2-heading" style="position: absolute; left: 4px; top: 0px; color: white;">Products &amp; Services</h2></td>
+        <td style="cursor: pointer; vertical-align: top; padding: 5px;"><div id="div-reset" style="text-align: right;"><img src="/Images/arrow-left-16.png" style="border: none; padding-right: 10px; vertical-align: middle;" />Back</div>
+<div id="div-products-and-services" class="content-tab" data-heading="Products &amp; Services" data-image="/Images/Services/services.jpg">
+    <div class="content-link" data-selector="#div-options">Options</div>
+    <div class="content-link" data-selector="#div-stocks">Stock Picks</div>
+    <div class="content-link" data-selector="#div-market-alerts">Market Alerts</div>
+    <div class="content-link" data-selector="#div-active-traders">Active Traders</div>
+    <div class="content-link" data-selector="#div-trial">Free Trial</div>
+</div>
+<div id="div-options" data-heading="Option Picks" class="content-tab" style="display: none;" data-image="/Images/Services/options.jpg">
+
+</div>
+<div id="div-stocks" data-heading="Stock Picks" class="content-tab" style="display: none;" data-image="/Images/Services/stocks.jpg">
+
+</div>
+<div id="div-market-alerts" class="content-tab" data-heading="Market Alerts" style="display: none;" data-image="/Images/Services/market-alerts.jpg">
+
+</div>
+<div id="div-active-traders" class="content-tab" data-heading="Active Traders" style="display: none;" data-image="/Images/Services/active-traders.jpg">
+
+</div>
+<div id="div-trial" class="content-tab" data-heading="Free Trial" style="display: none;" data-image="/Images/Services/free-trial.jpg">
+
+</div>
+
+        </td></tr>
+</table>
+}

@@ -379,6 +379,7 @@
     <Content Include="Images\error.png" />
     <Content Include="Images\exit.png" />
     <Content Include="Images\Home\big-logo.png" />
+    <Content Include="Images\Home\Homepage.jpg" />
     <Content Include="Images\info.png" />
     <Content Include="Images\logo.gif" />
     <Content Include="Images\Chart Reading\lu_110899.gif" />
@@ -407,6 +408,12 @@
     <Content Include="Images\Option Picks\APPL Option Trade.JPG" />
     <Content Include="Images\Patterns\separator.gif" />
     <Content Include="Images\Performance\2012.JPG" />
+    <Content Include="Images\Services\active-traders.JPG" />
+    <Content Include="Images\Services\free-trial.JPG" />
+    <Content Include="Images\Services\market-alerts.JPG" />
+    <Content Include="Images\Services\options.JPG" />
+    <Content Include="Images\Services\services.jpg" />
+    <Content Include="Images\Services\stocks.JPG" />
     <Content Include="Images\settings-gear.png" />
     <Content Include="Images\Social Networks\facebook-16.png" />
     <Content Include="Images\Social Networks\facebook-32.png" />
@@ -814,6 +821,7 @@
     <Content Include="Views\Account\LostUserFeedbackEmail.html.cshtml" />
     <Content Include="Views\Home\PageNotFound.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
+    <Content Include="Views\Information\ProductsAndServices.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

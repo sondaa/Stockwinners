@@ -58,6 +58,11 @@ namespace WebSite.Controllers
             return this.View(_database.DailyAlerts.Where(alert => alert.IsPublished).Take(14).OrderByDescending(alert => alert.PublishDate));
         }
 
+        public ActionResult ProductsAndServices()
+        {
+            return this.View();
+        }
+
         public ActionResult MembershipPolicy()
         {
             return View();

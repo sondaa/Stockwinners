@@ -16,6 +16,11 @@ namespace WebSite.Areas.Administrator.Controllers
     {
         protected DatabaseContext _database;
 
+        public PicksController(DatabaseContext database)
+        {
+            _database = database;
+        }
+
         public ActionResult SubmitUpdate(int pickId)
         {
             return View(new PickUpdate() { PickId = pickId, IssueDate = DateTime.UtcNow });

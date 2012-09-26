@@ -15,11 +15,14 @@ namespace WebSite.Areas.Administrator.Controllers
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class OptionPicksController : PicksController<OptionPick>
     {
-        private DatabaseContext db = new DatabaseContext();
+        public OptionPicksController(DatabaseContext database)
+            : base(database)
+        {
+        }
 
         public ActionResult Details(int id = 0)
         {
-            OptionPick optionPick = db.OptionPicks.Find(id);
+            OptionPick optionPick = _database.OptionPicks.Find(id);
 
             if (optionPick == null)
             {
@@ -31,7 +34,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name");
+            ViewBag.OptionPickTypeId = new SelectList(_database.OptionPickTypes, "OptionPickTypeId", "Name");
             return View();
         }
 
@@ -42,27 +45,27 @@ namespace WebSite.Areas.Administrator.Controllers
 
             if (ModelState.IsValid)
             {
-                db.OptionPicks.Add(optionPick);
-                db.SaveChanges();
+                _database.OptionPicks.Add(optionPick);
+                _database.SaveChanges();
 
                 return this.Edit(optionPick.PickId);
             }
 
-            ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
+            ViewBag.OptionPickTypeId = new SelectList(_database.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
 
             return this.View(optionPick);
         }
 
         public override ActionResult Edit(int id = 0)
         {
-            OptionPick optionPick = db.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
+            OptionPick optionPick = _database.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
 
             if (optionPick == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
+            ViewBag.OptionPickTypeId = new SelectList(_database.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
 
             return this.View(viewName: "Edit", model: optionPick);
         }
@@ -79,8 +82,8 @@ namespace WebSite.Areas.Administrator.Controllers
                 else if (closeButton != null)
                 {
                     // Verify that all legs are closed already
-                    db.OptionPicks.Attach(optionPick);
-                    db.Entry(optionPick).Collection(pick => pick.Legs).Load();
+                    _database.OptionPicks.Attach(optionPick);
+                    _database.Entry(optionPick).Collection(pick => pick.Legs).Load();
 
                     foreach (var leg in optionPick.Legs)
                     {
@@ -96,12 +99,12 @@ namespace WebSite.Areas.Administrator.Controllers
                     }
                 }
 
-                db.Entry(optionPick).State = EntityState.Modified;
-                db.SaveChanges();
+                _database.Entry(optionPick).State = EntityState.Modified;
+                _database.SaveChanges();
 
-                db.Entry(optionPick).Collection(pick => pick.Legs).Load();
-                db.Entry(optionPick).Collection(pick => pick.Updates).Load();
-                db.Entry(optionPick).Reference(pick => pick.Type).Load();
+                _database.Entry(optionPick).Collection(pick => pick.Legs).Load();
+                _database.Entry(optionPick).Collection(pick => pick.Updates).Load();
+                _database.Entry(optionPick).Reference(pick => pick.Type).Load();
 
                 if (publishButton != null || previewButton != null)
                 {
@@ -111,13 +114,13 @@ namespace WebSite.Areas.Administrator.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.OptionPickTypeId = new SelectList(db.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
+            ViewBag.OptionPickTypeId = new SelectList(_database.OptionPickTypes, "OptionPickTypeId", "Name", optionPick.OptionPickTypeId);
             return View(optionPick);
         }
 
         public ActionResult Delete(int id = 0)
         {
-            OptionPick optionPick = db.OptionPicks.Find(id);
+            OptionPick optionPick = _database.OptionPicks.Find(id);
             if (optionPick == null)
             {
                 return HttpNotFound();
@@ -128,23 +131,17 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            OptionPick optionpick = db.OptionPicks.Find(id);
-            db.OptionPicks.Remove(optionpick);
-            db.SaveChanges();
+            OptionPick optionpick = _database.OptionPicks.Find(id);
+            _database.OptionPicks.Remove(optionpick);
+            _database.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            db.Dispose();
-            base.Dispose(disposing);
         }
 
         protected override IQueryable<OptionPick> Picks
         {
             get 
             {
-                return db.OptionPicks.Include(optionPick => optionPick.Type).Include(optionPick => optionPick.Legs).Include(optionPick => optionPick.Subscribers);
+                return _database.OptionPicks.Include(optionPick => optionPick.Type).Include(optionPick => optionPick.Legs).Include(optionPick => optionPick.Subscribers);
             }
         }
     }

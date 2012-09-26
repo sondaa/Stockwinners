@@ -15,11 +15,14 @@ namespace WebSite.Areas.Administrator.Controllers
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class StockPicksController : PicksController<StockPick>
     {
-        private DatabaseContext db = new DatabaseContext();
+        public StockPicksController(DatabaseContext database)
+            : base(database)
+        {
+        }
 
         public ActionResult Details(int id = 0)
         {
-            StockPick stockpick = db.StockPicks.Find(id);
+            StockPick stockpick = _database.StockPicks.Find(id);
 
             if (stockpick == null)
             {
@@ -31,7 +34,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name");
+            ViewBag.StockPickTypeId = new SelectList(_database.StockPickTypes, "StockPickTypeId", "Name");
 
             StockPick model = new StockPick();
 
@@ -53,11 +56,11 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Publish();
                 }
 
-                db.StockPicks.Add(stockPick);
-                db.SaveChanges();
+                _database.StockPicks.Add(stockPick);
+                _database.SaveChanges();
 
-                db.Entry(stockPick).Reference(pick => pick.Type).Load();
-                db.Entry(stockPick).Collection(pick => pick.Updates).Load();
+                _database.Entry(stockPick).Reference(pick => pick.Type).Load();
+                _database.Entry(stockPick).Collection(pick => pick.Updates).Load();
 
                 if (publishButton != null)
                 {
@@ -72,7 +75,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 return this.Index();
             }
 
-            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
+            ViewBag.StockPickTypeId = new SelectList(_database.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
 
             return this.View(stockPick);
         }
@@ -82,13 +85,13 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public override ActionResult Edit(int id = 0)
         {
-            StockPick stockPick = db.StockPicks.Find(id);
+            StockPick stockPick = _database.StockPicks.Find(id);
             if (stockPick == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
+            ViewBag.StockPickTypeId = new SelectList(_database.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
 
             return this.View(viewName: "Edit", model: stockPick);
         }
@@ -101,7 +104,7 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(stockPick).State = EntityState.Modified;
+                _database.Entry(stockPick).State = EntityState.Modified;
 
                 if (closeButton != null)
                 {
@@ -113,10 +116,10 @@ namespace WebSite.Areas.Administrator.Controllers
                     stockPick.Publish();
                 }
 
-                db.SaveChanges();
+                _database.SaveChanges();
 
-                db.Entry(stockPick).Reference(pick => pick.Type).Load();
-                db.Entry(stockPick).Collection(pick => pick.Updates).Load();
+                _database.Entry(stockPick).Reference(pick => pick.Type).Load();
+                _database.Entry(stockPick).Collection(pick => pick.Updates).Load();
 
                 if (publishButton != null)
                 {
@@ -131,7 +134,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 return this.Index();
             }
 
-            ViewBag.StockPickTypeId = new SelectList(db.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
+            ViewBag.StockPickTypeId = new SelectList(_database.StockPickTypes, "StockPickTypeId", "Name", stockPick.StockPickTypeId);
 
             return this.View(stockPick);
         }
@@ -141,7 +144,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Delete(int id = 0)
         {
-            StockPick stockpick = db.StockPicks.Find(id);
+            StockPick stockpick = _database.StockPicks.Find(id);
             if (stockpick == null)
             {
                 return HttpNotFound();
@@ -155,23 +158,17 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            StockPick stockpick = db.StockPicks.Find(id);
-            db.Picks.Remove(stockpick);
-            db.SaveChanges();
+            StockPick stockpick = _database.StockPicks.Find(id);
+            _database.Picks.Remove(stockpick);
+            _database.SaveChanges();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            db.Dispose();
-            base.Dispose(disposing);
         }
 
         protected override IQueryable<StockPick> Picks
         {
             get
             {
-                return db.StockPicks.Include(stockPick => stockPick.Subscribers);
+                return _database.StockPicks.Include(stockPick => stockPick.Subscribers);
             }
         }
     }

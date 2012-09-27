@@ -1,6 +1,5 @@
-@model IEnumerable<WebSite.Models.Data.DailyAlert>
 @{
-    ViewBag.Title = "Market Alerts";
+    ViewBag.Title = "Products And Services";
 }
 @section Description
 {
@@ -16,6 +15,22 @@
         .content-link 
         {
             cursor: pointer;
+            font-size: 19pt;
+            font-weight: 400;
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+        .content-tab
+        {
+            font-size: 10pt;
+        }
+        .black
+        {
+            color: #000000;
+        }
+        .white
+        {
+            color: #ffffff;
         }
     </style>
 }
@@ -29,15 +44,17 @@
             // Shows a section of the page. The name of the div should match sectionName
             self.showTab = function (sectionName)
             {
+                var $section = $(sectionName);
+
                 // hide all sections
                 $(".content-tab").hide("fast");
 
                 // Show the new section
-                $(sectionName).show("fast");
+                $section.show("fast");
 
                 // Set the heading text
-                $("#h2-heading").html($(sectionName).attr("data-heading"));
-
+                $("#h2-heading").html($section.attr("data-heading")).removeClass("white").removeClass("black").addClass($section.attr("data-heading-css"));
+                
                 // Set the image
                 $("#img-picture").attr("src", $(sectionName).attr("data-image"));
             }
@@ -53,37 +70,91 @@
             { 
                 self.showTab(this.getAttribute("data-selector"));
             });
+
+            self.showTab("#div-products-and-services");
         });
     </script>
 }
 @section UnpaddedContent
 {
     <table style="width: 100%; border-collapse: collapse; border-spacing: 0px;">
-    <tr><td style="padding: 0px; vertical-align: top; position: relative; width: 1px;"><img id="img-picture" src="/Images/Services/services.jpg" style="float: left;" /><h2 id="h2-heading" style="position: absolute; left: 4px; top: 0px; color: white;">Products &amp; Services</h2></td>
-        <td style="cursor: pointer; vertical-align: top; padding: 5px;"><div id="div-reset" style="text-align: right;"><img src="/Images/arrow-left-16.png" style="border: none; padding-right: 10px; vertical-align: middle;" />Back</div>
-<div id="div-products-and-services" class="content-tab" data-heading="Products &amp; Services" data-image="/Images/Services/services.jpg">
-    <div class="content-link" data-selector="#div-options">Options</div>
-    <div class="content-link" data-selector="#div-stocks">Stock Picks</div>
-    <div class="content-link" data-selector="#div-market-alerts">Market Alerts</div>
-    <div class="content-link" data-selector="#div-active-traders">Active Traders</div>
-    <div class="content-link" data-selector="#div-trial">Free Trial</div>
-</div>
-<div id="div-options" data-heading="Option Picks" class="content-tab" style="display: none;" data-image="/Images/Services/options.jpg">
-
-</div>
-<div id="div-stocks" data-heading="Stock Picks" class="content-tab" style="display: none;" data-image="/Images/Services/stocks.jpg">
-
-</div>
-<div id="div-market-alerts" class="content-tab" data-heading="Market Alerts" style="display: none;" data-image="/Images/Services/market-alerts.jpg">
-
-</div>
-<div id="div-active-traders" class="content-tab" data-heading="Active Traders" style="display: none;" data-image="/Images/Services/active-traders.jpg">
-
-</div>
-<div id="div-trial" class="content-tab" data-heading="Free Trial" style="display: none;" data-image="/Images/Services/free-trial.jpg">
-
-</div>
-
-        </td></tr>
-</table>
+        <tr>
+            <td style="padding: 0px; vertical-align: top; position: relative; width: 1px;">
+                <img id="img-picture" src="/Images/Services/services.jpg" style="float: left;" />
+                <h2 id="h2-heading" style="position: absolute; left: 7px; top: 0px;">Products &amp; Services</h2>
+            </td>
+            <td style="cursor: pointer; vertical-align: top; padding: 5px;">
+                <div id="div-reset" style="text-align: right; padding-bottom: 7px;">
+                    <img src="/Images/arrow-left-16.png" style="border: none; padding-right: 5px; vertical-align: middle;" />Back</div>
+                <div id="div-products-and-services" class="content-tab" data-heading="Products &amp; Services" data-image="/Images/Services/services.jpg" data-heading-css="white">
+                    <h3 style="padding-bottom: 20px;">Choose one of our services below to learn more about what it has to offer:</h3>
+                    <div class="content-link" data-selector="#div-active-traders">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Active Traders</div>
+                    <div class="content-link" data-selector="#div-stocks">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Stock Picks</div>
+                    <div class="content-link" data-selector="#div-options">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Option Picks</div>
+                    <div class="content-link" data-selector="#div-market-alerts">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Market Alerts</div>
+                    <div class="content-link" data-selector="#div-trial">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Free Trial</div>
+                </div>
+                <div id="div-options" data-heading="Option Picks" class="content-tab" style="display: none;" data-image="/Images/Services/options.jpg" data-heading-css="black">
+                    Stockwinners.com offers weekly option picks as an alternative investment vehicle to help investors utilize equity options to define risk, enhance yields, and make effective use of leverage to reduce the initial cost of trade.
+                    <br />
+                    <br />
+                    We offer a variety of strategies including but not limited to straddles, strangles, and spreads.<br />
+                    <br />
+                    Check out our @Html.ActionLink("performance", "PhilosophyAndPerformance", "Information") to see how our trades perform.<br />
+                    <br />
+                    Unlike other advisory services, we always keep our subscribers in the know about the latest status of our selections. If you choose to execute a trade, you'll have the option of following the trade in which case any updates in our decisions about the selection, including but not limited to closing price and closing time will be emailed to you in real-time. Using our follow feature, it's very easy for our subscribers to clone our trades both at the time of entry and also exit.
+                </div>
+                <div id="div-stocks" data-heading="Stock Picks" class="content-tab" style="display: none;" data-image="/Images/Services/stocks.jpg" data-heading-css="black">
+                    We provide daily stock picks based on technical analysis, news, momentum, and rumors that we scout from the market.
+                    <br />
+                    <br />
+                    Check out our @Html.ActionLink("performance page", "PhilosophyAndPerformance", "Information") to see how our trades have performed.<br />
+                    <br />
+                    Unlike other advisory services, we always keep our subscribers in the know about the latest status of our selections. If you choose to execute a trade, you'll have the option of following the trade in which case any updates in our decisions about the selection, including but not limited to closing price and closing time will be emailed to you in real-time. Using our follow feature, it's very easy for our subscribers to clone our trades both at the time of entry and also exit.
+                </div>
+                <div id="div-market-alerts" class="content-tab" data-heading="Market Alerts" style="display: none;" data-image="/Images/Services/market-alerts.jpg" data-heading-css="black">
+                    Information is one commodity you can't ever have enough of, but keeping yourself up-to-date with the market can be a very challenging job. Market alerts have been designed to tackle this exact issue.
+                    <br />
+                    <br />
+                    We issue 2 market alerts per day, one before market open and one around noon. We do a lot of research to find market moving and critical news, brokerage recommendation changes, mergers and acquisitions and other relevant news and summarize our findings in the alerts so that you don't have to spend the time digging around various news outlets.
+                    <br />
+                    <br />
+                    Our morning market alert gives you a prediction of how the markets will open and lists all downgrades/upgrades along with a list of critical market news.<br />
+                    <br />
+                    Market alerts are a great way to stay up-to-date with the happenings in the market without spending precious time working through the vast amount of information made available through news outlets.
+                </div>
+                <div id="div-active-traders" class="content-tab" data-heading="Active Traders" style="display: none;" data-image="/Images/Services/active-traders.jpg" data-heading-css="black">
+                    If you monitor the market on a daily basis, active traders is a must for your toolbox.
+                    <br />
+                    <br />
+                    We have reporters and news agents sending us a variety of news such as upgrades/downgrades, unusual option and stock activities, mergers and acquisition, macro economic news, rumors, earnings reports and other significant reports.
+                    <br />
+                    <br />
+                    The news is delivered to your computer in real-time. Make sure to keep the @Html.ActionLink("active traders", "Home", "ActiveTraders") page open during the market hours to receive the latest news.<br />
+                    <br />
+                    As you can imagine, receiving all the information can be overwhelming. We group our posts into categories such as upgrades, downgrades, initiations, technical analysis, rumors, earnings, etc. and let you choose the categories of interest so that you only see the news that is of interest to you.<br />
+                    <br />
+                    To change the set of categories of news you receive, click on the gear icon in the top right hand corner of the screen in the @Html.ActionLink("active traders", "Home", "ActiveTraders") page.
+                </div>
+                <div id="div-trial" class="content-tab" data-heading="Free Trial" style="display: none;" data-image="/Images/Services/free-trial.jpg" data-heading-css="black">
+                    We strongly believe in our product and make it available free of charge and obligations for 2 weeks. All you need is an email address to sign up.
+                    <br />
+                    <br />
+                    During your trial period, you will have full access to all the features of the site like a regular paid subscriber.
+                    <br />
+                    <br />
+                    Our members section allows you to control the amount of email you receive from our service, while the follow feature allows you to receive updates specific to a selection. At the end of your trial period, you will have the option of becoming a paid subscriber if you choose to do so. Our trial period is non-obligatory.
+    <div class="content-link" style="text-align: right;"><a href="@Url.Action("Register", "Account")">
+        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Register</a></div>
+                    <div class="content-link" style="text-align: right;"><a href="@Url.Action("Pricing", "Information")">
+                        <img src="/Images/Services/arrow-right-45.png" style="vertical-align: middle; padding-right: 10px;" />Pricing</a></div>
+                </div>
+            </td>
+        </tr>
+    </table>
 }

@@ -379,8 +379,15 @@
     <Content Include="Images\error.png" />
     <Content Include="Images\exit.png" />
     <Content Include="Images\Home\big-logo.png" />
-    <Content Include="Images\Home\Homepage.jpg" />
+    <Content Include="Images\Home\Homepage_01.jpg" />
+    <Content Include="Images\Home\Homepage_02.jpg" />
+    <Content Include="Images\Home\Homepage_03.jpg" />
+    <Content Include="Images\Home\Homepage_04.jpg" />
+    <Content Include="Images\Home\Homepage_05.jpg" />
     <Content Include="Images\info.png" />
+    <Content Include="Images\Information\monthly-price.png" />
+    <Content Include="Images\Information\trial-price.png" />
+    <Content Include="Images\Information\yearly-price.png" />
     <Content Include="Images\logo.gif" />
     <Content Include="Images\Chart Reading\lu_110899.gif" />
     <Content Include="Images\Chart Reading\macr_010500_chart.gif" />
@@ -409,6 +416,7 @@
     <Content Include="Images\Patterns\separator.gif" />
     <Content Include="Images\Performance\2012.JPG" />
     <Content Include="Images\Services\active-traders.JPG" />
+    <Content Include="Images\Services\arrow-right-45.png" />
     <Content Include="Images\Services\free-trial.JPG" />
     <Content Include="Images\Services\market-alerts.JPG" />
     <Content Include="Images\Services\options.JPG" />
@@ -433,6 +441,16 @@
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />
     <Content Include="Images\success.png" />
+    <Content Include="Scripts\history.js\amplify.store.js" />
+    <Content Include="Scripts\history.js\history.adapter.dojo.js" />
+    <Content Include="Scripts\history.js\history.adapter.jquery.js" />
+    <Content Include="Scripts\history.js\history.adapter.mootools.js" />
+    <Content Include="Scripts\history.js\history.adapter.prototype.js" />
+    <Content Include="Scripts\history.js\history.adapter.yui.js" />
+    <Content Include="Scripts\history.js\history.adapter.zepto.js" />
+    <Content Include="Scripts\history.js\history.html4.js" />
+    <Content Include="Scripts\history.js\history.js" />
+    <Content Include="Scripts\history.js\json2.js" />
     <Content Include="Scripts\jquery-1.8.0.js" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.23.js" />
@@ -822,6 +840,7 @@
     <Content Include="Views\Home\PageNotFound.cshtml" />
     <Content Include="Views\Home\Feedback.cshtml" />
     <Content Include="Views\Information\ProductsAndServices.cshtml" />
+    <Content Include="Views\Information\Pricing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

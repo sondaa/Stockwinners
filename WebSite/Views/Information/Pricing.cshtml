@@ -1,0 +1,20 @@
+@{
+    
+    ViewBag.Title = "Pricing";
+}
+@section Description
+{
+    <meta name="description" content="We have a simple and straightforward membership structure. $45 monthly and $450 annually." />
+}
+<h2>Pricing</h2><br />
+
+We like to keep our pricing model very straight-forward and simple. There are 2 types of memberships available as listed below. Every person is eligible for a free 2-weeks trial period.<br /><br />
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 33%; text-align: center;"><a href="@Url.Action("Subscribe", "Members")"><img src="/Images/Information/monthly-price.png" style="border: none;" /></a></td>
+        <td style="width: 33%; text-align: center;"><a href="@Url.Action("Subscribe", "Members")">
+            <img src="~/Images/Information/yearly-price.png"  style="border: none;"/></a></td>
+        <td style="width: 34%; text-align: center;"><a href="@Url.Action("Register", "Account")">
+            <img src="~/Images/Information/trial-price.png"  style="border: none;"/></a></td>
+    </tr>
+</table>

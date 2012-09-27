@@ -3,8 +3,10 @@
   <PropertyGroup>
     <ActivePublishProfile>MarketWinnerProduction</ActivePublishProfile>
     <DeploymentPromptBeforeUpgrading>False</DeploymentPromptBeforeUpgrading>
-    <WebRoleHttpsSkipLaunchInBrowser>WebSite</WebRoleHttpsSkipLaunchInBrowser>
+    <WebRoleHttpsSkipLaunchInBrowser>
+    </WebRoleHttpsSkipLaunchInBrowser>
     <LocalProfile>Local</LocalProfile>
     <DeploymentPromptBeforeDeleting>True</DeploymentPromptBeforeDeleting>
+    <RemoteDesktopMoreOptions>True</RemoteDesktopMoreOptions>
   </PropertyGroup>
 </Project>

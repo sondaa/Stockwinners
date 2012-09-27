@@ -119,12 +119,13 @@
                 </table>
             </div>
             <div id="header-link-group" class="no-whitespace">
+                <div>@Html.ActionLink("Services", "ProductsAndServices", "Information", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Stock Picks", "StockPicks", "Picks", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Option Picks", "OptionPicks", "Picks", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Performance", "PhilosophyAndPerformance", "Information", new { area = "" }, null)</div>
-                <div>@Html.ActionLink("Services", "ProductsAndServices", "Information", new { area = "" }, null)</div>
+                <div>@Html.ActionLink("Pricing", "Pricing", "Information", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Members", "Index", "Members", new { area = "" }, null)</div>
                 @Html.Partial("_AdministratorLinksPartial")
                 @Html.Partial("_TrialSubscribePartial")

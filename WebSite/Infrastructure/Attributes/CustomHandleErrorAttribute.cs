@@ -19,19 +19,27 @@ namespace WebSite.Infrastructure.Attributes
 
             body.Append("Controller: ");
             body.Append(filterContext.Controller.ToString());
-            body.Append("<br/>Exception Message: ");
-            body.Append(filterContext.Exception.Message);
-            body.Append("<br/>Call Stack:<br/>");
-            body.Append(filterContext.Exception.StackTrace);
-            body.Append("<br/>Inner Exception Message:<br/>");
-            body.Append(filterContext.Exception.InnerException != null ? filterContext.Exception.InnerException.Message : "Nothing");
             body.Append("<br/>Raw URL: ");
             body.Append(filterContext.RequestContext.HttpContext.Request.RawUrl);
+
+            for (Exception exception = filterContext.Exception; exception != null; exception = exception.InnerException)
+            {
+                this.PrintException(exception, body);
+            }
             
             emailFactory.CreateEmailForAdministrators(body.ToString(), subject).Send();
 
             // Do whatever the base class does
             base.OnException(filterContext);
+        }
+
+        private void PrintException(Exception exception, StringBuilder builder)
+        {
+            builder.Append("<br/>Exception Message: ");
+            builder.Append(exception.Message);
+            builder.Append("<br/>Call Stack:<br/>");
+            builder.Append(exception.StackTrace);
+            builder.Append("================================");
         }
     }
 }

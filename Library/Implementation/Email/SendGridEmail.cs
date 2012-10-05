@@ -12,7 +12,7 @@ namespace Stockwinners.Email
         const string MailServer = "http://sendgrid.com/api/mail.send.json";
         const int EmailBatchSize = 500; // Number of recipients per email
 
-        internal SendGridEmail(string contents, string subject, List<string> recipients, string fromAddress = "noreply@stockwinners.com", string fromName = "Stockwinners.com")
+        internal SendGridEmail(string contents, string subject, List<IEmailRecipient> recipients, string fromAddress = "noreply@stockwinners.com", string fromName = "Stockwinners.com")
         {
             if (string.IsNullOrEmpty(contents))
             {
@@ -36,7 +36,7 @@ namespace Stockwinners.Email
             this.FromName = fromName;
         }
 
-        public IEnumerable<string> Recipients { get; private set; }
+        public IEnumerable<IEmailRecipient> Recipients { get; private set; }
 
         public string Contents { get; private set; }
 
@@ -101,7 +101,7 @@ namespace Stockwinners.Email
         /// <returns></returns>
         private bool TryGetPostRequestBody(int batchNumber, out string contents)
         {
-            List<string> recipients = this.Recipients as List<string>;
+            List<IEmailRecipient> recipients = this.Recipients as List<IEmailRecipient>;
             StringBuilder bodyContents = new StringBuilder();
             bool hasRecipients = false;
 
@@ -124,7 +124,7 @@ namespace Stockwinners.Email
             {
                 hasRecipients = true;
                 bodyContents.Append("&bcc[]=");
-                bodyContents.Append(System.Web.HttpUtility.UrlEncode(recipients[i]));
+                bodyContents.Append(System.Web.HttpUtility.UrlEncode(recipients[i].EmailAddress));
             }
 
             // Add credentials

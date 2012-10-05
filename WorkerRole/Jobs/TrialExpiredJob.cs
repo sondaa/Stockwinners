@@ -44,7 +44,7 @@ namespace WorkerRole.Jobs
             IEmail trialExpiredEmail = _emailFactory.CreateEmail(
                 contents: this.GetEmailContents(), 
                 subject: "Trial Membership Conclusion", 
-                recipients: from user in usersWithExpiredTrial select user.EmailAddress);
+                recipients: usersWithExpiredTrial);
 
             // Finally send the email
             trialExpiredEmail.Send();

@@ -59,6 +59,7 @@
     <Compile Include="Definition\Email\IAccountEmailFactory.cs" />
     <Compile Include="Definition\Email\IEmail.cs" />
     <Compile Include="Definition\Email\IEmailFactory.cs" />
+    <Compile Include="Definition\Email\IEmailRecipient.cs" />
     <Compile Include="Definition\IDatabaseContext.cs" />
     <Compile Include="Definition\IUser.cs" />
     <Compile Include="Implementation\Email\SendGridEmail.cs" />

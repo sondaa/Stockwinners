@@ -11,7 +11,7 @@ namespace Stockwinners.Email
         /// <summary>
         /// Collection of recipients the email is to be sent to.
         /// </summary>
-        IEnumerable<string> Recipients { get; }
+        IEnumerable<IEmailRecipient> Recipients { get; }
 
         /// <summary>
         /// Contents of the email to be sent out.

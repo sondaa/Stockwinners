@@ -122,7 +122,7 @@ namespace WebSite.Areas.Administrator.Controllers
             // Email the user
             EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(user);
 
-            WebSite.Helpers.Email.SendEmail(email);
+            WebSite.Helpers.Email.SendEmail(email, new List<User>() { user });
 
             return this.RedirectToAction("SuspendedMembers");
         }

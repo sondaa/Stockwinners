@@ -40,7 +40,7 @@ namespace WorkerRole.Jobs
             IEmail inactiveUserEmail = _emailFactory.CreateEmail(
                 contents: this.GetEmailContents(),
                 subject: "Inactive Trial Account",
-                recipients: from user in inactiveUsers select user.EmailAddress);
+                recipients: inactiveUsers);
 
             // Send the email to users
             inactiveUserEmail.Send();

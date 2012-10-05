@@ -75,7 +75,9 @@ namespace WebSite.Controllers
                 contentsBuilder.Append(" has provided invaluable feedback to us. The message is as follows: <br/><br/>");
                 contentsBuilder.Append(userFeedback.Message.Replace(Environment.NewLine, "<br/>"));
 
-                _emailFactory.CreateEmail(contentsBuilder.ToString(), "User Feedback", userFeedback.EmailAddress, new string[] { "info@stockwinners.com" }).Send();
+                _emailFactory.CreateEmail(contentsBuilder.ToString(), "User Feedback", 
+                    new EmailSender() { EmailAddress = userFeedback.EmailAddress, Name = userFeedback.Name }, 
+                    new IEmailRecipient[] { new EmailRecipient() { Name = "Stockwinners.com", EmailAddress = "info@stockwinners.com" } }).Send();
 
                 // Clear message
                 userFeedback.Message = string.Empty;
@@ -85,6 +87,18 @@ namespace WebSite.Controllers
             }
 
             return this.View(userFeedback);
+        }
+
+        private class EmailRecipient : IEmailRecipient
+        {
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
+        }
+
+        private class EmailSender : IEmailSender
+        {
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
         }
     }
 }

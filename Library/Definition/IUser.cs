@@ -1,17 +1,17 @@
 ﻿namespace Stockwinners
 {
+    using Stockwinners.Email;
     using System;
 
-    public interface IUser
+    public interface IUser : IEmailRecipient
     {
-        string EmailAddress { get; set; }
-        string FirstName { get; set; }
+        string FirstName { get; }
+        string LastName { get; }
         int IdentityProvider { get; set; }
         string IdentityProviderIssuedUserId { get; set; }
         bool IsBanned { get; set; }
         bool IsTrialValid();
         DateTime LastLoginDate { get; set; }
-        string LastName { get; set; }
         DateTime SignUpDate { get; set; }
         DateTime? SubscriptionExpiryDate { get; set; }
         int? SubscriptionId { get; set; }

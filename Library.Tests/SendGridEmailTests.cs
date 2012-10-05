@@ -14,9 +14,15 @@ namespace Library.Tests
             SendGridEmail email = new SendGridEmail(
                 contents: "<html><head></head><body>Test</body></html>",
                 subject: "Test Email",
-                recipients: new System.Collections.Generic.List<string>() { "ameen.tayyebi@gmail.com" });
+                recipients: new System.Collections.Generic.List<IEmailRecipient>() { new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "ameen.tayyebi@gmail.com" } });
 
             email.Send();
+        }
+
+        private class EmailRecipient : IEmailRecipient
+        {
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
         }
     }
 }

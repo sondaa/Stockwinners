@@ -44,8 +44,8 @@ namespace WorkerRole.Jobs
             IEmail feedbackEmail = _emailFactory.CreateEmail(
                 contents: this.GetEmailContents(),
                 subject: "Feedback Request",
-                senderAddress: "info@stockwinners.com", // Send from info@stockwinners.com so that the user can reply back
-                recipients: from user in lostUsers select user.EmailAddress);
+                sender: new EmailSender() { Name = "Stockwinners.com", EmailAddress = "info@stockwinners.com" }, // Send from info@stockwinners.com so that the user can reply back
+                recipients: lostUsers);
 
             feedbackEmail.Send();
 
@@ -101,6 +101,12 @@ Stockwinners.com Management Team
             builder.Append(this.GetEmailFooter());
 
             return builder.ToString();
+        }
+
+        private class EmailSender : IEmailSender
+        {
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
         }
     }
 }

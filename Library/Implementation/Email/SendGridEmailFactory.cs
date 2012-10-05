@@ -7,19 +7,29 @@ namespace Stockwinners.Email
 {
     public class SendGridEmailFactory : IEmailFactory
     {
-        public IEmail CreateEmail(string contents, string subject, IEnumerable<string> recipients)
+        public IEmail CreateEmail(string contents, string subject, IEnumerable<IEmailRecipient> recipients)
         {
             return new SendGridEmail(contents, subject, recipients.ToList());
         }
 
-        public IEmail CreateEmail(string contents, string subject, string senderAddress, IEnumerable<string> recipients)
+        public IEmail CreateEmail(string contents, string subject, IEmailSender sender, IEnumerable<IEmailRecipient> recipients)
         {
-            return new SendGridEmail(contents, subject, recipients.ToList(), senderAddress);
+            return new SendGridEmail(contents, subject, recipients.ToList(), sender.EmailAddress, sender.Name);
         }
 
         public IEmail CreateEmailForAdministrators(string contents, string subject)
         {
-            return new SendGridEmail(contents, subject, new List<string> { "ameen.tayyebi@gmail.com", "s.mehdi.ghaffari@gmail.com", "seyed@stockwinners.com"});
+            return new SendGridEmail(contents, subject, new List<IEmailRecipient> { 
+                new EmailRecipient() { Name = "Ameen Tayyebi",EmailAddress = "ameen.tayyebi@gmail.com"},
+                new EmailRecipient() { Name = "Mehdi Ghaffari", EmailAddress = "s.mehdi.ghaffari@gmail.com"},
+                new EmailRecipient() { Name = "Mohammad Mohammadi", EmailAddress = "seyed@stockwinners.com"}
+            });
+        }
+
+        private class EmailRecipient : IEmailRecipient
+        {
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
         }
     }
 }

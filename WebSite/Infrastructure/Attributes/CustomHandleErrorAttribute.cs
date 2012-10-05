@@ -1,6 +1,7 @@
 ﻿using Stockwinners.Email;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -40,6 +41,23 @@ namespace WebSite.Infrastructure.Attributes
             builder.Append("<br/>Call Stack:<br/>");
             builder.Append(exception.StackTrace);
             builder.Append("================================");
+        }
+
+        private void PrintException(DbEntityValidationException exception, StringBuilder builder)
+        {
+            this.PrintException(exception as Exception, builder);
+
+            builder.Append("<br/>Validation Errors: ");
+            foreach (var validationResult in exception.EntityValidationErrors)
+            {
+                foreach (var error in validationResult.ValidationErrors)
+                {
+                    builder.Append("<br/>Property: ");
+                    builder.Append(error.PropertyName);
+                    builder.Append("<br/>Error Message: ");
+                    builder.Append(error.ErrorMessage);
+                }
+            }
         }
     }
 }

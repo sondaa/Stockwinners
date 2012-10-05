@@ -9,6 +9,7 @@ using ActionMailer.Net.Mvc;
 using DataAnnotationsExtensions;
 using WebSite.Models.Data;
 using WebSite.Models.Data.Picks;
+using Stockwinners.Email;
 
 namespace WebSite.Models
 {
@@ -40,6 +41,9 @@ namespace WebSite.Models
         [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
+
+        [NotMapped]
+        public string Name { get { return this.FirstName + " " + this.LastName; } }
 
         [Required]
         [Display(Name = "Is member banned?")]
@@ -98,9 +102,7 @@ namespace WebSite.Models
         {
             EmailResult email = new Mailers.Account().Welcome();
 
-            email.Mail.To.Add(this.EmailAddress);
-
-            WebSite.Helpers.Email.SendEmail(email);
+            WebSite.Helpers.Email.SendEmail(email, new List<User>() { this });
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace WebSite.Models
         }
     }
 
-    public class StockwinnersMember
+    public class StockwinnersMember : IEmailRecipient
     {
         [Required]
         [Key]
@@ -144,6 +146,9 @@ namespace WebSite.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [NotMapped]
+        public string Name { get { return this.FirstName + " " + this.LastName; } }
+
         /// <summary>
         /// Whether the member has been ported from the legacy Stockwinners site.
         /// </summary>
@@ -154,9 +159,7 @@ namespace WebSite.Models
         {
             EmailResult email = new Mailers.Account().PasswordResetEmail(unhashedNewPassword);
 
-            email.Mail.To.Add(this.EmailAddress);
-
-            WebSite.Helpers.Email.SendEmail(email);
+            WebSite.Helpers.Email.SendEmail(email, new IEmailRecipient[] { this });
         }
     }
 }

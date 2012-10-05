@@ -78,7 +78,7 @@ namespace WebSite.Controllers
             // Email the user
             EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(affectedUser);
 
-            WebSite.Helpers.Email.SendEmail(email);
+            WebSite.Helpers.Email.SendEmail(email, new List<Models.User>() { affectedUser });
 
             return;
         }

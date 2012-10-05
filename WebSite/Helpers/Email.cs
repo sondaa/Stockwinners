@@ -10,6 +10,7 @@ using WebSite.Models;
 using ActionMailer.Net.Mvc;
 using System.Configuration;
 using System.Data.Entity;
+using Stockwinners.Email;
 
 namespace WebSite.Helpers
 {
@@ -103,40 +104,11 @@ namespace WebSite.Helpers
             }
         }
 
-        public static void SendEmail(EmailResult email, IEnumerable<User> recipients)
+        public static void SendEmail(EmailResult email, IEnumerable<IEmailRecipient> recipients)
         {
-            int emailCount = 0;
+            IEmailFactory emailFactory = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(IEmailFactory)) as IEmailFactory;
 
-            foreach (User user in recipients)
-            {
-                email.Mail.Bcc.Add(user.EmailAddress);
-                emailCount++;
-
-                if (emailCount >= 90)
-                {
-                    Email.SendEmail(email);
-
-                    email.Mail.Bcc.Clear();
-                    emailCount = 0;
-                }
-            }
-
-            if (emailCount > 0)
-            {
-                Email.SendEmail(email);
-            }
-        }
-
-        public static void SendEmail(EmailResult email)
-        {
-            if (ConfigurationManager.AppSettings["SendSynchronousEmail"] != null && bool.Parse(ConfigurationManager.AppSettings["SendSynchronousEmail"]))
-            {
-                email.Deliver();
-            }
-            else
-            {
-                email.DeliverAsync();
-            }
+            emailFactory.CreateEmail(email.Mail.Body, email.Mail.Subject, recipients).Send();
         }
     }
 }

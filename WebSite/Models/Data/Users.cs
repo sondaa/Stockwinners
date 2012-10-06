@@ -113,6 +113,66 @@ namespace WebSite.Models
             return this.TrialExpiryDate >= DateTime.UtcNow;
         }
 
+        /// <summary>
+        /// Returns true if the user has an active subscription or the user has a cancelled subscription that still has time left in it.
+        /// </summary>
+        public bool IsSubscriptionValid()
+        {
+            return
+                (this.Subscription != null && !this.Subscription.CancellationDate.HasValue && !this.Subscription.IsSuspended) ||
+                (this.Subscription == null && this.SubscriptionExpiryDate >= DateTime.UtcNow);
+        }
+
+        public bool HasValidStatus(bool allowExpiredTrials, bool allowSuspendedPayments)
+        {
+            // Check to see if you
+            // 1) are an admin
+            // 2) have an active subscription
+            // 3) have no subscription but have still paid portions of a cancelled subscription
+            // 4) have a valid trial membership
+
+            // Don't allow banned users to do anything
+            if (this.IsBanned)
+            {
+                return false;
+            }
+
+            // Is the user an admin?
+            if (this.Roles.FirstOrDefault(role => role.Name == PredefinedRoles.Administrator) != null)
+            {
+                return true;
+            }
+
+            // Does the user have an active subscription?
+            if (this.SubscriptionId.HasValue)
+            {
+                if (this.Subscription.IsSuspended)
+                {
+                    return allowSuspendedPayments;
+                }
+
+                return true;
+            }
+
+            // Is the user using left over time from a cancelled subscription?
+            if (this.SubscriptionExpiryDate.HasValue && this.SubscriptionExpiryDate.Value >= DateTime.UtcNow)
+            {
+                return true;
+            }
+
+            // Does the user possess a trial membership?
+            if (this.IsTrialValid())
+            {
+                return true;
+            }
+            else if (allowExpiredTrials)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void AddSubscription(Subscription subscription)
         {
             // Associate the subscription with the user

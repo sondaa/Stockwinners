@@ -8,7 +8,7 @@ using WebSite.Infrastructure.Attributes;
 
 namespace WebSite.Controllers
 {
-    public class InformationController : Controller
+    public class InformationController : WebSite.Infrastructure.ControllerBase
     {
         DatabaseContext _database;
 

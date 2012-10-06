@@ -8,7 +8,7 @@ using WebSite.Infrastructure.Attributes;
 namespace WebSite.Controllers
 {
     [MembersOnly]
-    public class ActiveTradersController : Controller
+    public class ActiveTradersController : WebSite.Infrastructure.ControllerBase
     {
         public ActionResult Index()
         {

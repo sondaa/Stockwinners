@@ -16,7 +16,7 @@ using WebSite.Database;
 namespace WebSite.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : WebSite.Infrastructure.ControllerBase
     {
         DatabaseContext _database;
 
@@ -147,7 +147,7 @@ namespace WebSite.Controllers
                         EmailAddress = model.Email,
                         IdentityProvider = IdentityProvider.Stockwinners,
                         IdentityProviderIssuedId = memberId.ToString()
-                    });
+                    }, rememberUser: false);
 
                     return this.RedirectToAction("RegistrationSuccess");
                 }

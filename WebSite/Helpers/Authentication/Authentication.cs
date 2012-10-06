@@ -26,7 +26,7 @@ namespace WebSite.Helpers.Authentication
 
             if (userIdentity != null)
             {
-                Authentication.SetCurrentUser(userIdentity);
+                Authentication.SetCurrentUser(userIdentity, false);
 
                 Authentication.Redirect(returnUrl);
             }
@@ -35,7 +35,7 @@ namespace WebSite.Helpers.Authentication
         /// <summary>
         /// Authenticates a Stockwinners member. Returns false if the provided login credentials are invalid.
         /// </summary>
-        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password, string redirectUrl, bool rememberUser = false)
+        public static bool AuthenticateOrRedirectStockwinnersMember(string emailAddress, string password, string redirectUrl, bool rememberUser)
         {
             WebSite.Infrastructure.MembershipProvider memberProvider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
 
@@ -52,13 +52,12 @@ namespace WebSite.Helpers.Authentication
                     IdentityProvider = IdentityProvider.Stockwinners,
                     IdentityProviderIssuedId = member.MemberId.ToString()
                 }, rememberUser);
-
+                    
                 Authentication.Redirect(redirectUrl);
 
                 return true;
             }
 
-            // Membership validation failed
             return false;
         }
 
@@ -92,14 +91,17 @@ namespace WebSite.Helpers.Authentication
 
         public static User GetCurrentUserEagerlyLoaded()
         {
-            LoggedInUserIdentity loggedInUser = Authentication.GetCurrentUserIdentity();
+            return Authentication.GetCurrentUserEagerlyLoaded(Authentication.GetCurrentUserIdentity());
+        }
 
-            if (loggedInUser != null)
+        public static User GetCurrentUserEagerlyLoaded(LoggedInUserIdentity userIdentity)
+        {
+            if (userIdentity != null)
             {
                 DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 
                 return db.Users.Include(u => u.Subscription).Include(u => u.Roles).First(
-                    u => u.IdentityProvider == (int)loggedInUser.IdentityProvider && u.IdentityProviderIssuedUserId == loggedInUser.IdentityProviderIssuedId);
+                    u => u.IdentityProvider == (int)userIdentity.IdentityProvider && u.IdentityProviderIssuedUserId == userIdentity.IdentityProviderIssuedId);
             }
 
             return null;
@@ -124,17 +126,13 @@ namespace WebSite.Helpers.Authentication
             FormsAuthentication.SignOut();
         }
 
-        public static void SetCurrentUser(LoggedInUserIdentity userIdentity, bool rememberUser = false)
+        public static void SetCurrentUser(LoggedInUserIdentity userIdentity, bool rememberUser)
         {
             // Ensure the user exists in our own system
             if (Authentication.EnsureUserExists(userIdentity))
             {
                 // Create a customized authentication cookie
                 Authentication.SetAuthenticationCookie(userIdentity, rememberUser);
-            }
-            else
-            {
-                // TODO: The user is banned. Somehow let them know.
             }
         }
 
@@ -267,5 +265,6 @@ namespace WebSite.Helpers.Authentication
         {
             return AuthenticationClientFactory.Instance.GetAuthenticationClient(identityProvider).GetUserIdentity(returnUrl);
         }
+
     }
 }

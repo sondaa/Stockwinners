@@ -10,7 +10,7 @@ using WebSite.Models.Data.Picks;
 
 namespace WebSite.Controllers
 {
-    public class PicksController : Controller
+    public class PicksController : WebSite.Infrastructure.ControllerBase
     {
         DatabaseContext _database;
 

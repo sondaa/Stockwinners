@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Stockwinners.Email
         const string MailServer = "http://sendgrid.com/api/mail.send.json";
         const int EmailBatchSize = 500; // Number of recipients per email
 
-        internal SendGridEmail(string contents, string subject, List<IEmailRecipient> recipients, string fromAddress = "noreply@stockwinners.com", string fromName = "Stockwinners.com")
+        internal SendGridEmail(string contents, string subject, List<IEmailRecipient> recipients, string fromAddress = "info@stockwinners.com", string fromName = "Stockwinners.com")
         {
             if (string.IsNullOrEmpty(contents))
             {
@@ -48,16 +49,35 @@ namespace Stockwinners.Email
 
         public void Send()
         {
+            List<IEmailRecipient> emailRecipients = this.Recipients as List<IEmailRecipient>;
             int batchNumber = 0;
+
+            // Generate contents of the email request
+            string requestContent = this.GetPostRequestBody();
 
             do
             {
-                // Anymore data to be sent for this batch?
-                string requestContent = null;
-                if (!this.TryGetPostRequestBody(batchNumber, out requestContent))
+                int startRecipient = batchNumber * EmailBatchSize;
+
+                // No more recipients left
+                if (startRecipient >= emailRecipients.Count)
                 {
                     break;
                 }
+
+                IEnumerable<string> recipients = 
+                    from recipient
+                    in emailRecipients.GetRange(startRecipient, Math.Min(EmailBatchSize, emailRecipients.Count - startRecipient))
+                    select recipient.Name + "<" + recipient.EmailAddress + ">";
+
+                // Do we have any recipients?
+                if (!recipients.Any())
+                {
+                    break;
+                }
+
+                // Add recipients to email body
+                string requestContentsAndRecipients = requestContent + "&x-smtpapi={\"to\": " + JsonConvert.SerializeObject(recipients) + "}";
 
                 // We do have recipients for this batch, compose the post request now
                 WebRequest request = WebRequest.Create(MailServer);
@@ -66,7 +86,7 @@ namespace Stockwinners.Email
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
 
-                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(requestContent);
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(requestContentsAndRecipients);
                 request.ContentLength = bytes.Length;
 
                 // Send the request to the SendGrid servers
@@ -93,17 +113,10 @@ namespace Stockwinners.Email
             while (true);
         }
 
-        /// <summary>
-        /// Returns true if there are any recipients for the email.
-        /// </summary>
-        /// <param name="batchNumber"></param>
-        /// <param name="contents"></param>
-        /// <returns></returns>
-        private bool TryGetPostRequestBody(int batchNumber, out string contents)
+        private string GetPostRequestBody()
         {
             List<IEmailRecipient> recipients = this.Recipients as List<IEmailRecipient>;
             StringBuilder bodyContents = new StringBuilder();
-            bool hasRecipients = false;
 
             // Add parameters of the request
             bodyContents.Append("subject=");
@@ -118,21 +131,10 @@ namespace Stockwinners.Email
             bodyContents.Append("&html=");
             bodyContents.Append(System.Web.HttpUtility.UrlEncode(this.Contents));
 
-            // Add recipients
-            int startRecipient = batchNumber * EmailBatchSize;
-            for (int i = startRecipient; i < recipients.Count && i < (startRecipient + EmailBatchSize); i++)
-            {
-                hasRecipients = true;
-                bodyContents.Append("&bcc[]=");
-                bodyContents.Append(System.Web.HttpUtility.UrlEncode(recipients[i].EmailAddress));
-            }
-
             // Add credentials
             bodyContents.Append("&api_user=seyed.mohammadi&api_key=Z3r3shki");
 
-            contents = bodyContents.ToString();
-
-            return hasRecipients;
+            return bodyContents.ToString();
         }
     }
 }

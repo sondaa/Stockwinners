@@ -30,50 +30,12 @@ namespace WebSite.Infrastructure.Attributes
             // Use the default logic to determine if the user is currently logged in
             bool isRequestAuthenticated = base.AuthorizeCore(httpContext);
 
-            // If the user is authenticated, check to see that they either:
-            // 1) are an admin
-            // 2) have an active subscription
-            // 3) have no subscription but have still paid portions of a cancelled subscription
-            // 4) have a valid trial membership
+            // If the user is authenticated, check to see if their account is in good status
             if (isRequestAuthenticated)
             {
                 User currentUser = Authentication.GetCurrentUserEagerlyLoaded();
 
-                // Don't allow banned users to do anything
-                if (currentUser.IsBanned)
-                {
-                    return false;
-                }
-
-                // Is the user an admin?
-                if (currentUser.Roles.FirstOrDefault(role => role.Name == PredefinedRoles.Administrator) != null)
-                {
-                    return true;
-                }
-
-                // Does the user have an active subscription?
-                if (currentUser.SubscriptionId.HasValue)
-                {
-                    if (currentUser.Subscription.IsSuspended)
-                    {
-                        return this.AllowSuspendedPayments;
-                    }
-
-                    return true;
-                }
-
-                // Is the user using left over time from a cancelled subscription?
-                if (currentUser.SubscriptionExpiryDate.HasValue && currentUser.SubscriptionExpiryDate.Value >= DateTime.UtcNow)
-                {
-                    return true;
-                }
-
-                // Does the user possess a trial membership?
-                if (currentUser.IsTrialValid())
-                {
-                    return true;
-                }
-                else if (this.AllowExpiredTrials)
+                if (currentUser.HasValidStatus(this.AllowExpiredTrials, this.AllowSuspendedPayments))
                 {
                     return true;
                 }

@@ -14,7 +14,7 @@ using WebSite.Models.Logic;
 namespace WebSite.Controllers
 {
     [MembersOnly(AllowExpiredTrials = true, AllowSuspendedPayments = true)]
-    public class MembersController : Controller
+    public class MembersController : WebSite.Infrastructure.ControllerBase
     {
         DatabaseContext _database;
 
@@ -338,28 +338,28 @@ namespace WebSite.Controllers
         private void SetupViewBagForIndex(WebSite.Models.User user)
         {
             ViewBag.SavedSuccessfully = false;
-            ViewBag.IsTrialMember = !user.SubscriptionId.HasValue;
-            ViewBag.IsUsingCancelledSubscription = ViewBag.IsTrialMember && user.SubscriptionExpiryDate.HasValue && user.SubscriptionExpiryDate.Value >= DateTime.UtcNow;
+            ViewBag.IsTrialMember = !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue;
+            ViewBag.IsUsingCancelledSubscription = !user.SubscriptionId.HasValue && user.SubscriptionExpiryDate.HasValue;
             ViewBag.IsUsingSuspendedSubscription = user.SubscriptionId.HasValue && user.Subscription.IsSuspended;
 
-            // If the user is not a trial member, then obtain his/her subscription information
-            if (!ViewBag.IsTrialMember || ViewBag.IsUsingCancelledSubscription)
+            if (ViewBag.IsTrialMember)
             {
-                if (!ViewBag.IsUsingCancelledSubscription)
+                ViewBag.TrialDaysLeft = (user.TrialExpiryDate - DateTime.UtcNow).Days;
+                ViewBag.IsTrialExpired = ViewBag.TrialDaysLeft <= 0;
+            }
+            else
+            {
+                if (user.SubscriptionId.HasValue)
                 {
                     ViewBag.SubscriptionStartDate = user.Subscription.ActivationDate;
                     ViewBag.SubscriptionPrice = user.Subscription.SubscriptionType.Price;
                     ViewBag.SubscriptionFrequency = user.Subscription.SubscriptionType.SubscriptionFrequency.Name.ToLower();
                 }
-                else
+                else if (user.SubscriptionExpiryDate.HasValue)
                 {
                     ViewBag.SubscriptionExpiryDate = user.SubscriptionExpiryDate.Value.ToLongDateString();
+                    ViewBag.CancelledSubscriptionIsExpired = user.SubscriptionExpiryDate.Value < DateTime.UtcNow;
                 }
-            }
-            else
-            {
-                ViewBag.TrialDaysLeft = (user.TrialExpiryDate - DateTime.UtcNow).Days;
-                ViewBag.IsTrialExpired = ViewBag.TrialDaysLeft <= 0;
             }
         }
 

@@ -13,7 +13,7 @@ namespace WebSite.Controllers
     /// <summary>
     /// This controller is called by authorize.NET when a payment in a subscription fails.
     /// </summary>
-    public class AuthorizeNetController : Controller
+    public class AuthorizeNetController : WebSite.Infrastructure.ControllerBase
     {
         DatabaseContext _database;
 

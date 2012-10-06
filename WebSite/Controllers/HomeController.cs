@@ -12,7 +12,7 @@ using WebSite.Models.UI;
 
 namespace WebSite.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : WebSite.Infrastructure.ControllerBase
     {
         IEmailFactory _emailFactory;
 

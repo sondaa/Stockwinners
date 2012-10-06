@@ -11,6 +11,7 @@ using ActionMailer.Net.Mvc;
 using System.Configuration;
 using System.Data.Entity;
 using Stockwinners.Email;
+using System.IO;
 
 namespace WebSite.Helpers
 {
@@ -108,7 +109,25 @@ namespace WebSite.Helpers
         {
             IEmailFactory emailFactory = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(IEmailFactory)) as IEmailFactory;
 
-            emailFactory.CreateEmail(email.Mail.Body, email.Mail.Subject, recipients).Send();
+            string body = string.Empty;
+
+            if (!string.IsNullOrEmpty(email.Mail.Body))
+            {
+                body = email.Mail.Body;
+            }
+            else
+            {
+                // Do we have any alternate views that we could use?
+                if (email.Mail.AlternateViews.Count > 0)
+                {
+                    using (var reader = new StreamReader(email.Mail.AlternateViews[0].ContentStream))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                }
+            }
+
+            emailFactory.CreateEmail(body, email.Mail.Subject, recipients).Send();
         }
     }
 }

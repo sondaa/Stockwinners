@@ -8,7 +8,7 @@ using WebSite.Models;
 
 namespace WebSite.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : WebSite.Infrastructure.ControllerBase
     {
         /// <summary>
         /// Called by the Google server.

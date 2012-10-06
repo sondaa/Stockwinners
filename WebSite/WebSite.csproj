@@ -210,6 +210,7 @@
     <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Infrastructure\Attributes\CustomHandleErrorAttribute.cs" />
     <Compile Include="Infrastructure\Attributes\MembersOnlyAttribute.cs" />
+    <Compile Include="Infrastructure\ControllerBase.cs" />
     <Compile Include="Interfaces\IEmailable.cs" />
     <Compile Include="Mailers\Account.cs" />
     <Compile Include="Mailers\Picks.cs" />

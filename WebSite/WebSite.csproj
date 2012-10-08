@@ -471,6 +471,9 @@
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\picks\subscription.js" />
+    <Content Include="Scripts\shared\analytics.js" />
+    <Content Include="Scripts\shared\compatibility.js" />
+    <Content Include="Scripts\shared\indexes.js" />
     <Content Include="Scripts\tinymce\jquery.tinymce.js" />
     <Content Include="Scripts\tinymce\langs\en.js" />
     <Content Include="Scripts\tinymce\license.txt" />

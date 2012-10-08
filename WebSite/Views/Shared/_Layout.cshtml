@@ -32,69 +32,12 @@
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
     @RenderSection("styles", required: false)
-    <!-- Exchanges -->
-    <script type="text/javascript">
-        $(function ()
-        {
-            var intervalId = 0;
-            var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Change%2C%20PercentChange%2C%20LastTradeTime%20from%20yahoo.finance.quotes%20where%20symbol%20in%20('%5EIXIC'%2C%20'%5EGSPC'%2C%20'DIA')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
-
-            updateIndexQuote = function (data, indexName)
-            {
-                $("#span-" + indexName + "-price").html(data.LastTradePriceOnly);
-                $("#span-" + indexName + "-change").html(data.Change);
-                $("#span-" + indexName + "-percent").html(data.PercentChange);
-
-                var positive = data.Change >= 0;
-
-                $("#span-" + indexName + "-change").toggleClass("green-quote", positive);
-                $("#span-" + indexName + "-change").toggleClass("red-quote", !positive);
-                $("#span-" + indexName + "-percent").toggleClass("green-quote", positive);
-                $("#span-" + indexName + "-percent").toggleClass("red-quote", !positive);
-            };
-
-            fetchQuotes = function()
-            {
-                $.getJSON(url, function (data)
-                {
-                    if (data.query.results)
-                    {
-                        updateIndexQuote(data.query.results.quote[0], "nasdaq");
-                        updateIndexQuote(data.query.results.quote[1], "sp");
-                        updateIndexQuote(data.query.results.quote[2], "djia");
-
-                        $("#div-exchanges").show();
-
-                        // If the market is closed, stop requesting quotes
-                        if (intervalId != 0 && Date.parse("01/01/2012 4:00PM") <= Date.parse("01/01/2012 " + data.query.results.quote[0].LastTradeTime))
-                        {
-                            clearInterval(intervalId);
-                        }
-                    }
-                });
-            };
-
-            // Get quotes on lead
-            fetchQuotes.call();
-
-            // Update the quotes every two seconds
-            intervalId = window.setInterval(fetchQuotes, 2000);
-        });
-    </script>
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-32515461-1']);
-        _gaq.push(['_trackPageview']);
-        (function ()
-        {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
+    @Scripts.Render("~/Scripts/Shared/indexes.js", "~/Scripts/Shared/analytics.js","~/Scripts/Shared/compatibility.js")
 </head>
 <body>
+    <div id="browser-warning" class="page-box" style="display: none;">
+        @Html.ErrorMessage("Your browser does not display parts of our website correctly. We use the latest technology available to provide you with a high quality experience; please upgrade your browser to its latest version to view the contents properly:<ul><li><a href='https://www.google.com/intl/en/chrome/browser/'>Chrome</a></li><li><a href='http://www.mozilla.org/en-US/firefox/new/'>Firefox</a></li><li><a href='http://windows.microsoft.com/en-US/internet-explorer/downloads/ie'>Internet Explorer</a></li></ul>") 
+    </div>
     <div class="page-box">
         <div id="header">
             <div id="logo-bar" style="padding: 3px 5px 0px 2px;">

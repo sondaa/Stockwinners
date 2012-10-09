@@ -470,6 +470,8 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\pages\market-radar\ui.js" />
+    <Content Include="Scripts\pages\market-radar\viewmodel.js" />
     <Content Include="Scripts\picks\subscription.js" />
     <Content Include="Scripts\shared\analytics.js" />
     <Content Include="Scripts\shared\compatibility.js" />
@@ -739,7 +741,6 @@
     <Content Include="Scripts\upshot.min.js">
       <DependentUpon>upshot.js</DependentUpon>
     </Content>
-    <Content Include="ViewModels\ActiveTradersViewModel.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

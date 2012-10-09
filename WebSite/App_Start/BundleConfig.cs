@@ -43,6 +43,16 @@ namespace WebSite
                         "~/Content/themes/base/jquery.ui.theme.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/subscription").Include("~/bundles/jquery", "~/Scripts/picks/subscription.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/market-radar").Include(
+                    "~/Scripts/pages/market-radar/viewmodel.js",
+                    "~/Scripts/jquery.signalR-0.5.2.js",
+                    "~/Scripts/pages/market-radar/ui.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/shared").Include(
+                "~/Scripts/Shared/indexes.js",
+                "~/Scripts/Shared/analytics.js",
+                "~/Scripts/Shared/compatibility.js"));
         }
     }
 }

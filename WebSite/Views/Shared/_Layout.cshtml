@@ -32,7 +32,7 @@
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
     @RenderSection("styles", required: false)
-    @Scripts.Render("~/Scripts/Shared/indexes.js", "~/Scripts/Shared/analytics.js","~/Scripts/Shared/compatibility.js")
+    @Scripts.Render("~/bundles/shared")
 </head>
 <body>
     <div id="browser-warning" class="page-box" style="display: none;">
@@ -63,7 +63,7 @@
             </div>
             <div id="header-link-group" class="no-whitespace">
                 <div>@Html.ActionLink("Services", "ProductsAndServices", "Information", new { area = "" }, null)</div>
-                <div>@Html.ActionLink("Active Traders", "Index", "ActiveTraders", new { area = "" }, null)</div>
+                <div><a href="@Url.Action("Index", "ActiveTraders", new { area = "" })">Market Radar <sup style="font-size: 7pt;">RT</sup></a></div>
                 <div>@Html.ActionLink("Stock Picks", "StockPicks", "Picks", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Option Picks", "OptionPicks", "Picks", new { area = "" }, null)</div>
                 <div>@Html.ActionLink("Portfolio", "Portfolio", "Picks", new { area = "" }, null)</div>
@@ -88,6 +88,10 @@
         }
         <div id="footer">
             <div>@Html.ActionLink("Stock Market 101", "Market101", "Information")·@Html.ActionLink("Options 101", "Options101", "Information")·@Html.ActionLink("Chart Reading", "ChartReading", "Information")·@Html.ActionLink("Buying on Margin", "BuyingOnMargin", "Information")·@Html.ActionLink("Site Map", "SiteMap", "Information")·@Html.ActionLink("Membership Policy", "MembershipPolicy", "Information")·@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "Information")·@Html.ActionLink("Contact Us", "ContactUs", "Information")</div>
+            @if (IsSectionDefined("Footer"))
+            {
+                <div>@RenderSection("Footer", required: false)</div>
+            }
             <div>&copy; @DateTime.Now.Year - Stockwinners.com</div>
         </div>
     </div>

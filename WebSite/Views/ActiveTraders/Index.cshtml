@@ -53,192 +53,84 @@
             padding-top: 7px;
             padding-bottom: 7px;
         }
+
+        .ui-button-text 
+        {
+            font-size: 8pt;
+        }
+
+        .settings-background 
+        {
+            background: rgb(216,216,216); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(216,216,216,1) 0%, rgba(191,191,191,1) 49%, rgba(226,226,226,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(216,216,216,1)), color-stop(49%,rgba(191,191,191,1)), color-stop(100%,rgba(226,226,226,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(216,216,216,1) 0%,rgba(191,191,191,1) 49%,rgba(226,226,226,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(216,216,216,1) 0%,rgba(191,191,191,1) 49%,rgba(226,226,226,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(216,216,216,1) 0%,rgba(191,191,191,1) 49%,rgba(226,226,226,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(216,216,216,1) 0%,rgba(191,191,191,1) 49%,rgba(226,226,226,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d8d8d8', endColorstr='#e2e2e2',GradientType=0 ); /* IE6-9 */
+        }
     </style>
 }
 @section Scripts
 {
-    @Scripts.Render("~/ViewModels/ActiveTradersViewModel.js")
-    @Scripts.Render("~/bundles/upshot")
-    @Scripts.Render("~/Scripts/jquery.signalR-0.5.2.js")
-    @Scripts.Render("~/signalr/hubs")
-    @Scripts.Render("~/bundles/jqueryui")
-    <script type="text/javascript">
-        $(function ()
-        {
-            var activeTradersHub = $.connection.activeTradersHub;
-            var dataModel = new ActiveTradersViewModel();
-
-            activeTradersHub.addNewsElement = function (data)
-            {
-                dataModel.addNewsElement(data);
-            };
-
-            activeTradersHub.resetState = function (data)
-            {
-                dataModel.resetItems();
-            };
-
-            showOptions = function ()
-            {
-                $("#options-div").html('Displaying ' + dataModel.getFilters());
-            };
-
-            // Initialize the settings tabs and show the tab as collapsed on start
-            $("#tabs").tabs({ collapsible: true });
-
-            // Position the settings tab properly
-            $("#tabs-1").position({ my: "right top", at: "right bottom", of: $("#tabs"), collision: "none" });
-
-            // Collapse the tab by default
-            $("#tabs").tabs("select", 0);
-
-            // Initialize set of sliders for different categories
-            $("#sliders").find("div").slider({ max: 1, min: 0, animate: true });
-
-            // Make the "All" slider move all others
-            $("#all-div").bind("slidechange", function (event, ui)
-            {
-                var selectedValue = $(this).slider("option", "value");
-
-                $("#sliders").find("div").each(function (index, sliderDiv)
-                {
-                    // Ignore the "All" button itself
-                    if ($(sliderDiv).attr("id") != "all-div")
-                    {
-                        $(sliderDiv).slider("option", "value", selectedValue);
-                    }
-                });
-            });
-
-            // Turn on "Hot Stocks" by default
-            $("#hot-stocks-div").slider("option", "value", 1);
-
-            // Create button to apply changes
-            $("#apply-changes-a").button().click(function ()
-            {
-                $("#sliders").find("div").each(function (index, sliderDiv)
-                {
-                    // Ignore the "All" option
-                    if ($(sliderDiv).attr("id") !="all-div")
-                    {
-                        if ($(sliderDiv).slider("option", "value") == 1)
-                        {
-                            dataModel.addFilter($(sliderDiv).attr("data-filter-name"));
-                        }
-                        else
-                        {
-                            dataModel.removeFilter($(sliderDiv).attr("data-filter-name"));
-                        }
-                    }
-                });
-
-                // Update display options label
-                showOptions();
-
-                // Close the settings tab
-                $("#tabs").tabs("select", 0);
-
-                // Refresh the data model to update the news elements based on new filters
-                dataModel.refresh();
-
-                // disable normal anchor element navigation
-                return false;
-            });
-
-            var hubConnection = $.connection.hub;
-            
-            // When the client reconnects, ensure that we start off of a clean state
-            hubConnection.reconnected(function ()
-            {
-                dataModel.resetItems();
-
-                // Notify the server that we want to listen to items
-                activeTradersHub.clientInitialize();
-            });
-
-            // Start connection to server
-            hubConnection.start().done(function ()
-            {
-                // This custom handler will change the way symbols are presented in the UI so that a ; delimited text 
-                // text is space delimited so that the text can be wrapped. Also, we change NOSYMBOL to the empty string so that the
-                // user does not see NOSYMBOL.
-                ko.bindingHandlers.symbols = {
-                    init: function (element, valueAccessor)
-                    {
-                        var dataValue = valueAccessor()().toString();
-
-                        if (dataValue == "NOSYMBOL")
-                        {
-                            $(element).text("");
-                        }
-                        else
-                        {
-                            var separatedSymbols = dataValue.split(";");
-
-                            if (separatedSymbols.length <= 2)
-                            {
-                                // If up to 2 symbols are being shown, then show the entire text
-                                $(element).html("<a href='http://finance.yahoo.com/q?s="+ separatedSymbols.join(" ") + "' target='_blank'>" + separatedSymbols.join(" ") + "</a>");
-                            }
-                            else
-                            {
-                                // If more than 2 symbols exist, add a "..." and show the complete list on hover
-                                $(element).html("<a href='http://finance.yahoo.com/q?s=" + separatedSymbols[0] + "' target='_blank'>" + separatedSymbols[0] + "</a> ...");
-                                $(element).attr("title", separatedSymbols.join(" "));
-                            }
-                        }
-                    },
-                    update: this.init
-                };
-
-                // Start binding our UI data
-                ko.applyBindings(dataModel);
-
-                // Show initial set of options
-                showOptions();
-
-                // Notify the server that we want to listen to items
-                activeTradersHub.clientInitialize();
-            });
-        });
-    </script>
+    @Scripts.Render("~/bundles/market-radar")
+    @Scripts.Render("~/bundles/upshot", "~/signalr/hubs", "~/bundles/jqueryui")
 }
-<div id="header-container-div">
-    <h2 style="display: inline-block;">Active Traders Real-time</h2>
-    <div id="tabs" style="display: inline-block; float: right; bottom: 0; right: 0; width: 34px; height: 26px; vertical-align: middle;">
-        <ul style="border-width: 0px;">
-            <li style="background-color: transparent; background-image: none; border-width: 0px; padding: 3px;"><a href="#tabs-1">
-                <img src="/Images/settings-gear.png" /></a></li>
-        </ul>
-        <div id="tabs-1" style="position: absolute; display: block; padding: 10px; background-color: white; width: 260px; height: 315px; border-color: black; border-width: 1px; font-size: 9pt; right: 0; bottom: 0;" class="ui-tabs-hide">
-            <table style="width: 100%;">
-                <tbody id="sliders">
-                    <tr><td style="width: 83%;"></td><td style="width: 17%;">Off On</td></tr>
-                    <tr><td>All</td><td><div id="all-div"></div></td></tr>
-                    <tr><td>Hot Stocks</td><td><div id="hot-stocks-div" data-filter-name="Hot Stocks"></div></td></tr>
-                    <tr><td>General News</td><td><div data-filter-name="General News"></div></td></tr>
-                    <tr><td>Earnings</td><td><div data-filter-name="Earnings"></div></td></tr>
-                    <tr><td>Recommendations</td><td><div data-filter-name="Recommendations"></div></td></tr>
-                    <tr><td>Offerings</td><td><div data-filter-name="Syndicate"></div></td></tr>
-                    <tr><td>Technical Analysis</td><td><div data-filter-name="Technical Analysis"></div></td></tr>
-                    <tr><td>Periodicals</td><td><div data-filter-name="Periodicals"></div></td></tr>
-                    <tr><td>Options</td><td><div data-filter-name="Options"></div></td></tr>
-                    <tr><td>Conference/Events</td><td><div data-filter-name="Conference/Events"></div></td></tr>
-                    <tr><td>Rumors</td><td><div data-filter-name="Rumors"></div></td></tr>
-                    <tr><td>Brokerage Upgrades</td><td><div data-filter-name="Rec-Upgrade"></div></td></tr>
-                    <tr><td>Brokerage Downgrades</td><td><div data-filter-name="Rec-Downgrade"></div></td></tr>
-                    <tr><td>Brokerage Initiations</td><td><div data-filter-name="Rec-Initiate"></div></td></tr>
-                </tbody>
-            </table>
-            <div style="text-align: right; padding-top: 6px;"><a href="#" id="apply-changes-a">Apply</a></div>
-        </div>
-    </div>
+@section Footer
+{
+Quotes may be delayed. Data partially provided by TheFlyOnTheWall.com
+}
+<table style="width: 100%;"><tr><td><h2 style="display: inline-block;">Real-time Market Radar</h2></td><td style="text-align: right;"><div id="status-div" style="font-size: 9pt; color: #73cb6f; vertical-align: middle;">Initializing...</div></td></tr></table>
+<div class="ui-widget-header ui-corner-all settings-background" style="padding: 4px 4px; font-size: 9pt; display:none;" id="settings-div">
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 70%;">Categories</td>
+            <td style="width: 30%; text-align: center;">Brokerage Recommendations</td>
+        </tr>
+        <tr>
+            <td style="text-align: justify;">
+                <input type="checkbox" class="category" data-filter-name="Hot Stocks" id="hot-stocks" /><label for="hot-stocks">Hot Stocks</label>
+                <input type="checkbox" class="category" data-filter-name="General News" id="general-news" /><label for="general-news">General News</label>
+                <input type="checkbox" class="category" data-filter-name="Earnings" id="earnings" /><label for="earnings">Earnings</label>
+                <input type="checkbox" class="category" data-filter-name="Recommendations" id="recommendations" /><label for="recommendations">Recommendations</label>
+                <input type="checkbox" class="category" data-filter-name="Syndicate" id="offerings" /><label for="offerings">Offerings</label>
+            </td>
+            <td>
+                <input type="checkbox" class="category" data-filter-name="Rec-Upgrade" id="upgrades" /><label for="upgrades">Upgrades</label>
+                <input type="checkbox" class="category" data-filter-name="Rec-Downgrade" id="downgrades" /><label for="downgrades">Downgrades</label>
+                <input type="checkbox" class="category" data-filter-name="Rec-Initiate" id="initiations" /><label for="initiations">Initiations</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="checkbox" class="category" data-filter-name="Technical Analysis" id="technical-analysis" /><label for="technical-analysis">Technical Analysis</label>
+                <input type="checkbox" class="category" data-filter-name="Periodicals" id="periodicals" /><label for="periodicals">Periodicals</label>
+                <input type="checkbox" class="category" data-filter-name="Options" id="options" /><label for="options">Options</label>
+                <input type="checkbox" class="category" data-filter-name="Conference/Events" id="conference" /><label for="conference">Conference/Events</label>
+                <input type="checkbox" class="category" data-filter-name="Rumors" id="rumors" /><label for="rumors">Rumors</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Display Options</td><td style="text-align: center;">Search</td>
+        </tr>
+        <tr>
+            <td>
+                <input type="checkbox" class="option" id="show-quotes" /><label for="show-quotes">Show Quotes</label>
+                <input type="checkbox" class="option" id="color-code" /><label for="color-code">Show Stock Performance Color Coding</label>
+            </td>
+            <td style="text-align: center;">
+                <input type="text" id="search-text-input" style="font-family: inherit; font-size: 8pt; width: 150px; line-height: inherit; margin-right: 10px;" /><button id="clear-search-button">Clear Search</button>
+            </td>
+        </tr>
+    </table>
 </div>
-<div id="options-div" style="font-size: 9pt; color: #73cb6f; padding-bottom: 8px;">Connecting and initializing...</div>
+<div style="float: right; padding: 0px;"><input type="checkbox" id="settings-toggle-input"/><label for="settings-toggle-input">Settings &amp; Search</label></div>
 <table style="width: 100%; font-size: 9pt; border-spacing:0; border-collapse: collapse; table-layout: fixed; word-wrap: break-word;">
     <tbody data-bind="foreach: filteredElements">
         <tr data-bind="css: { 'even-row': $index() % 2 == 0, 'odd-row': $index() % 2 == 1 }">
             <td data-bind="symbols: Symbol" style="vertical-align: top; cursor: default; width: 40px;"></td>
+            <td data-bind="quote: Symbol, visible: showQuotes"></td>
             <td style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span></td>
         </tr>
     </tbody>

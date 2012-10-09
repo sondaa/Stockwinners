@@ -130,7 +130,7 @@ Quotes may be delayed. Data partially provided by TheFlyOnTheWall.com
     <tbody data-bind="foreach: filteredElements">
         <tr data-bind="css: { 'even-row': $index() % 2 == 0, 'odd-row': $index() % 2 == 1 }">
             <td data-bind="symbols: Symbol" style="vertical-align: top; cursor: default; width: 40px;"></td>
-            <td data-bind="quote: Symbol, visible: showQuotes"></td>
+            <td data-bind="visible: $parent.showQuotes(), quote: Symbol"></td>
             <td style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span></td>
         </tr>
     </tbody>

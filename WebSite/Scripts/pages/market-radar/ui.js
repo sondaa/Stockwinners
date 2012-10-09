@@ -36,6 +36,12 @@
     // Create buttons out of all display options
     $(".option").button();
 
+    // Whether to show quotes for symbols
+    $("#show-quotes").click(function ()
+    {
+        dataModel.showQuotes($(this).attr("checked"));
+    });
+
     // Settings menu toggler
     $("#settings-toggle-input").button({
         icons: {
@@ -123,40 +129,41 @@
                         $(element).attr("title", separatedSymbols.join(" "));
                     }
                 }
-            },
-            update: this.init
+            }
         };
 
         // Custom binding handler to show the quote of the stock
         ko.bindingHandlers.quote =
         {
-            init: function (element, valueAccessor)
+            init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext)
             {
-                var symbol = valueAccessor()().toString();
+                var symbol = ko.utils.unwrapObservable(valueAccessor()).toString();
 
-                // Show quote if the symbol is a single stock name
-                if (dataValue == "NOSYMBOL")
+                // If the symbol represents a single stock, then show its change
+                if (symbol.length <= 4 && symbol.split(";").length == 1)
                 {
-                    $(element).text("");
-                }
-                else
-                {
-                    var separatedSymbols = dataValue.split(";");
+                    // This binding is within the context of a foreach on filteredElements
+                    // of the data source, as such, we ask for the parent to get to the main
+                    // view model
+                    var quote = bindingContext.$parent.quotes[symbol.toLowerCase()];
 
-                    if (separatedSymbols.length <= 2)
+                    // Set the current value
+                    if (quote() === undefined)
                     {
-                        // If up to 2 symbols are being shown, then show the entire text
-                        $(element).html("<a href='http://finance.yahoo.com/q?s=" + separatedSymbols.join(" ") + "' target='_blank'>" + separatedSymbols.join(" ") + "</a>");
+                        element.innerText = "Loading...";
                     }
                     else
                     {
-                        // If more than 2 symbols exist, add a "..." and show the complete list on hover
-                        $(element).html("<a href='http://finance.yahoo.com/q?s=" + separatedSymbols[0] + "' target='_blank'>" + separatedSymbols[0] + "</a> ...");
-                        $(element).attr("title", separatedSymbols.join(" "));
+                        element.innerText = quote();
                     }
+
+                    // Subscribe for any future updates
+                    quote.subscribe(function (newValue)
+                    {
+                        $(element).text(newValue);
+                    });
                 }
             },
-            update: this.init
         };
 
         // Start binding our UI data

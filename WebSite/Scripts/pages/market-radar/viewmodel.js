@@ -51,7 +51,25 @@ function ActiveTradersViewModel()
     self.localDataSource = upshot.LocalDataSource({ source: self.remoteDataSource, autoRefresh: false, allowRefreshWithEdits: true });
 
     // Whether to show quotes
-    self.showQuotes = ko.observable(true);
+    self.showQuotes = ko.observable(false);
+
+    // Whether to show a color coding depending on the performance of the stock
+    self.showColorCoding = ko.observable(false);
+
+    // List of quotes to obtain from yahoo
+    self.symbols = new Array();
+
+    // Hash table of quotes obtained
+    self.quotes = {};
+
+    // ID of the timer used to obtain quotes from Yahoo
+    self.quoteTimerIntervalId = 0;
+
+    // Frequency of updating quotes from Yahoo
+    self.quoteUpdateFrequency = 2000;
+
+    // Query to talk to Yahoo with
+    self.quoteQuery = "";
 
     // Filtering
     var filters = ["Hot Stocks"];
@@ -107,20 +125,119 @@ function ActiveTradersViewModel()
     self.newsElements = self.remoteDataSource.getEntities();
     self.filteredElements = self.localDataSource.getEntities();
 
-    // Activate the filter on the local data source and read the data from the remote one.
-    self.localDataSource.setFilter(self.newsFilter);
-    self.remoteDataSource.refresh(/* options */ null, /* success */function (entities, totalCount)
+    // Add any necessary symbol to the list that we query
+    self.filteredElements.subscribe(function (newElements)
     {
-        // Populate the local data source once the remote data source has gotten all its data
-        self.localDataSource.refresh();
-    },
-    /* error */ null);
+        $.each(newElements, function (index, element)
+        {
+            var symbol = element.Symbol().toString();
+
+            // Only request quotes for news elements that have a single symbol associated with them
+            if (symbol.split(";").length == 1 && symbol.length <= 4)
+            {
+                self.addQuote(symbol);
+            }
+        });
+    });
 
     // Operations
     self.addNewsElement = function (properties)
     {
-        self.newsElements.unshift(ko.observable(new NewsElement(properties)));
+        self.newsElements.unshift(new NewsElement(properties));
         self.localDataSource.refresh();
+    };
+
+    self.refresh = function ()
+    {
+        self.localDataSource.refresh();
+    };
+
+    // Recreates the YQL used to obtain quotes from Yahoo servers
+    self.reconstructYQL = function ()
+    {
+        var queryStart = "select Symbol,LastTradePriceOnly,Change,LastTradeTime from yahoo.finance.quotes where symbol in (";
+        var quotes = self.symbols.map(function (value, index, array) { return "'" + value + "'";}).join(",");
+
+        self.quoteQuery = "http://query.yahooapis.com/v1/public/yql?q=" + encodeURIComponent(queryStart + quotes) + ")&format=json&env=" + encodeURIComponent("store://datatables.org/alltableswithkeys") + "&callback=?";
+    };
+
+    // Grabs quotes from Yahoo servers
+    self.fetchQuotes = function ()
+    {
+        $.getJSON(self.quoteQuery, function (data)
+        {
+            if (data.query.results)
+            {
+                var firstQuote = null;
+
+                var parseQuote = function (value)
+                {
+                    var change = value.Change / (value.LastTradePriceOnly - value.Change);
+
+                    // Update observable with new change value
+                    self.quotes[value.Symbol.toLowerCase()](change);
+                };
+
+                // Parse response
+                if (data.query.count == 1)
+                {
+                    firstQuote = data.query.results.quote;
+                    parseQuote(data.query.results.quote);
+                }
+                else
+                {
+                    $.each(data.query.results.quote, function (index, value)
+                    {
+                        if (index == 0)
+                        {
+                            firstQuote = value;
+                        }
+
+                        parseQuote(value);
+                    });
+                }
+
+                $("#div-exchanges").show();
+
+                // If the market is closed, stop requesting quotes
+                if (self.quoteTimerIntervalId != 0 && Date.parse("01/01/2012 4:00PM") <= Date.parse("01/01/2012 " + firstQuote.LastTradeTime))
+                {
+                    clearInterval(self.quoteTimerIntervalId);
+                }
+            }
+        });
+    };
+
+    // Refreshes quotes based on changes to list of quotes required
+    self.updateQuotes = function ()
+    {
+        // Cancel any currently ongoing timers
+        clearInterval(self.quoteTimerIntervalId);
+
+        // If nobody is using the data, don't bother calculating it
+        if ((self.showQuotes || self.showColorCoding) && self.symbols.length > 0)
+        {
+            // Schedule a timer to grab quotes
+            self.quoteTimerIntervalId = window.setTimeout(self.fetchQuotes, self.quoteUpdateFrequency);
+        }
+    };
+
+    self.addQuote = function (symbol)
+    {
+        symbol = symbol.toLowerCase();
+
+        // If the symbol is not already in the list, then add it
+        if ($.inArray(symbol,self.symbols) < 0)
+        {
+            // Put a placeholder observable for percent change
+            self.quotes[symbol] = ko.observable(undefined);
+
+            self.symbols.push(symbol);
+
+            self.reconstructYQL();
+
+            self.updateQuotes();
+        }
     };
 
     self.resetItems = function ()
@@ -128,6 +245,12 @@ function ActiveTradersViewModel()
         // Clear all elements
         self.remoteDataSource.getEntities().removeAll();
         self.localDataSource.refresh();
+
+        // Clear all quotes
+        self.quotes = {};
+        self.symbols = [];
+        self.reconstructYQL();
+        self.updateQuotes();
 
         // Requery the servers
         self.remoteDataSource.refresh(/* options */ null, /* success */function (entities, totalCount)
@@ -137,8 +260,12 @@ function ActiveTradersViewModel()
         });
     };
 
-    self.refresh = function ()
+    // Activate the filter on the local data source and read the data from the remote one.
+    self.localDataSource.setFilter(self.newsFilter);
+    self.remoteDataSource.refresh(/* options */ null, /* success */function (entities, totalCount)
     {
+        // Populate the local data source once the remote data source has gotten all its data
         self.localDataSource.refresh();
-    };
+    },
+    /* error */ null);
 }

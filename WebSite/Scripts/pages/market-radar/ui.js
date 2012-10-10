@@ -42,6 +42,12 @@
         dataModel.showQuotes($(this).attr("checked"));
     });
 
+    // Whether to show color coding
+    $("#color-code").click(function ()
+    {
+        dataModel.showColorCoding($(this).attr("checked"));
+    });
+
     // Settings menu toggler
     $("#settings-toggle-input").button({
         icons: {
@@ -64,7 +70,7 @@
     // Clear search button
     $("#clear-search-button").button().click(function ()
     {
-        $("#search-text-input").val("");
+        $("#search-text-input").val("").focus();
     });
 
     var hubConnection = $.connection.hub;
@@ -140,7 +146,7 @@
                 var symbol = ko.utils.unwrapObservable(valueAccessor()).toString();
 
                 // If the symbol represents a single stock, then show its change
-                if (symbol.length <= 4 && symbol.split(";").length == 1)
+                if (symbol.length <= 5 && symbol.split(";").length == 1)
                 {
                     // This binding is within the context of a foreach on filteredElements
                     // of the data source, as such, we ask for the parent to get to the main
@@ -150,17 +156,97 @@
                     // Set the current value
                     if (quote() === undefined)
                     {
-                        element.innerText = "Loading...";
+                        element.innerText = "Loading";
                     }
                     else
                     {
-                        element.innerText = quote();
+                        element.innerText = (quote() * 100).toFixed(2) + "%";
                     }
 
                     // Subscribe for any future updates
                     quote.subscribe(function (newValue)
                     {
-                        $(element).text(newValue);
+                        $(element).text((newValue * 100).toFixed(2) + "%");
+                    });
+                }
+            },
+        };
+
+        // Custom binding handler to show the quote of the stock
+        ko.bindingHandlers.color =
+        {
+            init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext)
+            {
+                var symbol = ko.utils.unwrapObservable(valueAccessor()).toString();
+
+                // If the symbol represents a single stock, then show its change
+                if (symbol.length <= 5 && symbol.split(";").length == 1)
+                {
+                    // Convert stock value to color
+                    var getColor = function (stockValue)
+                    {
+                        var percentMove = (quote() * 100);
+
+                        // We consider +/- 15% to be max of range
+                        percentMove = Math.min(15, Math.max(-15, percentMove));
+
+                        var red = 0;
+                        var blue = 0;
+                        var green = 0;
+
+                        if (percentMove < 0)
+                        {
+                            red = Math.round((Math.abs(percentMove) * 255 / 15));
+                            //red = Math.log(255) / Math.log(Math.abs(percentMove));
+                        }
+
+                        if (percentMove > 0)
+                        {
+                            green = Math.round((percentMove * 255 / 15));
+                            //green = Math.log(255) / Math.log(percentMove);
+                        }
+
+                        var redHex = red.toString(16);
+                        var greenHex = green.toString(16);
+                        var blueHex = blue.toString(16);
+
+                        if (redHex.length == 1)
+                        {
+                            redHex = '0' + redHex;
+                        }
+
+                        if (greenHex.length == 1)
+                        {
+                            greenHex = '0' + greenHex;
+                        }
+
+                        if (blueHex.length == 1)
+                        {
+                            blueHex = '0' + blueHex;
+                        }
+
+                        return '#' + redHex + greenHex + blueHex;
+                    };
+
+                    // This binding is within the context of a foreach on filteredElements
+                    // of the data source, as such, we ask for the parent to get to the main
+                    // view model
+                    var quote = bindingContext.$parent.quotes[symbol.toLowerCase()];
+
+                    // Set the current value
+                    if (quote() === undefined)
+                    {
+                        // Leave things unchanged if the value has not loaded yet
+                    }
+                    else
+                    {
+                        element.style.backgroundColor = getColor(quote());
+                    }
+
+                    // Subscribe for any future updates
+                    quote.subscribe(function (newValue)
+                    {
+                        element.style.backgroundColor = getColor(quote());
                     });
                 }
             },

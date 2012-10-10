@@ -10,6 +10,9 @@ using System.Web;
 using SignalR;
 using SignalR.Hubs;
 using WebSite.Models;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace WebSite.Hubs
 {
@@ -147,21 +150,38 @@ namespace WebSite.Hubs
 
         private void GrabNewsElementsForTesting()
         {
-            // Add a group of news elements for start of server
-            for (int i = 0; i < 10; i++)
+            // Try to get the elements from the real page
+            WebRequest webRequest = WebRequest.Create("http://marketwinner.cloudapp.net/api/activetraders/getnewselements");
+            List<ActiveTradersNewsElement> newsElements = null;
+
+            using (WebResponse response = webRequest.GetResponse())
             {
-                this.AddNewNewsElement(new ActiveTradersNewsElement() { Category = "Hot Stocks", ElementId = i, SourceId = "TestSource", Symbol = "AAPL", Text = "Test content " + i }, false);
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    newsElements = JsonConvert.DeserializeObject<List<ActiveTradersNewsElement>>(reader.ReadToEnd());
+                }
             }
 
-            // Every 5 seconds add a random element
-            for (int i = 10; true; i++)
+            // Ensure the items are from oldest to newest
+            newsElements.Reverse();
+
+            // Add a group of news elements for start of server
+            for (int i = 0; i < (newsElements.Count / 10); i++)
             {
-                this.AddNewNewsElement(new ActiveTradersNewsElement() { Category = "Hot Stocks", ElementId = i % 20, SourceId = "TestSource", Symbol = ((i & 1) == 0) ? "AAPL" : "AAPL;GOOG", Text = "Test content " + i }, true);
+                this.AddNewNewsElement(newsElements[i], false);
+            }
+
+            // Add the rest every 5 seconds
+            for (int i = (newsElements.Count / 10); true; i++)
+            {
+                if (i < newsElements.Count)
+                {
+                    this.AddNewNewsElement(newsElements[i], true);
+                }
 
                 Thread.Sleep(5000);
             }
         }
-
 
         private void AddNewNewsElement(ActiveTradersNewsElement newNewsElement, bool notifyClients)
         {

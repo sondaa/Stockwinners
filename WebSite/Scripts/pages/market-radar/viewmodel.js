@@ -133,7 +133,7 @@ function ActiveTradersViewModel()
             var symbol = element.Symbol().toString();
 
             // Only request quotes for news elements that have a single symbol associated with them
-            if (symbol.split(";").length == 1 && symbol.length <= 4)
+            if (symbol.split(";").length == 1 && symbol.length <= 5)
             {
                 self.addQuote(symbol);
             }

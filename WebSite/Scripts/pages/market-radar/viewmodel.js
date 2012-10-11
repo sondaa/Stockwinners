@@ -73,10 +73,12 @@ function ActiveTradersViewModel()
 
     // Filtering
     var filters = ["Hot Stocks"];
+    self.textFilter = "";
 
     self.newsFilter = function (entity)
     {
-        var category = ($.isFunction(entity) ? entity() : entity).Category();
+        var entity = ($.isFunction(entity) ? entity() : entity);
+        var category = entity.Category();
 
         for (var i = 0; i < filters.length; i++)
         {
@@ -84,7 +86,16 @@ function ActiveTradersViewModel()
             // item to be shown.
             if (filters[i].toUpperCase() == category.toUpperCase())
             {
-                return true;
+                // If we don't have any text search, then return the item, otherwise ensure the item's text contains
+                // what is being searched for
+                if (self.textFilter == "")
+                {
+                    return true;
+                }
+                else
+                {
+                    return entity.Symbol().toLowerCase().indexOf(self.textFilter) != -1 || entity.Text().toLowerCase().indexOf(self.textFilter) != -1;
+                }
             }
         }
 
@@ -115,6 +126,16 @@ function ActiveTradersViewModel()
             }
         }
     }
+
+    self.setTextFilter = function (filterText)
+    {
+        self.textFilter = filterText.toLowerCase();
+    };
+
+    self.clearTextFilter = function ()
+    {
+        self.textFilter = "";
+    };
 
     self.getFilters = function ()
     {

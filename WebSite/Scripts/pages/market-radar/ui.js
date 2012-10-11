@@ -71,6 +71,15 @@
     $("#clear-search-button").button().click(function ()
     {
         $("#search-text-input").val("").focus();
+        dataModel.setTextFilter("");
+        dataModel.refresh();
+    });
+
+    // Search text input
+    $("#search-text-input").keyup("input", function ()
+    {
+        dataModel.setTextFilter($(this).val());
+        dataModel.refresh();
     });
 
     var hubConnection = $.connection.hub;
@@ -196,14 +205,12 @@
 
                         if (percentMove < 0)
                         {
-                            red = Math.round((Math.abs(percentMove) * 255 / 15));
-                            //red = Math.log(255) / Math.log(Math.abs(percentMove));
+                            red = Math.round(Math.min(255, Math.max(0, ((Math.log(Math.abs(percentMove)) + 2) * 40))));
                         }
 
                         if (percentMove > 0)
                         {
-                            green = Math.round((percentMove * 255 / 15));
-                            //green = Math.log(255) / Math.log(percentMove);
+                            green = Math.round(Math.min(255, Math.max(0, ((Math.log(percentMove) + 2) * 40))));
                         }
 
                         var redHex = red.toString(16);

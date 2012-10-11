@@ -126,13 +126,13 @@ Quotes may be delayed. Data partially provided by TheFlyOnTheWall.com
     </table>
 </div>
 <div style="float: right; padding: 0px;"><input type="checkbox" id="settings-toggle-input"/><label for="settings-toggle-input">Settings &amp; Search</label></div>
-<table style="width: 100%; font-size: 9pt; border-spacing:0; border-collapse: collapse; table-layout: fixed; word-wrap: break-word;">
+<table style="width: 100%; font-size: 9pt; border-spacing:0; border-collapse: collapse; table-layout: auto; word-wrap: break-word;">
     <tbody data-bind="foreach: filteredElements">
         <tr data-bind="css: { 'even-row': $index() % 2 == 0, 'odd-row': $index() % 2 == 1 }">
-            <td style="width: 20px; padding-right: 2px;" data-bind="visible: $parent.showColorCoding(), color: Symbol"></td>
             <td data-bind="symbols: Symbol" style="vertical-align: top; cursor: default; width: 40px;"></td>
             <td style="vertical-align: top; text-align: center; width: 50px;" data-bind="visible: $parent.showQuotes(), quote: Symbol"></td>
-            <td style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span></td>
+            <td id="text-cell-td" style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span><div style="width: 820px; height: 1px; margin: 0px;"></div></td>
+            <td style="width: 20px;" data-bind="visible: $parent.showColorCoding(), color: Symbol"></td>
         </tr>
     </tbody>
 </table>

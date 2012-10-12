@@ -131,7 +131,7 @@ Quotes may be delayed. Data partially provided by TheFlyOnTheWall.com
         <tr data-bind="css: { 'even-row': $index() % 2 == 0, 'odd-row': $index() % 2 == 1 }">
             <td data-bind="symbols: Symbol" style="vertical-align: top; cursor: default; width: 40px;"></td>
             <td style="vertical-align: top; text-align: center; width: 50px;" data-bind="visible: $parent.showQuotes(), quote: Symbol"></td>
-            <td id="text-cell-td" style="vertical-align: top;"><strong><span data-bind="text: Category"></span>: </strong><span data-bind="text: Text"></span><div style="width: 820px; height: 1px; margin: 0px;"></div></td>
+            <td id="text-cell-td" style="vertical-align: top;"><strong><span data-bind="text: Category"></span></strong><div data-bind="newsText: Text"></div><div style="width: 820px; height: 1px; margin: 0px;"></div></td>
             <td style="width: 20px;" data-bind="visible: $parent.showColorCoding(), color: Symbol"></td>
         </tr>
     </tbody>

@@ -1,5 +1,6 @@
 ﻿using ActionMailer.Net.Mvc;
 using AuthorizeNet;
+using Stockwinners.Email;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,13 +13,14 @@ using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
 using WebSite.Models.Logic;
+using WebSite.Models.UI;
 
 namespace WebSite.Areas.Administrator.Controllers
 {
     [MembersOnly(Roles = PredefinedRoles.Administrator)]
     public class UsersController : Controller
     {
-        private DatabaseContext db = new DatabaseContext();
+        private DatabaseContext _db = new DatabaseContext();
 
         public ActionResult Index()
         {
@@ -28,36 +30,36 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult ActiveTrialMembers()
         {
             ViewBag.Title = "Members with Active Trials";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate >= DateTime.UtcNow).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult ExpiredTrialMembers()
         {
             ViewBag.Title = "Members with Expired Trials";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate < DateTime.UtcNow && !u.SubscriptionExpiryDate.HasValue).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.Subscription == null && u.TrialExpiryDate < DateTime.UtcNow && !u.SubscriptionExpiryDate.HasValue).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult AllUsers()
         {
             ViewBag.Title = "All Users";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult SubscribedMembers()
         {
             ViewBag.Title = "Members with Active Subscriptions";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && !u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && !u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult SuspendedMembers()
         {
             ViewBag.Title = "Members with Suspended Payments";
-            return this.View(viewName: "Index", model: db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
         }
 
         public ActionResult Details(int id = 0)
         {
-            User user = db.Users.Find(id);
+            User user = _db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -67,12 +69,12 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            User user = db.Users.Find(id);
+            User user = _db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
+            ViewBag.SubscriptionId = new SelectList(_db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
             return View(user);
         }
 
@@ -81,17 +83,17 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(user).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.SubscriptionId = new SelectList(db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
+            ViewBag.SubscriptionId = new SelectList(_db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
             return View(user);
         }
 
         public ActionResult Delete(int id = 0)
         {
-            User user = db.Users.Find(id);
+            User user = _db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -102,9 +104,9 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Find(id);
-            db.Users.Remove(user);
-            db.SaveChanges();
+            User user = _db.Users.Find(id);
+            _db.Users.Remove(user);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -113,11 +115,11 @@ namespace WebSite.Areas.Administrator.Controllers
         /// </summary>
         public ActionResult Suspend(int userId)
         {
-            User user = db.Users.Find(userId);
+            User user = _db.Users.Find(userId);
 
             // Suspend account
             user.Subscription.IsSuspended = true;
-            db.SaveChanges();
+            _db.SaveChanges();
 
             // Email the user
             EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(user);
@@ -127,14 +129,37 @@ namespace WebSite.Areas.Administrator.Controllers
             return this.RedirectToAction("SuspendedMembers");
         }
 
+        public ActionResult Announcement()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public ActionResult Announcement(Announcement announcement)
+        {
+            if (ModelState.IsValid)
+            {
+                EmailResult email = new WebSite.Mailers.Email().Template(announcement.Message);
+
+                email.Mail.Subject = announcement.Subject;
+
+                WebSite.Helpers.Email.SendEmail(email, WebSite.Helpers.Email.GetActiveUsers().Where(u => u.NotificationSettings.ReceiveGeneralAnnouncements));
+
+                // Forward to main admin page
+                return this.RedirectToAction("Index", "AdministratorHome");
+            }
+
+            return this.View(announcement);
+        }
+
         [RequireHttps]
         public ActionResult Subscribe(int userId)
         {
             // Calculate the set of subscriptions available to the user
             SubscriptionRegistration registration = new SubscriptionRegistration()
             {
-                AvailableSubscriptionTypes = db.SubscriptionTypes.Include(o => o.SubscriptionFrequency),
-                Countries = db.Countries.AsEnumerable()
+                AvailableSubscriptionTypes = _db.SubscriptionTypes.Include(o => o.SubscriptionFrequency),
+                Countries = _db.Countries.AsEnumerable()
             };
 
             ViewBag.UserId = userId;
@@ -147,8 +172,8 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation, int userId, int day, int month, int year)
         {
             ViewBag.UserId = userId;
-            registrationInformation.AvailableSubscriptionTypes = db.SubscriptionTypes.Include(o => o.SubscriptionFrequency);
-            registrationInformation.Countries = db.Countries.AsEnumerable();
+            registrationInformation.AvailableSubscriptionTypes = _db.SubscriptionTypes.Include(o => o.SubscriptionFrequency);
+            registrationInformation.Countries = _db.Countries.AsEnumerable();
 
             if (registrationInformation.SelectedSubscriptionTypeId == 0)
             {
@@ -158,7 +183,7 @@ namespace WebSite.Areas.Administrator.Controllers
             // If all credit card information has been supplied, then try to validate the request with Authorize.NET
             if (ModelState.IsValid)
             {
-                WebSite.Models.User user = db.Users.Find(userId);
+                WebSite.Models.User user = _db.Users.Find(userId);
                 ISubscriptionGateway gateway = this.GetSubscriptionGateway();
 
                 ISubscriptionRequest subscriptionRequest = this.CreateAuthorizeDotNetSubscriptionRequest(registrationInformation, user, new DateTime(year, month, day));
@@ -191,7 +216,7 @@ namespace WebSite.Areas.Administrator.Controllers
                 // Associate the subscription with the user
                 user.AddSubscription(userSubscription);
 
-                db.SaveChanges();
+                _db.SaveChanges();
 
                 return this.RedirectToAction("Index");
             }
@@ -204,7 +229,7 @@ namespace WebSite.Areas.Administrator.Controllers
             ISubscriptionRequest subscriptionRequest = SubscriptionRequest.CreateNew();
 
             // Billing address information
-            string countryName = db.Countries.Find(registrationInformation.CreditCard.BillingAddress.CountryId).Name;
+            string countryName = _db.Countries.Find(registrationInformation.CreditCard.BillingAddress.CountryId).Name;
             subscriptionRequest.BillingAddress = new AuthorizeNet.Address()
             {
                 City = registrationInformation.CreditCard.BillingAddress.City,
@@ -268,7 +293,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            _db.Dispose();
             base.Dispose(disposing);
         }
     }

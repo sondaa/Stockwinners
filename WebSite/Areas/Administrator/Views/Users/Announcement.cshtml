@@ -1,0 +1,28 @@
+﻿@model WebSite.Models.UI.Announcement
+
+@{
+    ViewBag.Title = "Send Announcement";
+}
+
+<h2>Announcement</h2>
+
+@using (Html.BeginForm()) {
+    
+    @Html.ValidationSummary(false)
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Subject)
+    </div>
+    <div class="display-field">
+        @Html.EditorFor(model => model.Subject)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Message)
+    </div>
+    <div class="display-field">
+        @Html.EditorFor(model => model.Message)
+    </div>
+       
+    <input type="submit" value="Send" />
+}

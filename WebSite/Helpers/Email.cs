@@ -83,7 +83,7 @@ namespace WebSite.Helpers
                    select user;
         }
 
-        private static IQueryable<User> GetActiveUsers()
+        public static IQueryable<User> GetActiveUsers()
         {
             DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
 

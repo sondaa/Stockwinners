@@ -167,7 +167,7 @@
                     {
                         element.innerText = "Loading";
                     }
-                    else
+                    else if (!isNaN(quote()))
                     {
                         element.innerText = (quote() * 100).toFixed(2) + "%";
                     }
@@ -175,10 +175,32 @@
                     // Subscribe for any future updates
                     quote.subscribe(function (newValue)
                     {
-                        $(element).text((newValue * 100).toFixed(2) + "%");
+                        if (!isNaN(newValue))
+                        {
+                            $(element).text((newValue * 100).toFixed(2) + "%");
+                        }
                     });
                 }
-            },
+            }
+        };
+
+        // Custom binding handler to display the text value of a news item
+        ko.bindingHandlers.newsText =
+        {
+            init: function (element, valueAccessor)
+            {
+                var text = ko.utils.unwrapObservable(valueAccessor()).toString();
+                var translatedText = text;
+
+                // Does this include any links? If so, create a literal html link out of it
+                if (translatedText.indexOf("[Reference Link]") != -1)
+                {
+                    // Parse out a [Reference Link]:[URL] into a link
+                    translatedText = translatedText.replace(new RegExp("\\[Reference Link\\]:\\[([^\\]]*)\\]"), "<a href='$1' target='_blank'>Reference Link</a>");
+                }
+
+                element.innerHTML = translatedText;
+            }
         };
 
         // Custom binding handler to show the quote of the stock
@@ -241,7 +263,7 @@
                     var quote = bindingContext.$parent.quotes[symbol.toLowerCase()];
 
                     // Set the current value
-                    if (quote() === undefined)
+                    if (quote() === undefined || isNaN(quote()))
                     {
                         // Leave things unchanged if the value has not loaded yet
                     }
@@ -253,7 +275,10 @@
                     // Subscribe for any future updates
                     quote.subscribe(function (newValue)
                     {
-                        element.style.backgroundColor = getColor(quote());
+                        if (!isNaN(newValue))
+                        {
+                            element.style.backgroundColor = getColor(quote());
+                        }
                     });
                 }
             },

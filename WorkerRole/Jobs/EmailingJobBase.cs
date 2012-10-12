@@ -35,12 +35,15 @@ namespace WorkerRole.Jobs
             </div>
         </div>
         <div id='contents' style='padding: 10px;'>
+            <!-- BODY START -->
             <div id='body'>";
         }
 
         protected string GetEmailFooter()
         {
-            return @" </div>
+            return @"
+            <!-- BODY END -->
+            </div>
         </div>
         <div style='background-color: #454545; font-size: 9pt; color: #cccccc; padding: 10px;'>
             <div>For feedback, questions or comments, please email <a href='mailto:info@stockwinners.com' style='color: #cccccc;'>info@stockwinners.com</a>.</div>

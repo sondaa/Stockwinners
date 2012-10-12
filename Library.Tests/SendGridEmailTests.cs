@@ -12,9 +12,11 @@ namespace Library.Tests
         public void SimpleEmailTest()
         {
             SendGridEmail email = new SendGridEmail(
-                contents: "<html><head></head><body>Test</body></html>",
+                contents: "<html><head></head><body><!-- BODY START -->Test<!-- BODY END --></body></html>",
                 subject: "Test Email",
-                recipients: new System.Collections.Generic.List<IEmailRecipient>() { new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "ameen.tayyebi@gmail.com" } });
+                recipients: new System.Collections.Generic.List<IEmailRecipient>() { new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "check@isnotspam.com" } },
+                fromAddress:"noreply@stockwinners.com",
+                fromName:"Stockwinners.com");
 
             email.Send();
         }

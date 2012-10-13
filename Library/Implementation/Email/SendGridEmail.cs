@@ -131,6 +131,23 @@ namespace Stockwinners.Email
             bodyContents.Append("&html=");
             bodyContents.Append(System.Web.HttpUtility.UrlEncode(this.Contents));
 
+            // Supply text content so that spam filters are a bit happier with us
+            string textContents = "Your email client is not capable of displaying HTML email. The contents of this email are automatically filtered down to plain text format and as a result you may not see it properly. Please upgrade to an email client capable of viewing html content." + Environment.NewLine;
+            const string startBodyTag = "<!-- BODY START -->";
+            const string endBodyTag = "<!-- BODY END -->";
+            int bodyStartIndex = this.Contents.IndexOf(startBodyTag);
+            int bodyEndIndex = -1;
+            if (bodyStartIndex != -1)
+            {
+                bodyEndIndex = this.Contents.IndexOf(endBodyTag, bodyStartIndex);
+            }
+            if (bodyStartIndex != -1 && bodyEndIndex != -1)
+            {
+                textContents += this.Contents.Substring(bodyStartIndex + startBodyTag.Length, bodyEndIndex - bodyStartIndex - startBodyTag.Length);
+            }
+            bodyContents.Append("&text=");
+            bodyContents.Append(System.Web.HttpUtility.UrlEncode(textContents));
+
             // Add credentials
             bodyContents.Append("&api_user=seyed.mohammadi&api_key=Z3r3shki");
 

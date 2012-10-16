@@ -18,6 +18,26 @@ namespace WebSite.Infrastructure
     {
         public override string ApplicationName { get; set; }
 
+        public bool ChangePassword(string username, string newPassword)
+        {
+            DatabaseContext db = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(DatabaseContext)) as DatabaseContext;
+            StockwinnersMember member = db.StockwinnersMembers.FirstOrDefault(u => u.EmailAddress == username);
+
+            if (member != null)
+            {
+                member.Password = MembershipProvider.HashPassword(newPassword);
+
+                // Update the legacy member's bit so that the next time the new hash algorithm is used to verify the user's password
+                member.IsLegacyMember = false;
+
+                db.SaveChanges();
+
+                return true;
+            }
+
+            return false;
+        }
+
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             if (this.ValidateUser(username, oldPassword))

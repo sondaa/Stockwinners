@@ -65,8 +65,8 @@ namespace WebSite
                         response.Cookies.Add(newCookie);
                     }
 
-                    // Check the user's state every half an hour
-                    DateTime now = DateTime.Now;
+                    // Check the user's state every day
+                    DateTime now = DateTime.Now.AddMinutes(10); // 10 minutes error buffer
                     if (ticket.Expired || (ticket.Expiration - now) <= (now - ticket.IssueDate))
                     {
                         WebSite.Models.User user = WebSite.Helpers.Authentication.Authentication.GetCurrentUser();

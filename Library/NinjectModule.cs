@@ -10,7 +10,7 @@ namespace Stockwinners.Library
     {
         public override void Load()
         {
-            this.Bind<IEmailFactory>().To<SendGridEmailFactory>().InSingletonScope();
+            this.Bind<IEmailFactory>().To<DynEmailFactory>().InSingletonScope();
         }
     }
 }

@@ -44,7 +44,8 @@ namespace Stockwinners.Email
                 {
                     smtp.Send(message);
                 }
-                catch (SmtpFailedRecipientsException)
+                catch (SmtpException)
+                //catch (SmtpFailedRecipientsException)
                 {
                     // Close the connection and try again
                     smtp.Dispose();
@@ -69,7 +70,10 @@ namespace Stockwinners.Email
 
         private MailMessage GetMailMessage(IEmailRecipient recipient)
         {
-            MailMessage result = new MailMessage(new MailAddress(this.FromAddress, this.FromName), new MailAddress(recipient.EmailAddress, recipient.Name));
+            MailMessage result = new MailMessage();
+            
+            result.From = new MailAddress(this.FromAddress, this.FromName);
+            result.To.Add(new MailAddress(recipient.EmailAddress, recipient.Name));
 
             result.Subject = this.Subject;
 
@@ -110,6 +114,7 @@ namespace Stockwinners.Email
         {
             SmtpClient smtp = new SmtpClient("smtp.dynect.net", 587);
 
+            smtp.EnableSsl = true;
             smtp.Credentials = new NetworkCredential("info@stockwinners.com", "B00ghalam00n");
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
 

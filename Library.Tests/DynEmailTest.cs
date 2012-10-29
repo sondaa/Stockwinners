@@ -14,7 +14,7 @@ namespace Library.Tests
             DynEmail email = new DynEmail(
                 contents: "<html><head></head><body><!-- BODY START -->Test<!-- BODY END --></body></html>",
                 subject: "Test Email",
-                recipients: new System.Collections.Generic.List<IEmailRecipient>() { new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "ameen.tayyebi@gmail.com" } },
+                recipients: new System.Collections.Generic.List<IEmailRecipient>() { new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "check@isnotspam.com" } },
                 fromAddress: "info@stockwinners.com",
                 fromName: "Stockwinners.com");
 

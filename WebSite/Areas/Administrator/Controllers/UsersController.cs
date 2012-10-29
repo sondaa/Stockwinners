@@ -9,6 +9,7 @@ using System.Data.Entity;
 using System.Data.Objects;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Security;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
@@ -127,6 +128,31 @@ namespace WebSite.Areas.Administrator.Controllers
             WebSite.Helpers.Email.SendEmail(email, new List<User>() { user });
 
             return this.RedirectToAction("SuspendedMembers");
+        }
+
+        public ActionResult ChangePassword()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePassword model)
+        {
+            if (ModelState.IsValid)
+            {
+                var provider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
+
+                if (provider.ChangePassword(model.EmailAddress, model.Password))
+                {
+                    ViewBag.Message = "Password changes successfully";
+                }
+                else
+                {
+                    ViewBag.Message = "Can't find user with this email address.";
+                }
+            }
+
+            return this.View(model);
         }
 
         public ActionResult Announcement()

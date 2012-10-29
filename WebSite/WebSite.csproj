@@ -280,6 +280,7 @@
     <Compile Include="Models\Data\Users.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Models\UI\Announcement.cs" />
+    <Compile Include="Models\UI\ChangePassword.cs" />
     <Compile Include="Models\UI\FeedbackModel.cs" />
     <Compile Include="Models\UI\PickSubscription.cs" />
     <Compile Include="Models\UI\Portfolio.cs" />
@@ -441,6 +442,7 @@
     <Content Include="Areas\Administrator\Views\OptionPickLeg\Delete.cshtml" />
     <Content Include="Areas\Administrator\Views\Shared\SubmitUpdate.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\Announcement.cshtml" />
+    <Content Include="Areas\Administrator\Views\Users\ChangePassword.cshtml" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />

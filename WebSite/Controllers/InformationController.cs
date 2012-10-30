@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
+using WebSite.Models.Data.Picks;
 
 namespace WebSite.Controllers
 {
@@ -41,15 +42,17 @@ namespace WebSite.Controllers
         {
             DatabaseContext db = _database;
 
-            Models.UI.Portfolio portfolio = new Models.UI.Portfolio()
-            {
-                Stocks = null,
-                Options = null,
-                ClosedStocks = db.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 31).OrderByDescending(stockPick => stockPick.ClosingDate.Value),
-                ClosedOptions = db.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue).Take(30).OrderByDescending(optionPick => optionPick.ClosingDate.Value)
-            };
+            Models.UI.Performance performance = new Models.UI.Performance();
 
-            return View(portfolio);
+            // Populate top trades
+            performance.TopRecentStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, stockPick.ClosingDate) < 60);
+            performance.TopRecentOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, optionPick.ClosingDate) < 60);
+
+            // Sort by performance, and then take the top 15 and then sort again by closing date
+            performance.TopRecentStocks = performance.TopRecentStocks.OrderBy(stockPick => stockPick, new StockPick.StockPickComparer()).Take(15).OrderByDescending(stockPick => stockPick.ClosingDate);
+            performance.TopRecentOptions = performance.TopRecentOptions.OrderBy(optionPick => optionPick, new OptionPick.OptionPickComparer()).Take(15).OrderByDescending(optionPick => optionPick.ClosingDate);
+
+            return View(performance);
         }
 
         [MembersOnly]

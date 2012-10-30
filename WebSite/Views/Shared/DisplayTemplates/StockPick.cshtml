@@ -4,8 +4,8 @@
 @Html.Partial("_PickUpdatesPartial", Model)
 @if (Model.ClosingDate.HasValue)
 {
-    decimal movePercent = (Model.ExitPrice.Value - Model.EntryPrice) * 100 / Model.EntryPrice;
-    if (Model.ExitPrice >= Model.EntryPrice)
+    decimal movePercent = Model.PercentChange();
+    if (movePercent >= 0)
     {
         <h2>Position closed on @(Model.ClosingDate.Value.ToShortDateString()) at price of @(Model.ExitPrice.Value.ToString("C")) with a <span style="font-weight: 400; color: green;">@movePercent.ToString("F")% gain</span> in @((Model.ClosingDate.Value - Model.PublishingDate.Value).Days) days.</h2>
     }

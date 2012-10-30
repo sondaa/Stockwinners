@@ -212,5 +212,25 @@ namespace WebSite.Models.Data.Picks
 
             return maxStrike;
         }
+
+        public class OptionPickComparer : IComparer<OptionPick>
+        {
+            public int Compare(OptionPick x, OptionPick y)
+            {
+                decimal difference = y.Change() - x.Change();
+
+                if (difference == 0)
+                {
+                    return 0;
+                }
+
+                if (difference < 0)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
+        }
     }
 }

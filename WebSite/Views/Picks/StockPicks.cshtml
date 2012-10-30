@@ -6,13 +6,64 @@
 {
     <meta name="description" content="List of stock selections during @DateTime.UtcNow.Year." />
 }
+<h2>Stock Picks</h2>
 @if (!Request.IsAuthenticated)
 {
-    @Html.InformationMessage("You are seeing stock picks that have already been closed. Please log in to see stock picks that are currently in our portfolio.")
+    <table class="message-table">
+        <tr>
+            <td style="vertical-align: top; padding: 5px;">
+                <img src="/Images/info.png" /></td>
+            <td style="vertical-align: middle; padding: 5px;">You are not logged in to our page, as a result you are seeing 15 of our top performing stock selections within the last 2 months. To see all the positions including those currently open in our portfolio, please register for a free trial account.</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: center; width: 33%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Register For a Free Trial", "Register", "Account")
+                        </td>
+                        <td style="text-align: center; width: 33%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Products and Services", "ProductsAndServices", "Information")
+                        </td>
+                        <td style="text-align: center; width: 34%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Portfolio Performance", "PhilosophyAndPerformance", "Information")
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 }
-<h2>Stock Picks</h2>
+else
+{
+    using (Html.BeginForm())
+    {
+        <div style="text-align: right;">
+            Show trades in @Html.DropDownList("month", new SelectListItem[] { 
+                             new SelectListItem() { Text = "January", Value = "1", Selected = 1 == DateTime.UtcNow.Month },
+                             new SelectListItem() { Text = "February", Value = "2", Selected = 2 == DateTime.UtcNow.Month },
+                             new SelectListItem() { Text = "March", Value = "3", Selected = 3 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "April", Value = "4", Selected = 4 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "May", Value = "5", Selected = 5 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "June", Value = "6", Selected = 6 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "July", Value = "7", Selected = 7 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "August", Value = "8", Selected = 8 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "September", Value = "9", Selected = 9 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "October", Value = "10", Selected = 10 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "November", Value = "11", Selected = 11 == DateTime.UtcNow.Month  },
+                             new SelectListItem() { Text = "December", Value = "12", Selected = 12 == DateTime.UtcNow.Month  } 
+                         })
+             of @Html.DropDownList("year", from year in Enumerable.Range(DateTime.UtcNow.Year, 2012 - DateTime.UtcNow.Year + 1) select new SelectListItem() { Text = year.ToString(), Value = year.ToString() })
+            <input type="submit" value="Update" />
+        </div>
+    }
+}
 @foreach (WebSite.Models.Data.Picks.StockPick pick in Model)
 {
     @Html.DisplayFor(m => pick)
     <div class="separator"></div>
+}
+@if (!Model.Any())
+{
+    @Html.InformationMessage("Your search returned no results. Please choose a different time window.")
 }

@@ -282,6 +282,7 @@
     <Compile Include="Models\UI\Announcement.cs" />
     <Compile Include="Models\UI\ChangePassword.cs" />
     <Compile Include="Models\UI\FeedbackModel.cs" />
+    <Compile Include="Models\UI\Performance.cs" />
     <Compile Include="Models\UI\PickSubscription.cs" />
     <Compile Include="Models\UI\Portfolio.cs" />
     <Compile Include="Ninject\DependencyResolver.cs" />

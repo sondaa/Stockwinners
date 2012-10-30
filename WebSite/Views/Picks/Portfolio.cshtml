@@ -246,9 +246,33 @@
 }
 else
 {
-    @Html.InformationMessage("Since you are not logged in, you are only seeing our stock and option positions that have been closed. To see our current portfolio with our stock and option picks, please log in.")
+    <table class="message-table" style="border-width: 0px;">
+        <tr style="border-bottom-width: 0px;">
+            <td style="vertical-align: top; padding: 5px;">
+                <img src="/Images/info.png" /></td>
+            <td style="vertical-align: middle; padding: 5px;">Since you are not logged in, you are only seeing our top performing stock and option positions within the last 60 days that have already been closed. To see our current portfolio with our stock and option selections, please register for a trial account or log in.</td>
+        </tr>
+        <tr style="border-bottom-width: 0px;">
+            <td colspan="2">
+                <table style="width: 100%; border-width: 0px;">
+                    <tr style="border-bottom-width: 0px;">
+                        <td style="text-align: center; width: 33%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Register For a Free Trial", "Register", "Account")
+                        </td>
+                        <td style="text-align: center; width: 33%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Products and Services", "ProductsAndServices", "Information")
+                        </td>
+                        <td style="text-align: center; width: 34%; padding-bottom: 10px; padding-top: 10px;">
+                            <img src="/Images/arrow-right-16.png" style="padding-left: 10px; padding-right: 6px; vertical-align: middle;" />@Html.ActionLink("Portfolio Performance", "PhilosophyAndPerformance", "Information")
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Stock positions closed within the last 60 days (top 15 trades)</h3>
+    @Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
+    <h3>Option positions closed within the last 60 days (top 15 trades)</h3>
+    @Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
 }
-<h3>Stock positions closed within the last 31 days</h3>
-@Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
-<h3>Option positions closed recently (last 30 trades)</h3>
-@Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)

@@ -40,5 +40,42 @@ namespace WebSite.Models.Data.Picks
         {
             Helpers.Email.Send(this, isPreview);
         }
+
+        public decimal PercentChange()
+        {
+            if (!this.ExitPrice.HasValue)
+            {
+                return 0;
+            }
+
+            decimal percentChange =  (this.ExitPrice.Value - this.EntryPrice) / this.EntryPrice * 100;
+
+            if (!this.IsLongPosition)
+            {
+                percentChange = percentChange * -1;
+            }
+
+            return percentChange;
+        }
+
+        public class StockPickComparer : IComparer<StockPick>
+        {
+            public int Compare(StockPick x, StockPick y)
+            {
+                decimal difference = y.PercentChange() - x.PercentChange();
+
+                if (difference == 0)
+                {
+                    return 0;
+                }
+
+                if (difference < 0)
+                {
+                    return -1;
+                }
+
+                return 1;
+            }
+        }
     }
 }

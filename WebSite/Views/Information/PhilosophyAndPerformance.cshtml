@@ -1,4 +1,4 @@
-@model WebSite.Models.UI.Portfolio
+@model WebSite.Models.UI.Performance
 @{
     ViewBag.Title = "Stock and Options Performance";
 }
@@ -56,11 +56,11 @@
     <img src="/Images/Performance/2012.JPG" /></div>
 <p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal $143,874.85 as of August 24th 2012, a yield of over 43.8%. Same investment in the S&P 500 in the same time frame would have yielded 10.9% or $110,900.</p>
 <p class="text-material">To download our holdings information in Excel file format, <a href="/Content/Performance/Excel.xlsx">click here</a>.</p>
-<h2>Recent Performance</h2>
-<h3>Stock positions closed within the last 31 days</h3>
-@Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
-<h3>Option positions closed recently (last 30 trades)</h3>
-@Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
+<h2>Recent Top Performance</h2>
+<h3>Stock positions (top 15) closed within the last 60 days</h3>
+@Html.Partial("_ClosedStockListPartial", Model.TopRecentStocks)
+<h3>Option positions (top 15) closed within the last 60 days</h3>
+@Html.Partial("_ClosedOptionListPartial", Model.TopRecentOptions)
 <h2>Our Philosophy</h2>
 <p class="text-material">Our philosophy is to lock in profits on a stock, once it has gained ten percents. Investors who elect to keep positions open after that point should adjust stop-loss levels upward, to protect their gains. Never chase rumors. Never fall in love with a stock. Be ready to lock in profits. Always do your homework.</p>
 <p class="text-material">The true measure of any successful trading and/or investing is how much success YOU have! and how much money you can make from your own investments. Your success rate can and most likely will be different from our record. Past performance is no guaranty of future performance.</p>

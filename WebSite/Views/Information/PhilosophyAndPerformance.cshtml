@@ -51,10 +51,19 @@
     </style>
 }
 <h2>Year-to-date Performance</h2>
-<p class="text-material">Our 2012 performance is presented below and is compared to the S&P 500 Index benchmark.</p>
-<div style="text-align: center">
-    <img src="/Images/Performance/2012.JPG" /></div>
-<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal $143,874.85 as of August 24th 2012, a yield of over 43.8%. Same investment in the S&P 500 in the same time frame would have yielded 10.9% or $110,900.</p>
+<p class="text-material">Our @DateTime.UtcNow.Year performance is presented below in a month-over-month basis. For the purposes of this calculation, any open positions at the end of the month are assumed to provide no gain or loss and their original investment amount is contributed to the portfolio value.</p>
+<table style="width: 50%; margin: 0px auto;">
+    <tbody>
+        @foreach (Tuple<DateTime, double> month in Model.MonthlyPerformance)
+        {
+            <tr>
+                <td style="width: 50%; text-align: center;">@month.Item1.ToString("MMMM")</td>
+                <td style="width: 50%; text-align: center;">@((month.Item2 * 100).ToString("f"))%</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal @((100000*(1+Model.YearToDatePerformance)).ToString("C")) as of @DateTime.UtcNow.ToShortDateString(), a yield of over @(Model.YearToDatePerformance.ToString("f"))%. For the purposes of this calculation, any currently open position is assumed to have a value equal to its starting capital.</p>
 <p class="text-material">To download our holdings information in Excel file format, <a href="/Content/Performance/Excel.xlsx">click here</a>.</p>
 <h2>Recent Top Performance</h2>
 <h3>Stock positions (top 15) closed within the last 60 days</h3>

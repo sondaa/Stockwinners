@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Objects;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
@@ -94,6 +97,170 @@ namespace WebSite.Controllers
         public ActionResult Pricing()
         {
             return View();
+        }
+
+        public FileContentResult StockCalendar()
+        {
+            DateTime now = SnapToStartOfDay(DateTime.UtcNow);
+            Dictionary<DateTime, Tuple<decimal, decimal, List<string>>> calendar = GenerateYearToDateCalendar();
+
+            StringBuilder writer = new StringBuilder();
+
+            // Write header row
+            writer.AppendLine("Date,Cash Balance,Utilized Cash From Balance,Invested Money Balance,List of Stocks in Portfolio");
+
+            DateTime dayIterator = new DateTime(now.Year, 1, 1);
+            while (dayIterator <= now)
+            {
+                if (calendar.ContainsKey(dayIterator) && calendar[dayIterator].Item1 != 0)
+                {
+                    var tuple = calendar[dayIterator];
+
+                    StringBuilder dataRow = new StringBuilder();
+
+                    dataRow.Append(dayIterator.ToShortDateString());
+                    dataRow.Append(",");
+                    dataRow.Append(tuple.Item1);
+                    dataRow.Append(",");
+                    dataRow.Append(tuple.Item2);
+                    dataRow.Append(",");
+
+                    foreach (string symbol in tuple.Item3)
+                    {
+                        dataRow.Append(symbol);
+                        dataRow.Append(" ");
+                    }
+
+                    writer.AppendLine(dataRow.ToString());
+                }
+
+                dayIterator = dayIterator.AddDays(1);
+            }
+
+            return this.File(Encoding.UTF8.GetBytes(writer.ToString()), "text/csv", "portfolio.csv");
+        }
+
+        private static DateTime SnapToStartOfDay(DateTime date)
+        {
+            return new DateTime(date.Year, date.Month, date.Day);
+        }
+
+        private Dictionary<DateTime, Tuple<decimal, decimal, List<string>>> GenerateYearToDateCalendar()
+        {
+            // Get all stock trades for the current year
+            int year = DateTime.UtcNow.Year;
+            DateTime startOfThisYear = new DateTime(year, 1, 1);
+            DateTime startOfNextYear = startOfThisYear.AddYears(1);
+            List<StockPick> trades = _database.StockPicks.Where(stockPick => stockPick.IsPublished && stockPick.PublishingDate >= startOfThisYear && stockPick.PublishingDate <= startOfNextYear).OrderBy(stockPick => stockPick.PublishingDate).ToList();
+
+            // Start with an investment of 100000
+            decimal initialInvestment = 100000;
+
+            DateTime today = SnapToStartOfDay(DateTime.UtcNow);
+
+            // Dictionary to track our cash values at each date and list of holdings for a given date
+            // Tuple of portfolio cash balance, used cash from the balance in the day, money in play and list of currently open trades
+            Dictionary<DateTime, Tuple<decimal, decimal, List<string>>> calendar = new Dictionary<DateTime, Tuple<decimal, decimal, List<string>>>();
+            DateTime lastTradeDate = new DateTime(year, 1, 1);
+
+            // Add initial value with an empty list of investments
+            calendar.Add(new DateTime(year, 1, 1), Tuple.Create(initialInvestment, 0m, new List<string>()));
+
+            for (int i = 0; i < trades.Count; i++)
+            {
+                // Determine how much cash is available by inspecting the last trade date's money
+                decimal portfolioCashBalance = calendar[lastTradeDate].Item1;
+
+                // Group all trades that occur in the same day
+                List<StockPick> tradesInOneDay = new List<StockPick>();
+                for (int j = i; j < trades.Count; j++)
+                {
+                    if (i == j)
+                    {
+                        tradesInOneDay.Add(trades[i]);
+                    }
+                    else if (SnapToStartOfDay(tradesInOneDay[0].PublishingDate.Value) == SnapToStartOfDay(trades[j].PublishingDate.Value))
+                    {
+                        tradesInOneDay.Add(trades[j]);
+                        i++;
+                    }
+                }
+
+                // Track how much money of the available funds has been used so far
+                decimal usedFundsForDay = 0;
+
+                foreach (StockPick stock in tradesInOneDay)
+                {
+                    // Calculate investment amount: if portfolio is above $10K, then use $10K, otherwise use 10% of portfolio value
+                    decimal availableForInvestment = portfolioCashBalance - usedFundsForDay;
+                    decimal investmentAmount = availableForInvestment > 10000 ? 10000 : availableForInvestment * 0.1m;
+
+                    // Track that we are using these funds
+                    usedFundsForDay += investmentAmount;
+
+                    if (stock.ClosingDate.HasValue)
+                    {
+                        // For closed trade, deposit the proceeds into the closing date
+                        decimal proceeds = investmentAmount;
+
+                        if (stock.IsLongPosition)
+                        {
+                            proceeds *= (1 + ((stock.ExitPrice.Value - stock.EntryPrice) / stock.EntryPrice));
+                        }
+                        else
+                        {
+                            proceeds *= (1 + ((stock.EntryPrice - stock.ExitPrice.Value) / stock.EntryPrice));
+                        }
+
+                        DateTime closingDate = SnapToStartOfDay(stock.ClosingDate.Value);
+
+                        if (calendar.ContainsKey(closingDate))
+                        {
+                            var current = calendar[closingDate];
+                            calendar[closingDate] = Tuple.Create(current.Item1 + proceeds, current.Item2, current.Item3);
+                        }
+                        else
+                        {
+                            calendar.Add(closingDate, Tuple.Create(proceeds, 0m, new List<string>()));
+                        }
+                    }
+
+                    // Track the investment in the list of investments
+                    DateTime entryDate = SnapToStartOfDay(stock.PublishingDate.Value);
+                    DateTime exitDate = stock.ClosingDate ?? today;
+
+                    while (entryDate < exitDate)
+                    {
+                        if (calendar.ContainsKey(entryDate))
+                        {
+                            var current = calendar[entryDate];
+                            current.Item3.Add(stock.Symbol);
+                            calendar[entryDate] = Tuple.Create(current.Item1, current.Item2 + investmentAmount, current.Item3);
+                        }
+                        else
+                        {
+                            calendar[entryDate] = Tuple.Create(0m, investmentAmount, new List<string> { stock.Symbol });
+                        }
+
+                        entryDate = entryDate.AddDays(1);
+                    }
+                }
+
+                // Record capital left in portfolio
+                DateTime tradeDate = SnapToStartOfDay(tradesInOneDay[0].PublishingDate.Value);
+                if (calendar.ContainsKey(tradeDate))
+                {
+                    var current = calendar[tradeDate];
+                    calendar[tradeDate] = Tuple.Create(current.Item1 + (portfolioCashBalance - usedFundsForDay), current.Item2, current.Item3);
+                }
+                else
+                {
+                    calendar.Add(tradeDate, Tuple.Create(portfolioCashBalance - usedFundsForDay, 0m, new List<string>()));
+                }
+                lastTradeDate = tradeDate;
+            }
+
+            return calendar;
         }
     }
 }

@@ -15,11 +15,11 @@ namespace WebSite.Models.UI
         /// <summary>
         /// Overall year-to-date performance in percentage.
         /// </summary>
-        public double YearToDatePerformance { get; set; }
+        public decimal YearToDatePerformance { get; set; }
 
         /// <summary>
         /// List of tuples for each month of the year until today's date with the respective performance at the end of that month.
         /// </summary>
-        public IEnumerable<Tuple<DateTime, double>> MonthlyPerformance { get; set; }
+        public IEnumerable<Tuple<DateTime, decimal>> MonthlyPerformance { get; set; }
     }
 }

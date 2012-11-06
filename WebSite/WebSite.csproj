@@ -444,6 +444,13 @@
     <Content Include="Areas\Administrator\Views\Shared\SubmitUpdate.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\Announcement.cshtml" />
     <Content Include="Areas\Administrator\Views\Users\ChangePassword.cshtml" />
+    <Content Include="Content\Performance\2005.xlsx" />
+    <Content Include="Content\Performance\2006.xlsx" />
+    <Content Include="Content\Performance\2007.xlsx" />
+    <Content Include="Content\Performance\2008.xlsx" />
+    <Content Include="Content\Performance\2009.xlsx" />
+    <Content Include="Content\Performance\2010.xlsx" />
+    <Content Include="Content\Performance\2011.xlsx" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />

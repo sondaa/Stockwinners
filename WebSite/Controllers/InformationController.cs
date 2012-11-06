@@ -55,6 +55,57 @@ namespace WebSite.Controllers
             performance.TopRecentStocks = performance.TopRecentStocks.OrderBy(stockPick => stockPick, new StockPick.StockPickComparer()).Take(15).OrderByDescending(stockPick => stockPick.ClosingDate);
             performance.TopRecentOptions = performance.TopRecentOptions.OrderBy(optionPick => optionPick, new OptionPick.OptionPickComparer()).Take(15).OrderByDescending(optionPick => optionPick.ClosingDate);
 
+            // Calculate the year-to-date performance
+            var calendar = GenerateYearToDateCalendar();
+
+            // Look for last entry that has both a non-zero investment amount and cash balance and use that as the return until this date
+            DateTime today = SnapToStartOfDay(DateTime.UtcNow).AddDays(1);
+            Tuple<decimal, decimal, List<string>, List<string>> lastDay = null;
+
+            while (true)
+            {
+                if (calendar.ContainsKey(today))
+                {
+                    lastDay = calendar[today];
+                }
+
+                if (lastDay != null && lastDay.Item1 != 0 && lastDay.Item2 != 0)
+                {
+                    break;
+                }
+
+                today = today.Subtract(TimeSpan.FromDays(1));
+            }
+
+            performance.YearToDatePerformance = ((lastDay.Item1 + lastDay.Item2) - 100000) / 100000;
+
+            // Calculate monthly performances
+            List<Tuple<DateTime, decimal>> monthlyPerformances = new List<Tuple<DateTime, decimal>>();
+            DateTime monthEnd = new DateTime(DateTime.UtcNow.Year, 1, 31);
+
+            while (calendar.ContainsKey(monthEnd))
+            {
+                Tuple<decimal, decimal, List<string>, List<string>> dayData = calendar[monthEnd];
+
+                // Ensure the day does not fall on a weekend where we have irrelevant data
+                DateTime dayIterator = monthEnd;
+                while (dayData.Item1 == 0 || dayData.Item2 == 0)
+                {
+                    if (calendar.ContainsKey(dayIterator))
+                    {
+                        dayData = calendar[dayIterator];
+                    }
+
+                    dayIterator = dayIterator.Subtract(TimeSpan.FromDays(1));
+                }
+
+                monthlyPerformances.Add(Tuple.Create(monthEnd, ((dayData.Item1 + dayData.Item2) - 100000) / 100000));
+
+                monthEnd = monthEnd.AddMonths(1);
+            }
+
+            performance.MonthlyPerformance = monthlyPerformances;
+
             return View(performance);
         }
 
@@ -166,7 +217,7 @@ namespace WebSite.Controllers
             // Start with an investment of 100000
             decimal initialInvestment = 100000;
 
-            DateTime today = SnapToStartOfDay(DateTime.UtcNow);
+            DateTime today = SnapToStartOfDay(DateTime.UtcNow).AddDays(1);
 
             // Dictionary to track our cash values at each date and list of holdings for a given date
             // Tuple of portfolio cash balance, used cash from the balance in the day, money in play and list of currently open trades
@@ -248,7 +299,7 @@ namespace WebSite.Controllers
                         // For closed trade, deposit the proceeds into the closing date
                         decimal proceeds = investmentAmount * (1 + change);
                         DateTime closingDate = SnapToStartOfDay(stock.ClosingDate.Value);
-                        string message = "Closed " + stock.Symbol + " (" + (change * 100).ToString("f") + "%)";
+                        string message = "Closed " + stock.Symbol + " (" + proceeds.ToString("C").Replace(",","") + " " + (change * 100).ToString("f") + "%)";
 
                         if (calendar.ContainsKey(closingDate))
                         {
@@ -264,7 +315,7 @@ namespace WebSite.Controllers
 
                     // Track the investment in the list of investments
                     DateTime entryDate = SnapToStartOfDay(stock.PublishingDate.Value);
-                    DateTime exitDate = stock.ClosingDate ?? today;
+                    DateTime exitDate = stock.ClosingDate.HasValue ? SnapToStartOfDay(stock.ClosingDate.Value) : today;
 
                     while (entryDate < exitDate)
                     {

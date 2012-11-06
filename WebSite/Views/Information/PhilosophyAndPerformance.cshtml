@@ -54,7 +54,7 @@
 <p class="text-material">Our @DateTime.UtcNow.Year performance is presented below in a month-over-month basis. For the purposes of this calculation, any open positions at the end of the month are assumed to provide no gain or loss and their original investment amount is contributed to the portfolio value.</p>
 <table style="width: 50%; margin: 0px auto;">
     <tbody>
-        @foreach (Tuple<DateTime, double> month in Model.MonthlyPerformance)
+        @foreach (Tuple<DateTime, decimal> month in Model.MonthlyPerformance)
         {
             <tr>
                 <td style="width: 50%; text-align: center;">@month.Item1.ToString("MMMM")</td>
@@ -63,8 +63,20 @@
         }
     </tbody>
 </table>
-<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal @((100000*(1+Model.YearToDatePerformance)).ToString("C")) as of @DateTime.UtcNow.ToShortDateString(), a yield of over @(Model.YearToDatePerformance.ToString("f"))%. For the purposes of this calculation, any currently open position is assumed to have a value equal to its starting capital.</p>
-<p class="text-material">To download our holdings information in Excel file format, <a href="/Content/Performance/Excel.xlsx">click here</a>.</p>
+<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal @((100000*(1+Model.YearToDatePerformance)).ToString("C")) as of @DateTime.UtcNow.ToShortDateString(), a yield of over @((Model.YearToDatePerformance * 100).ToString("f"))%. For the purposes of this calculation, any currently open position is assumed to have a value equal to its starting capital.</p>
+<p class="text-material">To download detailed information about our holdings during this year in CSV format @Html.ActionLink("click here", "StockCalendar", "Information").</p>
+<h2>Previous Year Performances</h2>
+<p class="text-material">We have detailed listings of our positions for the following prior years. If you require additional data, please feel free to contact us and we will be happy to provide you with more information.
+    <ul>
+        <li><a href="/Content/Performance/2005.xlsx">2005</a></li>
+        <li><a href="/Content/Performance/2006.xlsx">2006</a></li>
+        <li><a href="/Content/Performance/2007.xlsx">2007</a></li>
+        <li><a href="/Content/Performance/2008.xlsx">2008</a></li>
+        <li><a href="/Content/Performance/2009.xlsx">2009</a></li>
+        <li><a href="/Content/Performance/2010.xlsx">2010</a></li>
+        <li><a href="/Content/Performance/2011.xlsx">2011</a></li>
+    </ul>
+</p>
 <h2>Recent Top Performance</h2>
 <h3>Stock positions (top 15) closed within the last 60 days</h3>
 @Html.Partial("_ClosedStockListPartial", Model.TopRecentStocks)

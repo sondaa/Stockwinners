@@ -18,7 +18,8 @@
             @Html.LabelFor(model => model.IdentityProvider)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.IdentityProvider)
+            @Html.DisplayFor(model => model.IdentityProvider)
+            @Html.HiddenFor(model => model.IdentityProvider)
             @Html.ValidationMessageFor(model => model.IdentityProvider)
         </div>
 
@@ -26,7 +27,8 @@
             @Html.LabelFor(model => model.IdentityProviderIssuedUserId)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.IdentityProviderIssuedUserId)
+            @Html.DisplayFor(model => model.IdentityProviderIssuedUserId)
+            @Html.HiddenFor(model => model.IdentityProviderIssuedUserId)
             @Html.ValidationMessageFor(model => model.IdentityProviderIssuedUserId)
         </div>
 
@@ -34,7 +36,8 @@
             @Html.LabelFor(model => model.EmailAddress)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.EmailAddress)
+            @Html.DisplayFor(model => model.EmailAddress)
+            @Html.HiddenFor(model => model.EmailAddress)
             @Html.ValidationMessageFor(model => model.EmailAddress)
         </div>
 
@@ -66,7 +69,8 @@
             @Html.LabelFor(model => model.SignUpDate)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.SignUpDate)
+            @Html.DisplayFor(model => model.SignUpDate)
+            @Html.HiddenFor(model => model.SignUpDate)
             @Html.ValidationMessageFor(model => model.SignUpDate)
         </div>
 
@@ -74,7 +78,8 @@
             @Html.LabelFor(model => model.LastLoginDate)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.LastLoginDate)
+            @Html.DisplayFor(model => model.LastLoginDate)
+            @Html.HiddenFor(model => model.LastLoginDate)
             @Html.ValidationMessageFor(model => model.LastLoginDate)
         </div>
 
@@ -90,7 +95,8 @@
             @Html.LabelFor(model => model.SubscriptionId, "Subscription")
         </div>
         <div class="editor-field">
-            @Html.DropDownList("SubscriptionId", String.Empty)
+            @Html.DisplayFor(model => model.SubscriptionId)
+            @Html.HiddenFor(model => model.SubscriptionId)
             @Html.ValidationMessageFor(model => model.SubscriptionId)
         </div>
 
@@ -98,7 +104,8 @@
             @Html.LabelFor(model => model.SubscriptionExpiryDate)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.SubscriptionExpiryDate)
+            @Html.DisplayFor(model => model.SubscriptionExpiryDate)
+            @Html.HiddenFor(model => model.SubscriptionExpiryDate)
             @Html.ValidationMessageFor(model => model.SubscriptionExpiryDate)
         </div>
 

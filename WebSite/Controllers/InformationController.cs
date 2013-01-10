@@ -163,7 +163,7 @@ namespace WebSite.Controllers
             DateTime dayIterator = new DateTime(now.Year, 1, 1);
             while (dayIterator <= now)
             {
-                if (calendar.ContainsKey(dayIterator) && calendar[dayIterator].Item1 != 0)
+                if (calendar.ContainsKey(dayIterator) && (calendar[dayIterator].Item1 != 0 || calendar[dayIterator].Item2 != 0))
                 {
                     var tuple = calendar[dayIterator];
 
@@ -171,7 +171,7 @@ namespace WebSite.Controllers
 
                     dataRow.Append(dayIterator.ToShortDateString());
                     dataRow.Append(",");
-                    dataRow.Append(tuple.Item1);
+                    dataRow.Append(tuple.Item1 == 0 ? "Unchanged" : tuple.Item1.ToString());
                     dataRow.Append(",");
                     dataRow.Append(tuple.Item2);
                     dataRow.Append(",");
@@ -299,8 +299,7 @@ namespace WebSite.Controllers
                         // For closed trade, deposit the proceeds into the closing date
                         decimal proceeds = investmentAmount * (1 + change);
                         DateTime closingDate = SnapToStartOfDay(stock.ClosingDate.Value);
-                        string message = "Closed " + stock.Symbol + " (" + proceeds.ToString("C").Replace(",","") + " " + (change * 100).ToString("f") + "%)";
-
+                        string message = "Closed " + stock.Symbol + " (" + proceeds.ToString("C").Replace(",", "") + " " + (change * 100).ToString("f") + "%)";
                         if (calendar.ContainsKey(closingDate))
                         {
                             var current = calendar[closingDate];

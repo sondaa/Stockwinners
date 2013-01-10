@@ -75,7 +75,7 @@ namespace WebSite.Areas.Administrator.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.SubscriptionId = new SelectList(_db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
+
             return View(user);
         }
 
@@ -84,11 +84,16 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Entry(user).State = EntityState.Modified;
+                // Only update trial expiry date and whether the user is banned
+                User existingUser = _db.Users.Find(user.UserId);
+
+                existingUser.IsBanned = user.IsBanned;
+                existingUser.TrialExpiryDate = user.TrialExpiryDate;
+
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.SubscriptionId = new SelectList(_db.Subscriptions, "SubscriptionId", "AuthorizeNETSubscriptionId", user.SubscriptionId);
+
             return View(user);
         }
 

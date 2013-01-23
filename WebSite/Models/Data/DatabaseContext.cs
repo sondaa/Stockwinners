@@ -40,5 +40,13 @@ namespace WebSite.Database
         public DbSet<StockPickType> StockPickTypes { get; set; }
 
         public override IQueryable<IUser> GetUsers { get { return this.Users; } }
+
+        public override IQueryable<IUser> GetActiveUsersWantingToReceiveAlerts
+        {
+            get 
+            {
+                return this.Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(Helpers.Email.ActiveUserPredicate).Where(u => u.NotificationSettings.ReceiveDailyAlerts);
+            }
+        }
     }
 }

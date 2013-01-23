@@ -66,8 +66,8 @@ namespace WebSite
                     }
 
                     // Check the user's state every day
-                    DateTime now = DateTime.Now.AddMinutes(10); // 10 minutes error buffer
-                    if (ticket.Expired || (ticket.Expiration - now) <= (now - ticket.IssueDate))
+                    DateTime now = DateTime.UtcNow.AddMinutes(10); // 10 minutes error buffer
+                    if (ticket.Expired || (ticket.Expiration.ToUniversalTime() - now) <= (now - ticket.IssueDate.ToUniversalTime()))
                     {
                         WebSite.Models.User user = WebSite.Helpers.Authentication.Authentication.GetCurrentUser();
 

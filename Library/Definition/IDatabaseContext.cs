@@ -12,5 +12,6 @@
         }
 
         public abstract IQueryable<IUser> GetUsers { get; }
+        public abstract IQueryable<IUser> GetActiveUsersWantingToReceiveAlerts { get; }
     }
 }

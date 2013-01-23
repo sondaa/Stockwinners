@@ -58,6 +58,12 @@ namespace WorkerRole
 
             //DateTimeOffset morning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
+            DateTimeOffset marketAlertTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
+                .AtHourMinuteAndSecond(8, 45, 0)
+                .Build();
+
+            //DateTimeOffset marketAlertTimeInMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);
+
             // Schedule task for trial expiries
             IJobDetail trialExpiryJobDetail = JobBuilder.Create<TrialExpiredJob>().WithIdentity("Trial Expiry Emails").Build();
             ITrigger dailyTriggerForTrialExpiry = TriggerBuilder.Create()
@@ -87,6 +93,16 @@ namespace WorkerRole
                 .ForJob(userFeedbackJobDetail)
                 .Build();
             _scheduler.ScheduleJob(userFeedbackJobDetail, dailyTriggerForUserFeedback);
+
+            // Schedule task for morning market alert
+            IJobDetail morningMarketAlertJobDetail = JobBuilder.Create<MorningMarketAlertJob>().WithIdentity("Morning Market Alert").Build();
+            ITrigger dailyMorningMarketAlertTrigger = TriggerBuilder.Create()
+                .WithIdentity("Daily Trigger (Morning Market Alert)")
+                .StartAt(marketAlertTimeInMorning)
+                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(1)).RepeatForever())
+                .ForJob(morningMarketAlertJobDetail)
+                .Build();
+            _scheduler.ScheduleJob(morningMarketAlertJobDetail, dailyMorningMarketAlertTrigger);
 
             // Finally, start the scheduler
             _scheduler.Start();

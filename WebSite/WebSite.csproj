@@ -451,6 +451,7 @@
     <Content Include="Content\Performance\2009.xlsx" />
     <Content Include="Content\Performance\2010.xlsx" />
     <Content Include="Content\Performance\2011.xlsx" />
+    <Content Include="Content\Performance\2012.xlsx" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />

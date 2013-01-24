@@ -71,6 +71,7 @@ namespace WorkerRole.Jobs
 
             StringBuilder builder = new StringBuilder();
 
+            builder.Append(this.GetEmailHeader());
             builder.Append("Good morning from Stockwinners.com!<br/><br/>");
             builder.Append(marketSummary);
             builder.Append("<div style=\"display: block;\">");
@@ -79,6 +80,7 @@ namespace WorkerRole.Jobs
             builder.Append("<br/>");
             builder.Append(earningsSummary);
             builder.Append("</div>");
+            builder.Append(this.GetEmailFooter());
 
             return builder.ToString();
         }
@@ -91,11 +93,11 @@ namespace WorkerRole.Jobs
 
             StringBuilder builder = new StringBuilder();
             HashSet<string> symbolsCoveredSoFar = new HashSet<string>();
+            List<ActiveTradersNewsElement> chosenElements = new List<ActiveTradersNewsElement>(newsElements.Count);
 
             builder.Append("Earnings Summary: <br/><br/>");
             builder.Append("<table style=\"font-size: 9pt;\">");
 
-            int index = 0;
             foreach (var newsItem in newsElements)
             {
                 // Is it an earnings entry?
@@ -122,10 +124,17 @@ namespace WorkerRole.Jobs
                     continue;
                 }
 
-                this.DumpEarningsSummary(newsItem, builder, (index & 1) != 0);
-
-                // Track that we added this
+                chosenElements.Add(newsItem);
                 symbolsCoveredSoFar.Add(newsItem.Symbol);
+            }
+
+            // Sort items by name
+            chosenElements.Sort(new Comparison<ActiveTradersNewsElement>((a, b) => a.Symbol.CompareTo(b.Symbol));
+
+            int index = 0;
+            foreach(var newsItem in chosenElements)
+            {
+                this.DumpEarningsSummary(newsItem, builder, (index & 1) != 0);
                 index++;
             }
 
@@ -340,6 +349,14 @@ namespace WorkerRole.Jobs
                 // Create links out of references
                 text = regex.Replace(text, m => "<a href=\"" + m.Groups[1].Value + "\">Reference</a>");
 
+                // Bold the start if applicable
+                int hyphenIndex = text.IndexOf(" - ");
+
+                if (hyphenIndex != -1)
+                {
+                    text = "<strong>" + text.Substring(0, hyphenIndex) + "</strong>" + text.Substring(hyphenIndex + 3);
+                }
+
                 builder.Append(text);
                 builder.Append("</p>");
             }
@@ -426,6 +443,7 @@ namespace WorkerRole.Jobs
 
             // If there is anything saying "Correction:" then remove it
             text = text.Replace("Correction:", string.Empty);
+            text = text.Replace("Correct:", string.Empty);
 
             builder.Append(text);
             builder.Append("</td></tr>\r\n");

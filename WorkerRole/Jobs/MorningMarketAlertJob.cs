@@ -26,6 +26,24 @@ namespace WorkerRole.Jobs
 
         public override void Execute(Quartz.IJobExecutionContext context)
         {
+            if (context.ScheduledFireTimeUtc.HasValue)
+            {
+                DateTimeOffset scheduledTime = context.ScheduledFireTimeUtc.Value;
+                DateTime easternDateTime = TimeZoneInfo.ConvertTimeFromUtc(scheduledTime.UtcDateTime, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+
+                // If it's the weekend, don't send email
+                if (easternDateTime.DayOfWeek == DayOfWeek.Sunday || easternDateTime.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    return;
+                }
+
+                // Is today a stock market holiday?
+                if (this.IsStockMarketHoliday(easternDateTime))
+                {
+                    return;
+                }
+            }
+
             IEnumerable<IUser> usersWithActiveSubscription = _database.GetActiveUsersWantingToReceiveAlerts;
 
             // Get the email
@@ -38,6 +56,142 @@ namespace WorkerRole.Jobs
                 //recipients: usersWithActiveSubscription);
 
             morningMarketAlertEmail.Send();
+        }
+
+        private bool IsStockMarketHoliday(DateTime today)
+        {
+            /*
+            U.S. stock markets are closed on nine regularly scheduled holidays each year:
+                1.  New Years Day - first of January for Monday through Saturday.
+                    If it falls on Sunday, market is closed on Monday January second.
+                    Every N years new years day falls on a Saturday, when this
+                    happens there is NO closing of U.S stock markets for new years day.
+                2.  Dr. Martin Luther King day - third Monday in January (15-21).
+                3.  President's Day - always the third Monday in February (15-21).
+                4.  Good Friday - always on a Friday - the Friday before Easter Sunday.
+                    Varies from late March to mid April.
+                5.  Memorial Day - always the last Monday in May (25-31).
+                6.  Independence Day - fourth of July for Monday through Friday.
+                    If it falls on Saturday, market is closed on Friday the third.
+                    If it falls on Sunday, market is closed on Monday the fifth.
+                7.  Labor Day - always on the first Monday in September (1-7).
+                8.  Thanksgiving Day - always on the fourth Thursday in November (22-28).
+                9.  Christmas Day - twenty-fifth of December for Monday through Friday.
+                    If it falls on Saturday, market is closed on Friday the twenty-fourth.
+                    If it falls on Sunday, market is closed on Monday the twenty-sixth.
+            */
+            if (today.Month == 1)
+            {
+                // New years day
+                if (today.Day == 1)
+                {
+                    return true;
+                }
+
+                if (today.Day == 2 && today.DayOfWeek == DayOfWeek.Monday)
+                {
+                    return true;
+                }
+
+                // Dr. Martin Luther King
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 1)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 2)
+            {
+                // President's day
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 2)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 3 || today.Month == 4)
+            {
+                return this.CalculateEasterFriday(today.Year) == today;
+            }
+            else if (today.Month == 5)
+            {
+                // Memorial day
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(21)).Month == 5)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 7)
+            {
+                // Independence Day
+                if (today.DayOfWeek == DayOfWeek.Friday && today.Day == 3)
+                {
+                    return true;
+                }
+
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Day == 5)
+                {
+                    return true;
+                }
+
+                if (today.Day == 4)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 9)
+            {
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(7)).Month == 8)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 11)
+            {
+                if (today.DayOfWeek == DayOfWeek.Thursday && today.Subtract(TimeSpan.FromDays(21)).Month == 11)
+                {
+                    return true;
+                }
+            }
+            else if (today.Month == 12)
+            {
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Day == 26)
+                {
+                    return true;
+                }
+
+                if (today.DayOfWeek == DayOfWeek.Friday && today.Day == 24)
+                {
+                    return true;
+                }
+
+                if (today.Day == 25)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private DateTime CalculateEasterFriday(int year)
+        {
+            int day = 0;
+            int month = 0;
+
+            int g = year % 19;
+            int c = year / 100;
+            int h = (c - (int)(c / 4) - (int)((8 * c + 13) / 25) + 19 * g + 15) % 30;
+            int i = h - (int)(h / 28) * (1 - (int)(h / 28) * (int)(29 / (h + 1)) * (int)((21 - g) / 11));
+
+            day = i - ((year + (int)(year / 4) + i + 2 - c + (int)(c / 4)) % 7) + 28;
+            month = 3;
+
+            if (day > 31)
+            {
+                month++;
+                day -= 31;
+            }
+
+            return new DateTime(year, month, day).AddDays(-2);
         }
 
         class EmailRecipient : IEmailRecipient
@@ -95,7 +249,7 @@ namespace WorkerRole.Jobs
             HashSet<string> symbolsCoveredSoFar = new HashSet<string>();
             List<ActiveTradersNewsElement> chosenElements = new List<ActiveTradersNewsElement>(newsElements.Count);
 
-            builder.Append("Earnings Summary: <br/><br/>");
+            builder.Append("<strong>Earnings Summary:</strong><br/><br/>");
             builder.Append("<table style=\"font-size: 9pt;\">");
 
             foreach (var newsItem in newsElements)
@@ -129,7 +283,7 @@ namespace WorkerRole.Jobs
             }
 
             // Sort items by name
-            chosenElements.Sort(new Comparison<ActiveTradersNewsElement>((a, b) => a.Symbol.CompareTo(b.Symbol));
+            chosenElements.Sort(new Comparison<ActiveTradersNewsElement>((a, b) => a.Symbol.CompareTo(b.Symbol)));
 
             int index = 0;
             foreach(var newsItem in chosenElements)
@@ -354,7 +508,7 @@ namespace WorkerRole.Jobs
 
                 if (hyphenIndex != -1)
                 {
-                    text = "<strong>" + text.Substring(0, hyphenIndex) + "</strong>" + text.Substring(hyphenIndex + 3);
+                    text = "<strong>" + text.Substring(0, hyphenIndex) + "</strong>" + text.Substring(hyphenIndex);
                 }
 
                 builder.Append(text);

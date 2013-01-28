@@ -299,6 +299,7 @@ namespace WorkerRole.Jobs
 
         private string GenerateMarketSummary()
         {
+            StringBuilder generatedTable = new System.Text.StringBuilder();
             string contents = string.Empty;
 
             // try to get the data from bloomberg up to 3 times (we may be redirected to an ad page)
@@ -321,6 +322,34 @@ namespace WorkerRole.Jobs
                 }
             }
 
+            // try to get the S&P futures data from CNN
+            string spLevel;
+            string spDifference;
+            string spPercentChange = string.Empty;
+            bool spPositive;
+            bool gotStandardAndPoors = this.GetStandardAndPoorsFutures(out spLevel, out spDifference, out spPositive);
+
+            if (gotStandardAndPoors)
+            {
+                double spChange = 0;
+
+                if (double.TryParse(spDifference, out spChange))
+                {
+                    if (spChange < -1)
+                    {
+                        generatedTable.Append("<p>Futures indicate a <span style=\"color: red;\">lower</span> opening for the market.</p>");
+                    }
+                    else if (spChange < 1)
+                    {
+                        generatedTable.Append("<p>Futures indicate a flat opening for the market.</p>");
+                    }
+                    else
+                    {
+                        generatedTable.Append("<p>Futures indicate a <span style=\"green\">higher</span> opening for the market.</p>");
+                    }
+                }
+            }
+
             // If we could not find a valid page, then bail
             if (!contents.Contains("tile_group"))
             {
@@ -329,7 +358,6 @@ namespace WorkerRole.Jobs
 
             HtmlDocument document = new HtmlDocument();
             HtmlDocument result = new HtmlDocument();
-            StringBuilder generatedTable = new System.Text.StringBuilder();
 
             document.LoadHtml(contents);
 
@@ -350,6 +378,21 @@ namespace WorkerRole.Jobs
                 string priceChange = node.SelectSingleNode(".//p[contains(concat(' ', @class, ' '), ' change ')]").InnerHtml;
                 string percentChange = node.SelectSingleNode(".//p[contains(concat(' ', @class, ' '), ' percent_change ')]").InnerHtml;
                 bool isPositive = node.SelectSingleNode(".//p[contains(concat(' ', @class, ' '), ' change ')]").GetAttributeValue("class", string.Empty).Contains("up");
+
+                if (ticker == "DJIA")
+                {
+                    // We don't want to include dow jones since it's last day's close. We want to include S&P futures instead
+                    if (!gotStandardAndPoors)
+                    {
+                        continue;
+                    }
+
+                    ticker = "S&amp;P";
+                    price = spLevel;
+                    priceChange = spDifference;
+                    percentChange = spPercentChange;
+                    isPositive = spPositive;
+                }
 
                 generatedTable.Append("<table><tr><td style=\"font-size: 14pt; font-weight: bold;\">");
                 generatedTable.Append(ticker);
@@ -383,6 +426,69 @@ namespace WorkerRole.Jobs
             return generatedTable.ToString();
         }
 
+        private bool GetStandardAndPoorsFutures(out string spLevel, out string spDifference, out bool spPositive)
+        {
+            // Initialize defaults
+            spLevel = "1000";
+            spDifference = "1000";
+            spPositive = true;
+
+            // Get data from CNN (try 3 times since we may be behind ads)
+            string contents = string.Empty;
+            bool validPage = false;
+
+            for (int tryIndex = 0; tryIndex < 3; tryIndex++)
+            {
+                WebRequest webRequest = WebRequest.Create("http://money.cnn.com/data/premarket/");
+
+                using (WebResponse response = webRequest.GetResponse())
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        contents = reader.ReadToEnd();
+                    }
+                }
+
+                // We expect the data to have a tile_group class in it
+                if (contents.Contains("wsod_futureQuote"))
+                {
+                    validPage = true;
+                    break;
+                }
+            }
+
+            if (!validPage)
+            {
+                return false;
+            }
+
+            HtmlDocument document = new HtmlDocument();
+
+            document.LoadHtml(contents);
+
+            HtmlNodeCollection dataTables = document.DocumentNode.SelectNodes("//table[@class='wsod_dataTable']");
+
+            if (dataTables == null || dataTables.Count == 0)
+            {
+                return false;
+            }
+
+            HtmlNodeCollection futureData = dataTables[0].SelectNodes(".//td[contains(concat(' ', @class, ' '), ' wsod_aRight ')]");
+
+            if (futureData.Count < 4)
+            {
+                return false;
+            }
+
+            // Index 1 is the S&P level value
+            // Index 3 is the difference
+            spLevel = futureData[1].InnerText.Trim();
+            spDifference = futureData[3].InnerText.Trim();
+            spPositive = !spDifference.Contains("-");
+
+            return true;
+        }
+
         private string GenerateBrokerageRecommendationsSection(List<ActiveTradersNewsElement> newsElements)
         {
             StringBuilder builder = new StringBuilder();
@@ -409,8 +515,6 @@ namespace WorkerRole.Jobs
 
         private string GeneratePopularNewsTable(List<ActiveTradersNewsElement> newsElements)
         {
-            int numberOfElements = 9;
-
             // Rules for popular news:
             // Don't mention 2 news items for the same symbol
             // Don't mention summary items (more than 2 symbols associated with the entry)
@@ -419,6 +523,59 @@ namespace WorkerRole.Jobs
             // Filter elements that are periodicals and have 2 or less symbols associated with them
             var items = from newsItem in newsElements where newsItem.Category == "Periodicals" && newsItem.Symbol.IndexOf(";") == newsItem.Symbol.LastIndexOf(";") select newsItem;
 
+            List<ActiveTradersNewsElement> chosenElements = this.ChooseElementsRandomly(items, numberOfElements: 9).ToList();
+
+            // If number of earnings is less than 3, then also add some elements from the hot stocks category
+            var earnings = from newsItem in newsElements where newsItem.Category == "Earnings" && !newsItem.Text.Contains("Earnings Preview:") && newsItem.Symbol.IndexOf(";") == -1 select newsItem;
+
+            if (earnings.Count() < 3)
+            {
+                // We prefer to choose elements that have "take over" in them.
+                var hotItems = from newsItem in newsElements where newsItem.Category == "Hot Stocks" && newsItem.Symbol.IndexOf(";") == -1 && newsItem.Text.Contains("Takeover") select newsItem;
+
+                IEnumerable<ActiveTradersNewsElement> chosenTakeOverItems = this.ChooseElementsRandomly(hotItems, 3);
+
+                if (chosenTakeOverItems.Count() > 2)
+                {
+                    chosenElements.AddRange(chosenTakeOverItems);
+                }
+                else
+                {
+                    hotItems = from newsItem in newsElements where newsItem.Category == "Hot Stocks" && newsItem.Symbol.IndexOf(";") == -1 select newsItem;
+
+                    chosenElements.AddRange(this.ChooseElementsRandomly(hotItems, 3));
+                }
+            }
+
+            StringBuilder builder = new StringBuilder();
+            Regex regex = new Regex(@"\[Reference Link\]:\[([^\]]*)\]");
+
+            foreach (ActiveTradersNewsElement item in chosenElements)
+            {
+                builder.Append("<p>");
+
+                string text = item.Text.Substring(item.Text.IndexOf("EDT") + 4); // Remove time
+
+                // Create links out of references
+                text = regex.Replace(text, m => "<a href=\"" + m.Groups[1].Value + "\">Reference</a>");
+
+                // Bold the start if applicable
+                int hyphenIndex = text.IndexOf(" - ");
+
+                if (hyphenIndex != -1)
+                {
+                    text = "<strong>" + text.Substring(0, hyphenIndex) + "</strong>" + text.Substring(hyphenIndex);
+                }
+
+                builder.Append(text);
+                builder.Append("</p>");
+            }
+
+            return builder.ToString();
+        }
+
+        private IEnumerable<ActiveTradersNewsElement> ChooseElementsRandomly(IEnumerable<ActiveTradersNewsElement> items, int numberOfElements)
+        {
             // Map entries based on symbol
             Dictionary<string, List<ActiveTradersNewsElement>> elements = new Dictionary<string, List<ActiveTradersNewsElement>>();
             Random random = new Random();
@@ -464,11 +621,10 @@ namespace WorkerRole.Jobs
                 eligibleEntries.AddRange(entryForSymbol);
             }
 
-
             // Is the total less than 9?
             if (eligibleEntries.Count > numberOfElements)
             {
-                // Choose 7 elements randomly
+                // Choose 9 elements randomly
                 List<int> selectedIndices = new List<int>();
                 while (selectedIndices.Count < numberOfElements)
                 {
@@ -491,31 +647,7 @@ namespace WorkerRole.Jobs
                 eligibleEntries = chosenElements;
             }
 
-            StringBuilder builder = new StringBuilder();
-            Regex regex = new Regex(@"\[Reference Link\]:\[([^\]]*)\]");
-
-            foreach (ActiveTradersNewsElement item in eligibleEntries)
-            {
-                builder.Append("<p>");
-
-                string text = item.Text.Substring(item.Text.IndexOf("EDT") + 4); // Remove time
-
-                // Create links out of references
-                text = regex.Replace(text, m => "<a href=\"" + m.Groups[1].Value + "\">Reference</a>");
-
-                // Bold the start if applicable
-                int hyphenIndex = text.IndexOf(" - ");
-
-                if (hyphenIndex != -1)
-                {
-                    text = "<strong>" + text.Substring(0, hyphenIndex) + "</strong>" + text.Substring(hyphenIndex);
-                }
-
-                builder.Append(text);
-                builder.Append("</p>");
-            }
-
-            return builder.ToString();
+            return eligibleEntries;
         }
 
         private string GenerateInitiationsTable(List<ActiveTradersNewsElement> newsElements)

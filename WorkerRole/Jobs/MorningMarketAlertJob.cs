@@ -50,10 +50,10 @@ namespace WorkerRole.Jobs
             IEmail morningMarketAlertEmail = _emailFactory.CreateEmail(
                 contents: this.GetEmailContents(),
                 subject: "Market Alert",
-                recipients: new List<IEmailRecipient>() { new EmailRecipient() { Name = "Mohammad Mohammadi", EmailAddress = "seyed@stockwinners.com" },
-                new EmailRecipient() { Name = "Mehdi Ghaffari", EmailAddress = "s.mehdi.ghaffari@gmail.com" },
-                new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "ameen.tayyebi@gmail.com" } });
-                //recipients: usersWithActiveSubscription);
+                // recipients: new List<IEmailRecipient>() { new EmailRecipient() { Name = "Mohammad Mohammadi", EmailAddress = "seyed@stockwinners.com" },
+                // new EmailRecipient() { Name = "Mehdi Ghaffari", EmailAddress = "s.mehdi.ghaffari@gmail.com" },
+                // new EmailRecipient() { Name = "Ameen Tayyebi", EmailAddress = "ameen.tayyebi@gmail.com" } });
+                recipients: usersWithActiveSubscription);
 
             morningMarketAlertEmail.Send();
         }
@@ -233,6 +233,7 @@ namespace WorkerRole.Jobs
             builder.Append(brokerageRecommandations);
             builder.Append("<br/>");
             builder.Append(earningsSummary);
+            builder.Append("<br/>Be sure to checkout the stock of the day which will be announced at around 10 a.m. daily");
             builder.Append("</div>");
             builder.Append(this.GetEmailFooter());
 
@@ -337,15 +338,15 @@ namespace WorkerRole.Jobs
                 {
                     if (spChange < -1)
                     {
-                        generatedTable.Append("<p>Futures indicate a <span style=\"color: red;\">lower</span> opening for the market.</p>");
+                        generatedTable.Append("<p><strong>Futures indicate a <span style=\"color: red;\">lower</span> opening for the market.</strong></p>");
                     }
                     else if (spChange < 1)
                     {
-                        generatedTable.Append("<p>Futures indicate a flat opening for the market.</p>");
+                        generatedTable.Append("<p><strong>Futures indicate a flat opening for the market.</strong></p>");
                     }
                     else
                     {
-                        generatedTable.Append("<p>Futures indicate a <span style=\"green\">higher</span> opening for the market.</p>");
+                        generatedTable.Append("<p><strong>Futures indicate a <span style=\"green\">higher</span> opening for the market.</strong></p>");
                     }
                 }
             }

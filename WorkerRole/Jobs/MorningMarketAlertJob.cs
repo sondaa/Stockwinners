@@ -94,7 +94,7 @@ namespace WorkerRole.Jobs
                 }
 
                 // Dr. Martin Luther King
-                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 1)
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 1 && today.Subtract(TimeSpan.FromDays(21)).Month == 12)
                 {
                     return true;
                 }
@@ -102,7 +102,7 @@ namespace WorkerRole.Jobs
             else if (today.Month == 2)
             {
                 // President's day
-                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 2)
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(14)).Month == 2 && today.Subtract(TimeSpan.FromDays(21)).Month == 1)
                 {
                     return true;
                 }
@@ -114,7 +114,7 @@ namespace WorkerRole.Jobs
             else if (today.Month == 5)
             {
                 // Memorial day
-                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(21)).Month == 5)
+                if (today.DayOfWeek == DayOfWeek.Monday && today.Subtract(TimeSpan.FromDays(21)).Month == 5 && today.Subtract(TimeSpan.FromDays(28)).Month == 4)
                 {
                     return true;
                 }
@@ -146,7 +146,7 @@ namespace WorkerRole.Jobs
             }
             else if (today.Month == 11)
             {
-                if (today.DayOfWeek == DayOfWeek.Thursday && today.Subtract(TimeSpan.FromDays(21)).Month == 11)
+                if (today.DayOfWeek == DayOfWeek.Thursday && today.Subtract(TimeSpan.FromDays(21)).Month == 11 && today.Subtract(TimeSpan.FromDays(28)).Month == 10)
                 {
                     return true;
                 }
@@ -226,7 +226,7 @@ namespace WorkerRole.Jobs
             StringBuilder builder = new StringBuilder();
 
             builder.Append(this.GetEmailHeader());
-            builder.Append("Good morning from Stockwinners.com!<br/><br/>");
+            builder.Append("Good morning from Stockwinners.com!<br/>");
             builder.Append(marketSummary);
             builder.Append("<div style=\"display: block;\">");
             builder.Append(popularNews);

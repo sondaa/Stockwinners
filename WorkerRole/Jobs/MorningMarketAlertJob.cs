@@ -659,7 +659,11 @@ namespace WorkerRole.Jobs
 
             builder.Append("<table style=\"font-size: 9pt;\">");
 
-            foreach (var newsItem in from item in newsElements where item.Category == "Rec-Initiate" && !item.Symbol.Contains(";") select item)
+            List<ActiveTradersNewsElement> items = (from item in newsElements where item.Category == "Rec-Initiate" && !item.Symbol.Contains(";") select item).ToList();
+
+            items.Sort((a,b) => a.Symbol.CompareTo(b.Symbol));
+
+            foreach (var newsItem in items)
             {
                 this.DumpBrokerageRecommendation(newsItem, builder);
             }
@@ -677,7 +681,11 @@ namespace WorkerRole.Jobs
 
             builder.Append("<table style=\"font-size: 9pt;\">");
 
-            foreach (var newsItem in from item in newsElements where item.Category == "Rec-Downgrade" && !item.Symbol.Contains(";") select item)
+            List<ActiveTradersNewsElement> items = (from item in newsElements where item.Category == "Rec-Downgrade" && !item.Symbol.Contains(";") select item).ToList();
+
+            items.Sort(new Comparison<ActiveTradersNewsElement>((a, b) => a.Symbol.CompareTo(b.Symbol)));
+
+            foreach (var newsItem in items)
             {
                 this.DumpBrokerageRecommendation(newsItem, builder);
             }
@@ -695,7 +703,11 @@ namespace WorkerRole.Jobs
 
             builder.Append("<table style=\"font-size: 9pt;\">");
 
-            foreach (var newsItem in from item in newsElements where item.Category == "Rec-Upgrade" && !item.Symbol.Contains(";") select item)
+            List<ActiveTradersNewsElement> items = (from item in newsElements where item.Category == "Rec-Upgrade" && !item.Symbol.Contains(";") select item).ToList();
+
+            items.Sort((a, b) => a.Symbol.CompareTo(b.Symbol));
+
+            foreach (var newsItem in items)
             {
                 this.DumpBrokerageRecommendation(newsItem, builder);
             }

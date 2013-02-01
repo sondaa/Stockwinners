@@ -83,11 +83,11 @@ namespace WebSite.Controllers
 
                 try
                 {
-                    // Cancel the curret subscription
-                    subscriptionGateway.CancelSubscription(currentUser.Subscription.AuthorizeNETSubscriptionId);
-
                     // Add the new subscription now
                     subscriptionResponse = subscriptionGateway.CreateSubscription(subscriptionRequest);
+
+                    // Cancel the curret subscription
+                    subscriptionGateway.CancelSubscription(currentUser.Subscription.AuthorizeNETSubscriptionId);
 
                     // Subscription was updated successfully
 

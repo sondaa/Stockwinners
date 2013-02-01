@@ -73,7 +73,7 @@ namespace WebSite.Models.Data.Picks
             decimal purchasePrice = this.Cost();
             decimal salePrice = this.Proceeds();
 
-            return (salePrice - purchasePrice) * 100 / purchasePrice;
+            return (salePrice - purchasePrice) * 100 / Math.Abs(purchasePrice);
         }
 
         public Chart ExpiryGraph()

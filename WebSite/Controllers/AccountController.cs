@@ -124,6 +124,38 @@ namespace WebSite.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult Signup(string firstName, string lastName, string email)
+        {
+            // Do we have all the data we need?
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(email))
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+
+            MembershipCreateStatus createStatus;
+            WebSite.Infrastructure.MembershipProvider membershipProvider = Membership.Provider as WebSite.Infrastructure.MembershipProvider;
+
+            int memberId = membershipProvider.CreateStockwinnersMember(email, "stockwinners", firstName, lastName, out createStatus);
+
+            if (createStatus == MembershipCreateStatus.Success)
+            {
+                Authentication.SetCurrentUser(new LoggedInUserIdentity()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    EmailAddress = email,
+                    IdentityProvider = IdentityProvider.Stockwinners,
+                    IdentityProviderIssuedId = memberId.ToString()
+                }, rememberUser: false);
+            }
+
+            ViewBag.ShowTemporaryPassword = true;
+
+            return View("RegistrationSuccess");
+        }
+
         //
         // POST: /Account/Register
 

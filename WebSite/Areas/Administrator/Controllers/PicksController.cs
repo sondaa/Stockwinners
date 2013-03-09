@@ -23,7 +23,7 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult SubmitUpdate(int pickId)
         {
-            return View(new PickUpdate() { PickId = pickId, IssueDate = DateTime.UtcNow });
+            return View(new PickUpdate() { PickId = pickId });
         }
 
         [HttpPost]
@@ -31,13 +31,16 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Initialize update date
+                update.IssueDate = DateTime.UtcNow;
+
                 _database.PickUpdates.Add(update);
                 _database.SaveChanges();
 
                 // Email the update to subscribers
                 update.Email();
 
-                return this.Edit(update.PickId);
+                return this.RedirectToAction("Edit", new { id = update.PickId });
             }
 
             return View(update);
@@ -63,7 +66,7 @@ namespace WebSite.Areas.Administrator.Controllers
             return View(viewName: "Index", model: this.Picks.OrderByDescending(pick => pick.PublishingDate));
         }
 
-        public abstract ActionResult Edit(int pickId);
+        public abstract ActionResult Edit(int id);
 
         protected abstract IQueryable<T> Picks { get; } 
     }

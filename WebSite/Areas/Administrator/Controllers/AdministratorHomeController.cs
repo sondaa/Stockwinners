@@ -35,10 +35,10 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.UsersWithActiveTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate >= DateTime.UtcNow);
             ViewBag.UsersWithExpiredTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
             ViewBag.UsersWithCancelledSubscriptions = _database.Users.Count(user => user.SubscriptionExpiryDate.HasValue);
-            ViewBag.SubscribedUsers = _database.Users.Count(user => user.SubscriptionId.HasValue);
-            ViewBag.MonthlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
-            ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
-            ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Count(user => user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
+            ViewBag.SubscribedUsers = _database.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended);
+            ViewBag.MonthlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
+            ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
+            ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
             ViewBag.MembersWithSuspendedPayment = _database.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended);
             ViewBag.MonthlyIncome = this.Income(PredefinedSubscriptionFrequencies.Monthly);
             ViewBag.QuarterlyIncome = this.Income(PredefinedSubscriptionFrequencies.Quarterly);
@@ -137,11 +137,13 @@ namespace WebSite.Areas.Administrator.Controllers
 
             Chart chart = new Chart(800, 600, theme: Vanilla3D);
 
-            chart.AddTitle("Trial Expiries versus Subscription Activation");
+            chart.AddTitle("Trial Expiries versus Subscription Activation versus Cancellation");
 
             List<string> dates = new List<string>(31);
             List<int> countsTrial = new List<int>(31);
-            List<int> countsSubscription = new List<int>(31);
+            List<int> countsSubscriptionActivations = new List<int>(31);
+            List<int> countsSubscriptionReactivations = new List<int>(31);
+            List<int> countsCancellations = new List<int>(31);
 
             for (int i = 15; i >= 0; i--)
             {
@@ -150,11 +152,57 @@ namespace WebSite.Areas.Administrator.Controllers
 
                 dates.Add(date.ToShortDateString());
                 countsTrial.Add(_database.Users.Count(user => user.TrialExpiryDate >= date && user.TrialExpiryDate < dateTomorrow));
-                countsSubscription.Add(_database.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && user.Subscription.ActivationDate >= date && user.Subscription.ActivationDate < dateTomorrow));
+
+                IQueryable<User> subscriptionActivations = from user in _database.Users where user.SubscriptionId.HasValue && 
+                                                               user.Subscription.ActivationDate >= date && 
+                                                               user.Subscription.ActivationDate < dateTomorrow &&
+                                                               user.Subscriptions.Count == 1
+                                                           select user;
+                IQueryable<User> subscriptionReactivations = from user in _database.Users
+                                                             where user.SubscriptionId.HasValue &&
+                                                                 user.Subscription.ActivationDate >= date &&
+                                                                 user.Subscription.ActivationDate < dateTomorrow &&
+                                                                 user.Subscriptions.Count > 1
+                                                             select user;
+
+                countsSubscriptionActivations.Add(subscriptionActivations.Count());
+                countsSubscriptionReactivations.Add(subscriptionReactivations.Count());
+                countsCancellations.Add(_database.Subscriptions.Count(s => s.CancellationDate.HasValue && s.CancellationDate.Value >= date && s.CancellationDate < dateTomorrow));
             }
 
-            chart.AddSeries(xValue: dates, yValues: countsTrial, legend: "Trial Expiry");
-            chart.AddSeries(xValue: dates, yValues: countsSubscription, legend: "Subscription Activations");
+            chart.AddSeries(xValue: dates, yValues: countsTrial, name: "Trial Expiry");
+            chart.AddSeries(xValue: dates, yValues: countsSubscriptionActivations, name: "Subscription Activations");
+            chart.AddSeries(xValue: dates, yValues: countsSubscriptionReactivations, name: "Subscription Reactivations (fix of a failed payment)");
+            chart.AddSeries(xValue: dates, yValues: countsCancellations, name: "Subscription Cancellations");
+
+            chart.AddLegend();
+
+            return this.File(chart.GetBytes("png"), "image/png");
+        }
+
+        public ActionResult MonthlyIncomeDistribution()
+        {
+            Chart chart = new Chart(800, 600);
+
+            chart.AddTitle("Monthly Income Distribution");
+
+            List<int> moneyDeposits = new List<int>(31);
+            List<int> xValues = new List<int>(31);
+
+            for (int i = 1; i < 32; i++)
+            {
+                xValues.Add(i);
+
+                moneyDeposits.Add((int)_database.Users.Include(u => u.Subscription)
+                    .Where(u => u.SubscriptionId.HasValue && 
+                        u.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly &&
+                        u.Subscription.ActivationDate.Day == i)
+                    .Select(u => u.Subscription.SubscriptionType.Price)
+                    .DefaultIfEmpty(0m)
+                    .Sum());
+            }
+
+            chart.AddSeries(xValue: xValues, yValues: moneyDeposits);
 
             return this.File(chart.GetBytes("png"), "image/png");
         }

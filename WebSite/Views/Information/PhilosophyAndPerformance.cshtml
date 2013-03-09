@@ -50,38 +50,92 @@
         }
     </style>
 }
-<h2>Year-to-date Performance</h2>
+<h2>Year-to-date Performance <span style="font-weight: normal; color: #21892a;">@((Model.YearToDatePerformance * 100).ToString("f"))%</span></h2>
+<p class="text-material">An initial investment of <span style="font-weight: bold">$100,000</span> invested in Stockwinners.com's portfolio at the beginning of January would equal <span style="font-weight: bold">@((100000*(1+Model.YearToDatePerformance)).ToString("C"))</span> as of @DateTime.UtcNow.ToShortDateString(), a yield of over @((Model.YearToDatePerformance * 100).ToString("f"))%.</p>
 <p class="text-material">Our @DateTime.UtcNow.Year performance is presented below in a month-over-month basis. For the purposes of this calculation, any open positions at the end of the month are assumed to provide no gain or loss and their original investment amount is contributed to the portfolio value.</p>
 <table style="width: 50%; margin: 0px auto;">
     <tbody>
-        @foreach (Tuple<DateTime, decimal> month in Model.MonthlyPerformance)
-        {
-            <tr>
-                <td style="width: 50%; text-align: center;">@month.Item1.ToString("MMMM")</td>
-                <td style="width: 50%; text-align: center;">@((month.Item2 * 100).ToString("f"))%</td>
-            </tr>
+        @{
+            int monthIndex = 0;
+            foreach (Tuple<DateTime, decimal> month in Model.MonthlyPerformance)
+            {
+                <tr class="@(monthIndex % 2 != 0 ? "grey-background" : "")">
+                    <td style="width: 50%; text-align: center;">@month.Item1.ToString("MMMM")</td>
+                    <td style="width: 50%; text-align: center;">@((month.Item2 * 100).ToString("f"))%</td>
+                </tr>
+                monthIndex++;
+            }
         }
     </tbody>
 </table>
-<p class="text-material">An initial investment of $100,000 invested in Stockwinners.com's portfolio at the beginning of January would equal @((100000*(1+Model.YearToDatePerformance)).ToString("C")) as of @DateTime.UtcNow.ToShortDateString(), a yield of over @((Model.YearToDatePerformance * 100).ToString("f"))%. For the purposes of this calculation, any currently open position is assumed to have a value equal to its starting capital.</p>
 <p class="text-material">To download detailed information about our holdings during this year in CSV format @Html.ActionLink("click here", "StockCalendar", "Information").</p>
 <h2>Previous Year Performances</h2>
 <p class="text-material">We have detailed listings of our positions for the following prior years. If you require additional data, please feel free to contact us and we will be happy to provide you with more information.
-    <ul>
-        <li><a href="/Content/Performance/2005.xlsx">2005</a> (28.54% versus 6.07% S&P 500)</li>
-        <li><a href="/Content/Performance/2006.xlsx">2006</a> (19.38% versus 10.84% S&P 500)</li>
-        <li><a href="/Content/Performance/2007.xlsx">2007</a> (26.05% versus 4.88% S&P 500)</li>
-        <li><a href="/Content/Performance/2008.xlsx">2008</a> (14.77% versus -38.17% S&P 500)</li>
-        <li><a href="/Content/Performance/2009.xlsx">2009</a> (62.29% versus 25.40% S&P 500)</li>
-        <li><a href="/Content/Performance/2010.xlsx">2010</a> (115% versus 9.92% S&P 500)</li>
-        <li><a href="/Content/Performance/2011.xlsx">2011</a> (22.07% versus -1.72% S&P 500)</li>
-        <li><a href="/Content/Performance/2012.xlsx">2012</a> (84.9% versus 11.7% S&P 500)</li>
-    </ul>
+    <table style="width: 50%; margin: 0px auto;">
+        <thead>
+            <tr>
+                <td style="text-align: center;">Year</td>
+                <td style="text-align: center;">Stockwinners' Performance</td>
+                <td style="text-align: center;">S&amp;P 500</td>
+                <td style="text-align: center;">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">2005</td>
+                <td style="text-align: center; color: #21892a;">28.54%</td>
+                <td style="text-align: center; color: #21892a;">6.07%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2005.xlsx">Details</a></td>
+            </tr>
+            <tr class="grey-background">
+                <td style="text-align: center;">2006</td>
+                <td style="text-align: center; color: #21892a;">19.38%</td>
+                <td style="text-align: center; color: #21892a;">10.84%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2006.xlsx">Details</a></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2007</td>
+                <td style="text-align: center; color: #21892a;">26.05%</td>
+                <td style="text-align: center; color: #21892a;">4.88%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2007.xlsx">Details</a></td>
+            </tr>
+            <tr class="grey-background">
+                <td style="text-align: center;">2008</td>
+                <td style="text-align: center; color: #21892a;">14.77%</td>
+                <td style="text-align: center; color: #ad2222;">-38.17%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2008.xlsx">Details</a></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2009</td>
+                <td style="text-align: center; color: #21892a;">62.29%</td>
+                <td style="text-align: center; color: #21892a;">25.40%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2009.xlsx">Details</a></td>
+            </tr>
+            <tr class="grey-background">
+                <td style="text-align: center;">2010</td>
+                <td style="text-align: center; color: #21892a;">115%</td>
+                <td style="text-align: center; color: #21892a;">9.92%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2010.xlsx">Details</a></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2011</td>
+                <td style="text-align: center; color: #21892a;">22.07%</td>
+                <td style="text-align: center; color: #ad2222;">-1.72%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2011.xlsx">Details</a></td>
+            </tr>
+            <tr class="grey-background">
+                <td style="text-align: center;">2012</td>
+                <td style="text-align: center; color: #21892a;">84.9%</td>
+                <td style="text-align: center; color: #21892a;">11.7%</td>
+                <td style="text-align: center;"><a href="/Content/Performance/2012.xlsx">Details</a></td>
+            </tr>
+        </tbody>
+    </table>
 </p>
 <h2>Recent Top Performance</h2>
-<h3>Stock positions (top 15) closed within the last 60 days</h3>
+<h3>Stock positions (top 15) closed recently</h3>
 @Html.Partial("_ClosedStockListPartial", Model.TopRecentStocks)
-<h3>Option positions (top 15) closed within the last 60 days</h3>
+<h3>Option positions (top 15) closed recently</h3>
 @Html.Partial("_ClosedOptionListPartial", Model.TopRecentOptions)
 <h2>Our Philosophy</h2>
 <p class="text-material">Our philosophy is to lock in profits on a stock, once it has gained ten percents. Investors who elect to keep positions open after that point should adjust stop-loss levels upward, to protect their gains. Never chase rumors. Never fall in love with a stock. Be ready to lock in profits. Always do your homework.</p>

@@ -58,6 +58,15 @@ namespace WebSite.Models.Data.Picks
         /// </summary>
         public int Quantity { get; set; }
 
+        public OptionPickLeg()
+        {
+            // Provide some default values
+            this.ExpirationYear = (short)DateTime.UtcNow.Year;
+            this.ExpirationMonth = (short)(DateTime.UtcNow.Month + 1);
+            this.Quantity = 1;
+            this.Type = 1; // Call
+        }
+
         public decimal ValueAtExpiry(decimal underlyingPrice)
         {
             if (this.Type == (int)OptionPickLegType.Call)

@@ -53,7 +53,7 @@ else
                              new SelectListItem() { Text = "November", Value = "11", Selected = 11 == DateTime.UtcNow.Month  },
                              new SelectListItem() { Text = "December", Value = "12", Selected = 12 == DateTime.UtcNow.Month  } 
                          })
-             of @Html.DropDownList("year", from year in Enumerable.Range(2012, DateTime.UtcNow.Year - 2012 + 1) select new SelectListItem() { Text = year.ToString(), Value = year.ToString() })
+             of @Html.DropDownList("year", from year in Enumerable.Range(2012, DateTime.UtcNow.Year - 2012 + 1) select new SelectListItem() { Text = year.ToString(), Value = year.ToString(), Selected = year == DateTime.UtcNow.Year })
             <input type="submit" value="Update" />
         </div>
     }

@@ -24,7 +24,7 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             ViewBag.OptionPickId = optionPickId;
 
-            return View();
+            return View(new OptionPickLeg());
         }
 
         //

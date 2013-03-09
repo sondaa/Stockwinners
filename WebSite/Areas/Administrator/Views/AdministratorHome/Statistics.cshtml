@@ -11,12 +11,12 @@
     <li>Users with an expired trial membership who are not subscribed either <strong>@ViewBag.UsersWithExpiredTrial</strong></li>
     <li>Users with suspended/failed payments <strong>@ViewBag.MembersWithSuspendedPayment</strong></li>
     <li>Users with cancelled subscriptions <strong>@ViewBag.UsersWithCancelledSubscriptions</strong></li>
-    <li>Subscribed Members <strong>@ViewBag.SubscribedUsers</strong></li>
-    <li>Monthly Subscribers <strong>@ViewBag.MonthlySubscribers</strong> (Monthly income of <strong>@ViewBag.MonthlyIncome.ToString("C")</strong>)</li>
-    <li>Quarterly Subscribers <strong>@ViewBag.QuarterlySubscribers</strong> (Quarterly income of <strong>@ViewBag.QuarterlyIncome.ToString("C")</strong>)</li>
-    <li>Yearly Subscribers <strong>@ViewBag.YearlySubscribers</strong> (Yearly income of <strong>@ViewBag.YearlyIncome.ToString("C")</strong>)</li>
+    <li>Subscribed Members with Active Payments <strong>@ViewBag.SubscribedUsers</strong></li>
+    <li>Monthly Subscribers with Active Payments <strong>@ViewBag.MonthlySubscribers</strong> (Monthly income of <strong>@ViewBag.MonthlyIncome.ToString("C")</strong>)</li>
+    <li>Quarterly Subscribers with Active Payments <strong>@ViewBag.QuarterlySubscribers</strong> (Quarterly income of <strong>@ViewBag.QuarterlyIncome.ToString("C")</strong>)</li>
+    <li>Yearly Subscribers with Active Payments <strong>@ViewBag.YearlySubscribers</strong> (Yearly income of <strong>@ViewBag.YearlyIncome.ToString("C")</strong>)</li>
 </ul>
 <div style="text-align: center;"><img src="@Url.Action("Registrations")" /></div>
 <div style="text-align: center;"><img src="@Url.Action("TrialVersusSubscription")" /></div>
 <div style="text-align: center;"><img src="@Url.Action("TrialExpiries")" /></div>
-<div style="text-align: center;"><img src="@Url.Action("Subscriptions")" /></div>
+<div style="text-align: center;"><img src="@Url.Action("MonthlyIncomeDistribution")" /></div>

@@ -86,7 +86,7 @@ namespace WebSite.Controllers
                     // Add the new subscription now
                     subscriptionResponse = subscriptionGateway.CreateSubscription(subscriptionRequest);
 
-                    // Cancel the curret subscription
+                    // Cancel the current subscription
                     subscriptionGateway.CancelSubscription(currentUser.Subscription.AuthorizeNETSubscriptionId);
 
                     // Subscription was updated successfully
@@ -324,9 +324,13 @@ namespace WebSite.Controllers
 
             subscriptionExpiryDate = cancellationDate.AddDays(moduloAmount - ((cancellationDate - activationDate).Days % moduloAmount));
 
+<<<<<<< HEAD
             // Mark the cancellation date of the user's subscription
             currentUser.Subscription.CancellationDate = DateTime.UtcNow;
 
+=======
+            currentUser.Subscription.CancellationDate = cancellationDate;
+>>>>>>> Ability to cancel account, change user's email, and tracking user's cancellation date on their subscription
             currentUser.SubscriptionExpiryDate = subscriptionExpiryDate;
             currentUser.Subscription = null;
 

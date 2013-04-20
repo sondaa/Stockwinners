@@ -3,11 +3,12 @@
 <h2>@(ViewBag.Title ?? "List of Members")</h2>
 <table style="width: 100%;">
     <tr>
-        <td style="width: 20%;text-align: center;">@Html.ActionLink("Active Trial Members", "ActiveTrialMembers")</td>
-        <td style="width: 20%;text-align: center;">@Html.ActionLink("Expired Trial Members", "ExpiredTrialMembers")</td>
-        <td style="width: 20%;text-align: center;">@Html.ActionLink("Members with Active Subscriptions", "SubscribedMembers")</td>
-        <td style="width: 20%;text-align: center;">@Html.ActionLink("Members with Suspended Subscriptions", "SuspendedMembers")</td>
-        <td style="width: 20%;text-align: center;">@Html.ActionLink("All Users", "AllUsers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("Trial Active", "ActiveTrialMembers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("Trial Expired", "ExpiredTrialMembers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("Subscription Active", "SubscribedMembers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("Subscription Suspended", "SuspendedMembers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("Cancelled", "CancelledMembers")</td>
+        <td style="width: 16%;text-align: center;">@Html.ActionLink("All", "AllUsers")</td>
     </tr>
 </table>
 <table style="width: 100%;">
@@ -51,7 +52,8 @@
             }
             else if (!item.Subscription.IsSuspended)
             {
-                @Html.ActionLink("Suspend Account", "Suspend", new { userId = item.UserId })
+                @Html.ActionLink("Suspend Account", "Suspend", new { userId = item.UserId })@: |
+                @Html.ActionLink("Cancel", "Cancel", new { userId = item.UserId })
             }
         </td>
     </tr>

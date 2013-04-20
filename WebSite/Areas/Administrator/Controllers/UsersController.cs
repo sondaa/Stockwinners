@@ -55,7 +55,15 @@ namespace WebSite.Areas.Administrator.Controllers
         public ActionResult SuspendedMembers()
         {
             ViewBag.Title = "Members with Suspended Payments";
+
             return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.Subscription != null && u.Subscription.IsSuspended).OrderByDescending(u => u.SignUpDate));
+        }
+
+        public ActionResult CancelledMembers()
+        {
+            ViewBag.Title = "Members with Cancelled Subscriptions";
+
+            return this.View(viewName: "Index", model: _db.Users.Include(u => u.Subscription).Where(u => u.SubscriptionExpiryDate.HasValue));
         }
 
         public ActionResult Details(int id = 0)
@@ -135,6 +143,57 @@ namespace WebSite.Areas.Administrator.Controllers
             return this.RedirectToAction("SuspendedMembers");
         }
 
+        public ActionResult Cancel(int userId)
+        {
+            WebSite.Models.User user = _db.Users.Find(userId);
+
+            DateTime subscriptionExpiryDate = DateTime.UtcNow;
+            DateTime cancellationDate = DateTime.UtcNow;
+
+            // TODO: Assert the return value
+            if (user.Subscription != null)
+            {
+                // Cancel the subscription at Authorize.NET
+                ISubscriptionGateway gateway = this.GetSubscriptionGateway();
+
+                gateway.CancelSubscription(user.Subscription.AuthorizeNETSubscriptionId);
+
+                // Determine the user's last day based on how much they have paid so far
+                DateTime activationDate = user.Subscription.ActivationDate;
+                int moduloAmount = 1;
+                ViewBag.SubscriptionFrequency = user.Subscription.SubscriptionType.SubscriptionFrequency.Name.ToLower();
+
+                if (user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly)
+                {
+                    moduloAmount = 30;
+                }
+                else if (user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly)
+                {
+                    moduloAmount = 365 / 4;
+                }
+                else if (user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly)
+                {
+                    moduloAmount = 365;
+                }
+                else
+                {
+                    // TODO: Log Error
+                }
+
+                subscriptionExpiryDate = cancellationDate.AddDays(moduloAmount - ((cancellationDate - activationDate).Days % moduloAmount));
+
+                // Mark the day the subscription is cancelled
+                user.Subscription.CancellationDate = cancellationDate;
+            }
+
+            user.SubscriptionExpiryDate = subscriptionExpiryDate;
+            user.Subscription = null;
+
+            _db.SaveChanges();
+
+            return this.RedirectToAction("CancelledMembers");
+        }
+
         public ActionResult ChangePassword()
         {
             return this.View();
@@ -149,11 +208,50 @@ namespace WebSite.Areas.Administrator.Controllers
 
                 if (provider.ChangePassword(model.EmailAddress, model.Password))
                 {
-                    ViewBag.Message = "Password changes successfully";
+                    ViewBag.Message = "Password changed successfully";
                 }
                 else
                 {
                     ViewBag.Message = "Can't find user with this email address.";
+                }
+            }
+
+            return this.View(model);
+        }
+
+        public ActionResult ChangeEmail()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public ActionResult ChangeEmail(ChangeEmail model)
+        {
+            if (ModelState.IsValid)
+            {
+                StockwinnersMember member = _db.StockwinnersMembers.Where(m => m.EmailAddress == model.EmailAddressCurrent).FirstOrDefault();
+
+                if (member == null)
+                {
+                    ViewBag.Message = "No stockwinners member with the email address exists. Either the email address provided is wrong, or the user has signed up via Facebook or Google in which case we can't change their email address";
+                }
+                else
+                {
+                    User user = _db.Users.Where(u => u.EmailAddress == model.EmailAddressCurrent).FirstOrDefault();
+
+                    if (user == null)
+                    {
+                        ViewBag.Message = "No user with the provided email address exists.";
+                    }
+                    else
+                    {
+                        member.EmailAddress = model.EmailAddressNew;
+                        user.EmailAddress = model.EmailAddressNew;
+
+                        ViewBag.Message = "The email has successfully been changed. Please instruct the user to use the new email address to login henceforth.";
+
+                        _db.SaveChanges();
+                    }
                 }
             }
 

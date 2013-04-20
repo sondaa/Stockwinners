@@ -281,6 +281,7 @@
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Models\UI\Announcement.cs" />
     <Compile Include="Models\UI\ChangePassword.cs" />
+    <Compile Include="Models\UI\ChangeEmail.cs" />
     <Compile Include="Models\UI\FeedbackModel.cs" />
     <Compile Include="Models\UI\Performance.cs" />
     <Compile Include="Models\UI\PickSubscription.cs" />
@@ -452,6 +453,7 @@
     <Content Include="Content\Performance\2010.xlsx" />
     <Content Include="Content\Performance\2011.xlsx" />
     <Content Include="Content\Performance\2012.xlsx" />
+    <Content Include="Areas\Administrator\Views\Users\ChangeEmail.cshtml" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />

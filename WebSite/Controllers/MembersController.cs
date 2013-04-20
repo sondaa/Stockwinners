@@ -324,13 +324,8 @@ namespace WebSite.Controllers
 
             subscriptionExpiryDate = cancellationDate.AddDays(moduloAmount - ((cancellationDate - activationDate).Days % moduloAmount));
 
-<<<<<<< HEAD
             // Mark the cancellation date of the user's subscription
             currentUser.Subscription.CancellationDate = DateTime.UtcNow;
-
-=======
-            currentUser.Subscription.CancellationDate = cancellationDate;
->>>>>>> Ability to cancel account, change user's email, and tracking user's cancellation date on their subscription
             currentUser.SubscriptionExpiryDate = subscriptionExpiryDate;
             currentUser.Subscription = null;
 

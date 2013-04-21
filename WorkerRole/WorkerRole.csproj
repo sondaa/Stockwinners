@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveTradersNewsElement.cs" />
+    <Compile Include="Jobs\SuspendedPaymentJob.cs" />
     <Compile Include="Jobs\EmailingJobBase.cs" />
     <Compile Include="Jobs\InactiveMembersJob.cs" />
     <Compile Include="Jobs\LostUserFeedbackRequestJob.cs" />

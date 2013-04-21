@@ -13,5 +13,6 @@
 
         public abstract IQueryable<IUser> GetUsers { get; }
         public abstract IQueryable<IUser> GetActiveUsersWantingToReceiveAlerts { get; }
+        public abstract IQueryable<IUser> GetUsersWithSuspendedPayments { get; }
     }
 }

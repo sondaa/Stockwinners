@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using WebSite.Database;
 using WebSite.Models;
 using ActionMailer.Net.Mvc;
+using AuthorizeNet;
 
 namespace WebSite.Controllers
 {
@@ -50,7 +51,7 @@ namespace WebSite.Controllers
             DatabaseContext db = _database;
 
             // Load the subscription and figure out which user it belongs to
-            Subscription subscription = db.Subscriptions.FirstOrDefault(s => s.AuthorizeNETSubscriptionId == subscriptionId);
+            Subscription subscription = db.Subscriptions.Include(s => s.CreditCard).FirstOrDefault(s => s.AuthorizeNETSubscriptionId == subscriptionId);
 
             // Could we successfully load the subscription Authorize.NET is talking about?
             if (subscription == null)
@@ -70,15 +71,78 @@ namespace WebSite.Controllers
                 return;
             }
 
+            bool successfulRenewal = false;
+
             // Mark the subscription as suspended
             subscription.IsSuspended = true;
 
+            // Check to see whether the card is expired, if so, try to renew the subscription with a new year
+            if (subscription.CreditCard.IsExpired())
+            {
+                // Decrypt to get the card information again
+                subscription.CreditCard.Decrypt();
+
+                // Bump up the expiry by 2 years
+                CreditCard newCard = new CreditCard()
+                {
+                    AddressId = subscription.CreditCard.AddressId,
+                    BillingAddress = subscription.CreditCard.BillingAddress,
+                    CardholderFirstName = subscription.CreditCard.CardholderFirstName,
+                    CardholderLastName = subscription.CreditCard.CardholderLastName,
+                    CVV = subscription.CreditCard.CVV,
+                    ExpirationMonth = subscription.CreditCard.ExpirationMonth,
+                    ExpirationYear = (short)(subscription.CreditCard.ExpirationYear + 2),
+                    Number = subscription.CreditCard.Number
+                };
+
+                ISubscriptionGateway gateway = MembersController.GetSubscriptionGateway();
+
+                ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(newCard, subscription.SubscriptionType, affectedUser);
+                ISubscriptionRequest subscriptionResponse = null;
+
+                bool successfulTry = true;
+
+                try
+                {
+                    subscriptionResponse = gateway.CreateSubscription(subscriptionRequest);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Payment failed again
+                    successfulTry = false;
+                }
+
+                successfulRenewal = successfulTry;
+
+                if (successfulTry)
+                {
+                    // Encrypt the credit card information of the user
+                    newCard.Encrypt();
+
+                    // Construct a subscription for the user
+                    Subscription userSubscription = new Subscription()
+                    {
+                        ActivationDate = DateTime.UtcNow,
+                        AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
+                        CancellationDate = null,
+                        SubscriptionTypeId = subscription.SubscriptionTypeId,
+                        CreditCard = newCard
+                    };
+
+                    // Associate the new subscription with the user
+                    affectedUser.AddSubscription(userSubscription);
+                }
+            }
+
             db.SaveChanges();
 
-            // Email the user
-            EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(affectedUser);
+            if (!successfulRenewal)
+            {
+                // If we could not automatically renew the payment, then notify the user
+                EmailResult email = new WebSite.Mailers.Account().PaymentSuspendedEmail(affectedUser);
 
-            WebSite.Helpers.Email.SendEmail(email, new List<Models.User>() { affectedUser });
+                WebSite.Helpers.Email.SendEmail(email, new List<Models.User>() { affectedUser });
+            }
 
             return;
         }

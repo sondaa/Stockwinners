@@ -53,16 +53,21 @@ namespace WorkerRole
             _scheduler.JobFactory = new NinjectJobFactory(_kernel);
 
             DateTimeOffset morning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
-                .AtHourMinuteAndSecond(6, 30, 0)
+                .AtHourMinuteAndSecond(5, 30, 0)
                 .Build();
 
             //DateTimeOffset morning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
             DateTimeOffset marketAlertTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
-                .AtHourMinuteAndSecond(8, 45, 0)
+                .AtHourMinuteAndSecond(7, 45, 0)
                 .Build();
 
             //DateTimeOffset marketAlertTimeInMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);
+
+            DateTimeOffset suspendedPaymentTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
+                .AtHourMinuteAndSecond(11, 0, 0)
+                .Build();
+
 
             // Schedule task for trial expiries
             IJobDetail trialExpiryJobDetail = JobBuilder.Create<TrialExpiredJob>().WithIdentity("Trial Expiry Emails").Build();
@@ -103,6 +108,16 @@ namespace WorkerRole
                 .ForJob(morningMarketAlertJobDetail)
                 .Build();
             _scheduler.ScheduleJob(morningMarketAlertJobDetail, dailyMorningMarketAlertTrigger);
+
+            // Schedule task for failed payments
+            IJobDetail paymentSuspendedJob = JobBuilder.Create<SuspendedPaymentJob>().WithIdentity("Payment Suspended Job").Build();
+            ITrigger weeklyPaymentSuspensionTrigger = TriggerBuilder.Create()
+                .WithIdentity("Weekly Trigger (Payment Suspensions)")
+                .StartAt(suspendedPaymentTimeInMorning)
+                .WithSimpleSchedule(schedule => schedule.WithInterval(TimeSpan.FromDays(7)).RepeatForever())
+                .ForJob(paymentSuspendedJob)
+                .Build();
+            _scheduler.ScheduleJob(paymentSuspendedJob, weeklyPaymentSuspensionTrigger);
 
             // Finally, start the scheduler
             _scheduler.Start();

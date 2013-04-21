@@ -101,6 +101,13 @@ namespace WebSite.Models
             }
         }
 
+        public bool IsExpired()
+        {
+            DateTime now = DateTime.UtcNow;
+
+            return this.ExpirationYear < now.Year || (this.ExpirationYear == now.Year && this.ExpirationMonth >= now.Month);
+        }
+
         private byte[] GetKey(KeySizes[] validKeySizes)
         {
             // Ensure the supplied key is compatible with Rinjndael (256 bits)

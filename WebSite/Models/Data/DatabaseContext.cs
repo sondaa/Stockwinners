@@ -48,5 +48,13 @@ namespace WebSite.Database
                 return this.Users.Include(u => u.NotificationSettings).Include(u => u.Subscription).Where(Helpers.Email.ActiveUserPredicate).Where(u => u.NotificationSettings.ReceiveDailyAlerts);
             }
         }
+
+        public override IQueryable<IUser> GetUsersWithSuspendedPayments
+        {
+            get
+            {
+                return this.Users.Include(u => u.Subscription).Where(u => u.Subscription.IsSuspended && !u.Subscription.CancellationDate.HasValue);
+            }
+        }
     }
 }

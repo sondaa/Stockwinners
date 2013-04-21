@@ -79,7 +79,7 @@ namespace WebSite.Controllers
                 ISubscriptionRequest subscriptionRequest = CreateAuthorizeDotNetSubscriptionRequest(newCreditCard, currentUser.Subscription.SubscriptionType);
                 ISubscriptionRequest subscriptionResponse = null;
 
-                ISubscriptionGateway subscriptionGateway = this.GetSubscriptionGateway();
+                ISubscriptionGateway subscriptionGateway = GetSubscriptionGateway();
 
                 try
                 {
@@ -152,7 +152,7 @@ namespace WebSite.Controllers
             // If all credit card information has been supplied, then try to validate the request with Authorize.NET
             if (ModelState.IsValid)
             {
-                ISubscriptionGateway gateway = this.GetSubscriptionGateway();
+                ISubscriptionGateway gateway = GetSubscriptionGateway();
 
                 ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(registrationInformation);
                 ISubscriptionRequest subscriptionResponse = null;
@@ -196,7 +196,7 @@ namespace WebSite.Controllers
             return View(registrationInformation);
         }
 
-        private ISubscriptionGateway GetSubscriptionGateway()
+        public static ISubscriptionGateway GetSubscriptionGateway()
         {
             return new SubscriptionGateway(ConfigurationManager.AppSettings["AuthorizeNETAPILoginID"], ConfigurationManager.AppSettings["AuthorizeNETTransactionKey"], bool.Parse(ConfigurationManager.AppSettings["AuthorizeNETTestMode"]) ? ServiceMode.Test : ServiceMode.Live);
         }
@@ -210,6 +210,11 @@ namespace WebSite.Controllers
         }
 
         private static ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(CreditCard creditCard, SubscriptionType subscriptionType)
+        {
+            return CreateAuthorizeDotNetSubscriptionRequest(creditCard, subscriptionType, Authentication.GetCurrentUser());
+        }
+
+        public static ISubscriptionRequest CreateAuthorizeDotNetSubscriptionRequest(CreditCard creditCard, SubscriptionType subscriptionType, WebSite.Models.User user)
         {
             ISubscriptionRequest request = SubscriptionRequest.CreateNew();
 
@@ -225,9 +230,8 @@ namespace WebSite.Controllers
             SetSubscriptionCreditCardInformation(request, creditCard);
 
             // Customer information
-            WebSite.Models.User currentUser = Authentication.GetCurrentUser();
-            request.CustomerEmail = currentUser.EmailAddress;
-            request.CustomerID = currentUser.UserId.ToString();
+            request.CustomerEmail = user.EmailAddress;
+            request.CustomerID = user.UserId.ToString();
 
             return request;
         }
@@ -293,7 +297,7 @@ namespace WebSite.Controllers
             WebSite.Models.User currentUser = Authentication.GetCurrentUser();
 
             // Cancel the subscription at Authorize.NET
-            ISubscriptionGateway gateway = this.GetSubscriptionGateway();
+            ISubscriptionGateway gateway = GetSubscriptionGateway();
 
             // TODO: Assert the return value
             gateway.CancelSubscription(currentUser.Subscription.AuthorizeNETSubscriptionId);

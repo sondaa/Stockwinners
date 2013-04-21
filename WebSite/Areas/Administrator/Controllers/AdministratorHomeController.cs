@@ -34,11 +34,11 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.FacebookMembers = _database.Users.Count(user => user.IdentityProvider == (int)IdentityProvider.Facebook);
             ViewBag.UsersWithActiveTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && user.TrialExpiryDate >= DateTime.UtcNow);
             ViewBag.UsersWithExpiredTrial = _database.Users.Count(user => !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue && user.TrialExpiryDate < DateTime.UtcNow);
-            ViewBag.UsersWithCancelledSubscriptions = _database.Users.Count(user => user.SubscriptionExpiryDate.HasValue);
-            ViewBag.SubscribedUsers = _database.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended);
-            ViewBag.MonthlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
-            ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
-            ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
+            ViewBag.UsersWithCancelledSubscriptions = _database.Users.Count(user => (user.SubscriptionExpiryDate.HasValue && user.Subscription == null) || (user.Subscription != null && user.Subscription.CancellationDate.HasValue));
+            ViewBag.SubscribedUsers = _database.Users.Include(u => u.Subscription).Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue);
+            ViewBag.MonthlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly);
+            ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
+            ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
             ViewBag.MembersWithSuspendedPayment = _database.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue);
             ViewBag.MonthlyIncome = this.Income(PredefinedSubscriptionFrequencies.Monthly);
             ViewBag.QuarterlyIncome = this.Income(PredefinedSubscriptionFrequencies.Quarterly);
@@ -51,7 +51,8 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             return (from user
                    in _database.Users.Include(u => u.Subscription).Include("SubscriptionType")
-                   where user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == subscriptionFrequency
+                   where user.SubscriptionId.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == subscriptionFrequency &&
+                         !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue
                    select user.Subscription.SubscriptionType.Price).DefaultIfEmpty().Sum();
         }
 
@@ -196,7 +197,9 @@ namespace WebSite.Areas.Administrator.Controllers
                 moneyDeposits.Add((int)_database.Users.Include(u => u.Subscription)
                     .Where(u => u.SubscriptionId.HasValue && 
                         u.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Monthly &&
-                        u.Subscription.ActivationDate.Day == i)
+                        u.Subscription.ActivationDate.Day == i &&
+                        !u.Subscription.IsSuspended &&
+                        !u.Subscription.CancellationDate.HasValue)
                     .Select(u => u.Subscription.SubscriptionType.Price)
                     .DefaultIfEmpty(0m)
                     .Sum());

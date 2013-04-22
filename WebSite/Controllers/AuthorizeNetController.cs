@@ -80,57 +80,68 @@ namespace WebSite.Controllers
             if (subscription.CreditCard.IsExpired())
             {
                 // Decrypt to get the card information again
-                subscription.CreditCard.Decrypt();
-
-                // Bump up the expiry by 2 years
-                CreditCard newCard = new CreditCard()
-                {
-                    AddressId = subscription.CreditCard.AddressId,
-                    BillingAddress = subscription.CreditCard.BillingAddress,
-                    CardholderFirstName = subscription.CreditCard.CardholderFirstName,
-                    CardholderLastName = subscription.CreditCard.CardholderLastName,
-                    CVV = subscription.CreditCard.CVV,
-                    ExpirationMonth = subscription.CreditCard.ExpirationMonth,
-                    ExpirationYear = (short)(subscription.CreditCard.ExpirationYear + 2),
-                    Number = subscription.CreditCard.Number
-                };
-
-                ISubscriptionGateway gateway = MembersController.GetSubscriptionGateway();
-
-                ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(newCard, subscription.SubscriptionType, affectedUser);
-                ISubscriptionRequest subscriptionResponse = null;
-
-                bool successfulTry = true;
-
+                bool successfulDecryption = true;
                 try
                 {
-                    subscriptionResponse = gateway.CreateSubscription(subscriptionRequest);
+                    subscription.CreditCard.Decrypt();
                 }
-                catch (InvalidOperationException)
+                catch (Exception)
                 {
-                    // Payment failed again
-                    successfulTry = false;
+                    successfulDecryption = false;
                 }
 
-                successfulRenewal = successfulTry;
-
-                if (successfulTry)
+                if (successfulDecryption)
                 {
-                    // Encrypt the credit card information of the user
-                    newCard.Encrypt();
-
-                    // Construct a subscription for the user
-                    Subscription userSubscription = new Subscription()
+                    // Bump up the expiry by 2 years
+                    CreditCard newCard = new CreditCard()
                     {
-                        ActivationDate = DateTime.UtcNow,
-                        AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
-                        CancellationDate = null,
-                        SubscriptionTypeId = subscription.SubscriptionTypeId,
-                        CreditCard = newCard
+                        AddressId = subscription.CreditCard.AddressId,
+                        BillingAddress = subscription.CreditCard.BillingAddress,
+                        CardholderFirstName = subscription.CreditCard.CardholderFirstName,
+                        CardholderLastName = subscription.CreditCard.CardholderLastName,
+                        CVV = subscription.CreditCard.CVV,
+                        ExpirationMonth = subscription.CreditCard.ExpirationMonth,
+                        ExpirationYear = (short)(subscription.CreditCard.ExpirationYear + 2),
+                        Number = subscription.CreditCard.Number
                     };
 
-                    // Associate the new subscription with the user
-                    affectedUser.AddSubscription(userSubscription);
+                    ISubscriptionGateway gateway = MembersController.GetSubscriptionGateway();
+
+                    ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(newCard, subscription.SubscriptionType, affectedUser);
+                    ISubscriptionRequest subscriptionResponse = null;
+
+                    bool successfulTry = true;
+
+                    try
+                    {
+                        subscriptionResponse = gateway.CreateSubscription(subscriptionRequest);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Payment failed again
+                        successfulTry = false;
+                    }
+
+                    successfulRenewal = successfulTry;
+
+                    if (successfulTry)
+                    {
+                        // Encrypt the credit card information of the user
+                        newCard.Encrypt();
+
+                        // Construct a subscription for the user
+                        Subscription userSubscription = new Subscription()
+                        {
+                            ActivationDate = DateTime.UtcNow,
+                            AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
+                            CancellationDate = null,
+                            SubscriptionTypeId = subscription.SubscriptionTypeId,
+                            CreditCard = newCard
+                        };
+
+                        // Associate the new subscription with the user
+                        affectedUser.AddSubscription(userSubscription);
+                    }
                 }
             }
 

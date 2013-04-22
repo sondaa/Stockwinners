@@ -14,8 +14,6 @@ namespace WebSite.Models
 {
     public class CreditCard
     {
-        private static Encoding Encoding = Encoding.UTF8;
-
         [Key]
         public int CreditCardId { get; set; }
 
@@ -70,7 +68,7 @@ namespace WebSite.Models
                             writer.Write(this.Number);
                         }
 
-                        this.Number = CreditCard.Encoding.GetString(memoryStream.ToArray());
+                        this.Number = Convert.ToBase64String(memoryStream.ToArray());
                     }
                 }
             }
@@ -88,7 +86,7 @@ namespace WebSite.Models
 
                 ICryptoTransform decryptor = rijndaelAlgorithm.CreateDecryptor();
 
-                using (MemoryStream memoryStream = new MemoryStream(CreditCard.Encoding.GetBytes(this.Number)))
+                using (MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(this.Number)))
                 {
                     using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                     {
@@ -111,13 +109,13 @@ namespace WebSite.Models
         private byte[] GetKey(KeySizes[] validKeySizes)
         {
             // Ensure the supplied key is compatible with Rinjndael (256 bits)
-            return CreditCard.Encoding.GetBytes(ConfigurationManager.AppSettings["RijndaelKey"]).Take(256 / 8).ToArray();
+            return Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["RijndaelKey"]).Take(256 / 8).ToArray();
         }
 
         private byte[] GetInitializationVector()
         {
             // Initialization vector must be a maximum of 128 bits
-            return CreditCard.Encoding.GetBytes(ConfigurationManager.AppSettings["RijndaelIV"]).Take(128 / 8).ToArray();
+            return Encoding.UTF8.GetBytes(ConfigurationManager.AppSettings["RijndaelIV"]).Take(128 / 8).ToArray();
         }
     }
 }

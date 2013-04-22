@@ -45,7 +45,7 @@ namespace WebSite.Models.Data.Picks
             EmailResult email = new WebSite.Mailers.Picks().PickUpdate(this);
 
             // Send the message to pick subscribers who have an active membership
-            WebSite.Helpers.Email.SendEmail(email, db.Entry(this.Pick).Collection(pick => pick.Subscribers).Query().Where(WebSite.Helpers.Email.ActiveUserPredicate));
+            WebSite.Helpers.Email.SendEmail(email, db.Entry(this.Pick).Collection(pick => pick.Subscribers).Query().Where(WebSite.Helpers.Email.ActiveUserPredicate), sendToAutoTrading: true);
         }
     }
 }

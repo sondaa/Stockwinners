@@ -33,7 +33,7 @@ namespace WebSite.Helpers
                 recipients = GetActiveUsers().Where(u => u.NotificationSettings.ReceiveStockPicks);
             }
 
-            Email.SendEmail(email, recipients);
+            Email.SendEmail(email, recipients, sendToAutoTrading: !isPreview);
         }
 
         public static void Send(OptionPick optionPick, bool isPreview)
@@ -52,7 +52,7 @@ namespace WebSite.Helpers
                 recipients = GetActiveUsers().Where(u => u.NotificationSettings.ReceiveOptionPicks);
             }
 
-            Email.SendEmail(email, recipients);
+            Email.SendEmail(email, recipients, sendToAutoTrading: !isPreview);
         }
 
         public static void Send(DailyAlert dailyAlert, bool isPreview)
@@ -105,7 +105,7 @@ namespace WebSite.Helpers
             }
         }
 
-        public static void SendEmail(EmailResult email, IEnumerable<IEmailRecipient> recipients)
+        public static void SendEmail(EmailResult email, IEnumerable<IEmailRecipient> recipients, bool sendToAutoTrading = false)
         {
             IEmailFactory emailFactory = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(IEmailFactory)) as IEmailFactory;
 
@@ -127,7 +127,25 @@ namespace WebSite.Helpers
                 }
             }
 
+            if (sendToAutoTrading)
+            {
+                List<IEmailRecipient> currentRecipients = new List<IEmailRecipient>(recipients);
+
+                // Add E-option's email address so that they get the email and can place trades in reaction to it
+                currentRecipients.Add(new EmailRecipient() { Name = "E-Option", EmailAddress = "autotrade@eoption.com" });
+            }
+
             emailFactory.CreateEmail(body, email.Mail.Subject, recipients).Send();
+        }
+
+        private class EmailRecipient : IEmailRecipient
+        {
+            #region IEmailParticpant Members
+
+            public string Name { get; set; }
+            public string EmailAddress { get; set; }
+
+            #endregion
         }
     }
 }

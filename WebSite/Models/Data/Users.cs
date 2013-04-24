@@ -69,6 +69,10 @@ namespace WebSite.Models
         public virtual ICollection<Subscription> Subscriptions { get; set; } // List of any subscriptions obtained in the past
         public DateTime? SubscriptionExpiryDate { get; set; } // Tracks the last day until which a user's subscription is good after it has been cancelled mid-way.
 
+        [ForeignKey("AutoTradingSubscription")]
+        public int? AutoTradingSubscriptionId { get; set; }
+        public virtual Subscription AutoTradingSubscription { get; set; } // Currently active subscription for auto trading
+
         // Role Support
         public virtual ICollection<Role> Roles { get; set; }
 

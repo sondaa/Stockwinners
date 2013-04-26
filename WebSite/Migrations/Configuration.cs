@@ -336,16 +336,37 @@ Zimbabwe";
 
         private static void SeedSubscriptionTypesAndFrequencies(DatabaseContext context)
         {
-            SubscriptionFrequency monthly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Monthly };
-            SubscriptionFrequency quarterly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Quarterly };
-            SubscriptionFrequency yearly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Yearly };
+            SubscriptionFrequency monthly = context.SubscriptionFrequencies.FirstOrDefault(st => st.Name == PredefinedSubscriptionFrequencies.Monthly);
 
-            context.SubscriptionFrequencies.AddOrUpdate(sf => sf.Name, monthly, quarterly, yearly);
+            if (monthly == null)
+            {
+                monthly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Monthly };
+                context.SubscriptionFrequencies.Add(monthly);
+            }
 
+            SubscriptionFrequency quarterly = context.SubscriptionFrequencies.FirstOrDefault(st => st.Name == PredefinedSubscriptionFrequencies.Quarterly);
+
+            if (quarterly == null)
+            {
+                quarterly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Quarterly };
+                context.SubscriptionFrequencies.Add(quarterly);
+            }
+
+            SubscriptionFrequency yearly = context.SubscriptionFrequencies.FirstOrDefault(st => st.Name == PredefinedSubscriptionFrequencies.Yearly);
+
+            if (yearly == null)
+            {
+                yearly = new SubscriptionFrequency() { Name = PredefinedSubscriptionFrequencies.Yearly };
+                context.SubscriptionFrequencies.Add(yearly);
+            }
+
+            context.SaveChanges();
+            
             context.SubscriptionTypes.AddOrUpdate(st => st.Price,
-                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, SubscriptionFrequency = monthly, Price = 39, IsAvailableToUsers = false },
-                new SubscriptionType() { SubscriptionFrequencyId = quarterly.SubscriptionFrequencyId, SubscriptionFrequency = quarterly, Price = 110, IsAvailableToUsers = false },
-                new SubscriptionType() { SubscriptionFrequencyId = yearly.SubscriptionFrequencyId, SubscriptionFrequency = yearly, Price = 350, IsAvailableToUsers = false }
+                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, SubscriptionFrequency = monthly, Price = 39, IsAvailableToUsers = false, IsAddOn = false, Name = "Monthly Subscription" },
+                new SubscriptionType() { SubscriptionFrequencyId = quarterly.SubscriptionFrequencyId, SubscriptionFrequency = quarterly, Price = 110, IsAvailableToUsers = false, IsAddOn = false, Name = "Quarterly Subscription" },
+                new SubscriptionType() { SubscriptionFrequencyId = yearly.SubscriptionFrequencyId, SubscriptionFrequency = yearly, Price = 350, IsAvailableToUsers = false, IsAddOn = false, Name = "Yearly Subscription" },
+                new SubscriptionType() { SubscriptionFrequencyId = monthly.SubscriptionFrequencyId, SubscriptionFrequency = monthly, Price = 10, IsAvailableToUsers = true, IsAddOn = true, Name = "Auto Trading", Description = "Auto trading enables you to have our registered brokers trade our selections on your behalf. With auto trading, our selections are automatically traded on your behalf based on allocation rules that you specify. We've partnered with EOption to enable this functionality and its use requires having an account with EOption. Please refer to http://eoption.com/auto_trading.html for more information on auto trading." }
                 );
         }
     }

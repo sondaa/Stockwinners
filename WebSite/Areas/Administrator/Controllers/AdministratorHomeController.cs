@@ -40,6 +40,7 @@ namespace WebSite.Areas.Administrator.Controllers
             ViewBag.QuarterlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Quarterly);
             ViewBag.YearlySubscribers = _database.Users.Include(u => u.Subscription).Include("SubscriptionType").Include("Subscription").Count(user => user.SubscriptionId.HasValue && !user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue && user.Subscription.SubscriptionType.SubscriptionFrequency.Name == PredefinedSubscriptionFrequencies.Yearly);
             ViewBag.MembersWithSuspendedPayment = _database.Users.Include(u => u.Subscription).Count(user => user.Subscription != null && user.Subscription.IsSuspended && !user.Subscription.CancellationDate.HasValue);
+            ViewBag.MembersWithAutoTrading = _database.Users.Include(u => u.AutoTradingSubscription).Count(user => user.AutoTradingSubscription != null && !user.AutoTradingSubscription.CancellationDate.HasValue);
             ViewBag.MonthlyIncome = this.Income(PredefinedSubscriptionFrequencies.Monthly);
             ViewBag.QuarterlyIncome = this.Income(PredefinedSubscriptionFrequencies.Quarterly);
             ViewBag.YearlyIncome = this.Income(PredefinedSubscriptionFrequencies.Yearly);

@@ -184,6 +184,13 @@ namespace WebSite.Models
             this.Subscriptions.Add(subscription);
             this.CreditCards.Add(subscription.CreditCard);
         }
+
+        public void AddAddOnSubscription(Subscription subscription)
+        {
+            this.AutoTradingSubscription = subscription;
+            this.Subscriptions.Add(subscription);
+            this.CreditCards.Add(subscription.CreditCard);
+        }
     }
 
     public class StockwinnersMember : IEmailRecipient

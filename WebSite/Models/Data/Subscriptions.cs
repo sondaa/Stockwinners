@@ -55,6 +55,20 @@ namespace WebSite.Models
         [Required]
         [Display(Name = "Subscription available to new users")]
         public bool IsAvailableToUsers { get; set; }
+
+        /// <summary>
+        /// Whether the type of this element is an add-on feature that the user can choose.
+        /// </summary>
+        [Required]
+        [Display(Name = "Is this an add-on?")]
+        public bool IsAddOn { get; set; }
+
+        [Required]
+        [Display(Name = "Name of this subscription type")]
+        public string Name { get; set; }
+
+        [Display(Name = "Description of this product/add-on")]
+        public string Description { get; set; }
     }
 
     public class SubscriptionFrequency

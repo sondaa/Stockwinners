@@ -124,13 +124,166 @@ namespace WebSite.Controllers
             return this.View();
         }
 
+#if RELEASE
         [RequireHttps]
+#endif
+        public ActionResult AddAutoTrading()
+        {
+            ActionResult result = this.TryAddingAutoTradingFromExistingCreditCard();
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            AddonRegistration addOnRegistration = new AddonRegistration()
+            {
+                Countries = _database.Countries.AsEnumerable()
+            };
+
+            return View(addOnRegistration);
+        }
+
+        /// <summary>
+        /// Tries to enable the auto-trading add-on using an existing credit card from the user
+        /// </summary>
+        /// <returns></returns>
+        private ActionResult TryAddingAutoTradingFromExistingCreditCard()
+        {
+            User currentUser = Authentication.GetCurrentUser();
+            CreditCard successfulCreditCard = null;
+
+            foreach (CreditCard card in currentUser.CreditCards)
+            {
+                try
+                {
+                    card.Decrypt();
+                }
+                catch
+                {
+                    continue;
+                }
+
+                successfulCreditCard = card;
+                break;
+            }
+
+            // If we could not find any credit cards then bail
+            if (successfulCreditCard == null)
+            {
+                return null;
+            }
+
+            SubscriptionType autoTradingAddOn = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers && st.IsAddOn).FirstOrDefault();
+
+            if (autoTradingAddOn == null)
+            {
+                return null;
+            }
+
+            ISubscriptionGateway gateway = GetSubscriptionGateway();
+            ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(successfulCreditCard, autoTradingAddOn);
+            ISubscriptionRequest subscriptionResponse = null;
+
+            try
+            {
+                subscriptionResponse = gateway.CreateSubscription(subscriptionRequest);
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+
+            // Encrypt the credit card information of the user
+            successfulCreditCard.Encrypt();
+
+            // Construct a subscription for the user
+            Subscription userSubscription = new Subscription()
+            {
+                ActivationDate = DateTime.UtcNow,
+                AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
+                CancellationDate = null,
+                SubscriptionTypeId = autoTradingAddOn.SubscriptionTypeId,
+                CreditCard = successfulCreditCard
+            };
+
+            // Associate the subscription with the user
+            currentUser.AddAddOnSubscription(userSubscription);
+
+            _database.SaveChanges();
+
+            return this.RedirectToAction("Index");
+        }
+
+#if RELEASE
+        [RequireHttps]
+#endif
+        [HttpPost]
+        public ActionResult AddAutoTrading(AddonRegistration registrationInformation)
+        {
+            if (ModelState.IsValid)
+            {
+                SubscriptionType autoTradingAddOn = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers && st.IsAddOn).FirstOrDefault();
+
+                if (autoTradingAddOn != null)
+                {
+                    ISubscriptionGateway gateway = GetSubscriptionGateway();
+                    ISubscriptionRequest subscriptionRequest = MembersController.CreateAuthorizeDotNetSubscriptionRequest(registrationInformation.CreditCard, autoTradingAddOn);
+
+                    ISubscriptionRequest subscriptionResponse = null;
+
+                    try
+                    {
+                        subscriptionResponse = gateway.CreateSubscription(subscriptionRequest);
+                    }
+                    catch (InvalidOperationException exception)
+                    {
+                        ModelState.AddModelError(string.Empty, exception.Message);
+
+                        return View(registrationInformation);
+                    }
+
+                    // If the code reaches here then the payment went through
+                    WebSite.Models.User currentUser = Authentication.GetCurrentUser();
+
+                    // Encrypt the credit card information of the user
+                    registrationInformation.CreditCard.Encrypt();
+
+                    // Construct a subscription for the user
+                    Subscription userSubscription = new Subscription()
+                    {
+                        ActivationDate = DateTime.UtcNow,
+                        AuthorizeNETSubscriptionId = subscriptionResponse.SubscriptionID,
+                        CancellationDate = null,
+                        SubscriptionTypeId = autoTradingAddOn.SubscriptionTypeId,
+                        CreditCard = registrationInformation.CreditCard
+                    };
+
+                    // Associate the subscription with the user
+                    currentUser.AddAddOnSubscription(userSubscription);
+
+                    _database.SaveChanges();
+
+                    return this.RedirectToAction("Index");
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "Can't locate auto-trading add-on in server");
+                }
+            }
+
+            return View(registrationInformation);
+        }
+
+#if RELEASE
+        [RequireHttps]
+#endif
         public ActionResult Subscribe()
         {
             // Calculate the set of subscriptions available to the user
             SubscriptionRegistration registration = new SubscriptionRegistration()
             {
-                AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers),
+                AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers && !st.IsAddOn),
                 Countries = _database.Countries.AsEnumerable()
             };
 
@@ -138,10 +291,12 @@ namespace WebSite.Controllers
         }
 
         [HttpPost]
+#if RELEASE
         [RequireHttps]
+#endif
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation)
         {
-            registrationInformation.AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers);
+            registrationInformation.AvailableSubscriptionTypes = _database.SubscriptionTypes.Include(st => st.SubscriptionFrequency).Where(st => st.IsAvailableToUsers && !st.IsAddOn);
             registrationInformation.Countries = _database.Countries.AsEnumerable();
 
             if (registrationInformation.SelectedSubscriptionTypeId == 0)
@@ -292,6 +447,23 @@ namespace WebSite.Controllers
             };
         }
 
+        public ActionResult CancelAutoTrading()
+        {
+            WebSite.Models.User currentUser = Authentication.GetCurrentUser();
+
+            Subscription autoTradingSubscription = currentUser.AutoTradingSubscription;
+
+            ISubscriptionGateway gateway = GetSubscriptionGateway();
+
+            gateway.CancelSubscription(autoTradingSubscription.AuthorizeNETSubscriptionId);
+
+            autoTradingSubscription.CancellationDate = DateTime.UtcNow;
+
+            _database.SaveChanges();
+
+            return View();
+        }
+
         public ActionResult CancelSubscription()
         {
             WebSite.Models.User currentUser = Authentication.GetCurrentUser();
@@ -333,6 +505,15 @@ namespace WebSite.Controllers
             currentUser.SubscriptionExpiryDate = subscriptionExpiryDate;
             currentUser.Subscription = null;
 
+            // Cancel any auto trading if the user has some
+            Subscription autoTradingSubscription = currentUser.AutoTradingSubscription;
+
+            if (autoTradingSubscription != null)
+            {
+                gateway.CancelSubscription(autoTradingSubscription.AuthorizeNETSubscriptionId);
+                autoTradingSubscription.CancellationDate = DateTime.UtcNow;
+            }
+
             _database.SaveChanges();
 
             ViewBag.SubscriptionExpiryDate = subscriptionExpiryDate.ToLongDateString();
@@ -347,6 +528,7 @@ namespace WebSite.Controllers
             ViewBag.IsTrialMember = !user.SubscriptionId.HasValue && !user.SubscriptionExpiryDate.HasValue;
             ViewBag.IsUsingCancelledSubscription = !user.SubscriptionId.HasValue && user.SubscriptionExpiryDate.HasValue;
             ViewBag.IsUsingSuspendedSubscription = user.SubscriptionId.HasValue && user.Subscription.IsSuspended;
+            ViewBag.HasAutoTrading = user.AutoTradingSubscriptionId.HasValue && !user.AutoTradingSubscription.CancellationDate.HasValue;
 
             if (ViewBag.IsTrialMember)
             {

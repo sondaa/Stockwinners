@@ -1,0 +1,90 @@
+@model WebSite.Models.Logic.AddonRegistration
+@{
+    ViewBag.Title = "Subscribe to Add-On";
+}
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<h2>Subscribe</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(false)
+    @:Please provide your billing information below to activate your auto-trading feature. You'll be charged $20 monthly for this feature.
+    <div id="billing-information-div">
+        <h3>Billing Information</h3>
+        <table style="width: 80%; margin: 0px auto;">
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <h4>Credit Card Information</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CardholderFirstName)@Html.TextBoxFor(m => m.CreditCard.CardholderFirstName, new { tabindex = 1 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CardholderLastName)@Html.TextBoxFor(m => m.CreditCard.CardholderLastName, new { tabindex = 2 })
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.Number) @Html.TextBoxFor(m => m.CreditCard.Number, new { tabindex = 3 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.CVV) @Html.TextBoxFor(m => m.CreditCard.CVV, new { tabindex = 4 })
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.ExpirationMonth) @Html.DropDownListFor(m => m.CreditCard.ExpirationMonth, new SelectList(new int[] { 1,2,3,4,5,6,7,8,9,10,11,12 }), new { tabindex = 5 })
+                    </td>
+                    <td style="width: 50%;">
+                        @Html.LabelFor(m => m.CreditCard.ExpirationYear) @Html.DropDownListFor(m => m.CreditCard.ExpirationYear, new SelectList(Enumerable.Range(DateTime.UtcNow.Year, 8)), new { tabindex = 6 })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <h4>Billing Address</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine1) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine1, new { tabindex = 7 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.AddressLine2) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.AddressLine2, new { tabindex = 8 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.City) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.City, new { tabindex = 9 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.ProvinceOrState) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.ProvinceOrState, new { tabindex = 10 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.PostalCode) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PostalCode, new { tabindex = 11 })
+                    </td>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.Country) @Html.DropDownListFor(m => m.CreditCard.BillingAddress.CountryId, new SelectList(Model.Countries, "CountryId", "Name", 236), new { tabindex = 12 })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(m => m.CreditCard.BillingAddress.PhoneNumber) @Html.TextBoxFor(m => m.CreditCard.BillingAddress.PhoneNumber, new { tabindex = 13 })
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;" colspan="2">
+                        <input type="submit" value="Register" tabindex="14" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

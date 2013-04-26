@@ -247,6 +247,10 @@
     <Compile Include="Migrations\201209212057008_AddingTrackingForTrialExpiryEmails.Designer.cs">
       <DependentUpon>201209212057008_AddingTrackingForTrialExpiryEmails.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201304242217083_SubscriptionTypeForAddOns.cs" />
+    <Compile Include="Migrations\201304242217083_SubscriptionTypeForAddOns.Designer.cs">
+      <DependentUpon>201304242217083_SubscriptionTypeForAddOns.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -278,6 +282,7 @@
     <Compile Include="Models\Data\Roles.cs" />
     <Compile Include="Models\Data\Subscriptions.cs" />
     <Compile Include="Models\Data\Users.cs" />
+    <Compile Include="Models\Logic\AddonRegistration.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Models\UI\Announcement.cs" />
     <Compile Include="Models\UI\ChangePassword.cs" />
@@ -863,6 +868,8 @@
     <Content Include="Views\Information\ProductsAndServices.cshtml" />
     <Content Include="Views\Information\Pricing.cshtml" />
     <Content Include="Views\Email\Template.html.cshtml" />
+    <Content Include="Views\Members\CancelAutoTrading.cshtml" />
+    <Content Include="Views\Members\AddAutoTrading.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -889,6 +896,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201209212057008_AddingTrackingForTrialExpiryEmails.resx">
       <DependentUpon>201209212057008_AddingTrackingForTrialExpiryEmails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201304242217083_SubscriptionTypeForAddOns.resx">
+      <DependentUpon>201304242217083_SubscriptionTypeForAddOns.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -156,7 +156,14 @@ namespace WebSite.Areas.Administrator.Controllers
                 // Cancel the subscription at Authorize.NET
                 ISubscriptionGateway gateway = this.GetSubscriptionGateway();
 
-                gateway.CancelSubscription(user.Subscription.AuthorizeNETSubscriptionId);
+                try
+                {
+                    gateway.CancelSubscription(user.Subscription.AuthorizeNETSubscriptionId);
+                }
+                catch
+                {
+                    // The subscription may have expired or manually cancelled in which case an exception will be thrown here
+                }
 
                 // Determine the user's last day based on how much they have paid so far
                 DateTime activationDate = user.Subscription.ActivationDate;

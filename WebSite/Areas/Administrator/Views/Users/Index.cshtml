@@ -50,9 +50,12 @@
             {
                 @Html.ActionLink("Add Subscription", "Subscribe", new { userId = item.UserId })
             }
-            else if (!item.Subscription.IsSuspended)
+            else
             {
-                @Html.ActionLink("Suspend Account", "Suspend", new { userId = item.UserId })@: |
+                if (!item.Subscription.IsSuspended)
+                {
+                    @Html.ActionLink("Suspend Account", "Suspend", new { userId = item.UserId })@: |
+                }
                 @Html.ActionLink("Cancel", "Cancel", new { userId = item.UserId })
             }
         </td>

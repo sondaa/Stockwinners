@@ -1,10 +1,14 @@
 @model IEnumerable<WebSite.Models.Data.Picks.OptionPick>
 @{
-    ViewBag.Title = "Option Picks";
+    ViewBag.Title = "Option Trades Outperforming the Market";
 }
 @section Description
 {
-    <meta name="description" content="List of option picks during @DateTime.UtcNow.Year." />
+    <meta name="description" content="Stockwinners option selections featured using technical and fundemental analysis" />
+}
+@section Keywords
+{
+    <meta name="keywords" content="stocks, stck, option, options, wall street option trading, put, call, rumors, technical analysis, hot stock tips, daily picks" />
 }
 <h2>Option Picks</h2>
 @if (!Request.IsAuthenticated)

@@ -1,9 +1,16 @@
 @model WebSite.Models.UI.FeedbackModel
 
 @{
-    ViewBag.Title = "Your thoughts on Stockwinners.com";
+    ViewBag.Title = "Stockwinners.com, best stock pick site, feedback form – Named as Top Stock Advisory";
 }
-
+@section Description
+{
+    <meta name="description" content="Stockwinners subscription system allows traders to clone our trades in real-time and reap the rewards" />
+}
+@section Keywords
+{
+    <meta name="keywords" content="stock, option, put, call, stock rumors, momentum trading, technical analysis, hot stock tips breaking news, stock rumors, investment, winning stocks" />
+}
 <h2>Feedback</h2>
 @if (Model.IsSubmittedSuccessfully)
 {

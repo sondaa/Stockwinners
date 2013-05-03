@@ -1,10 +1,14 @@
 @model IEnumerable<WebSite.Models.Data.Picks.StockPick>
 @{
-    ViewBag.Title = "Stock Picks";
+    ViewBag.Title = " Stocks and Options Portfolio of Stockwinners.com for the month – Put Our Winning Strategies To Work for you";
 }
 @section Description
 {
-    <meta name="description" content="List of stock selections during @DateTime.UtcNow.Year." />
+    <meta name="description" content="Stockwinners List of  selections during @DateTime.UtcNow.Year – Mimic Our Trades using our automated alert system, Auto Trade our picks." />
+}
+@section Keywords
+{
+    <meta name="keywords" content="best stock on the market, stock tips, stock trading advice , how to trade options, how to invest in stocks, how to invest using options,  how to day trade, buy call option strategies, technical stock market analysis" />
 }
 <h2>Stock Picks</h2>
 @if (!Request.IsAuthenticated)

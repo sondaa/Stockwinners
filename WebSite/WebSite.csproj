@@ -205,6 +205,7 @@
     <Compile Include="Controllers\InformationController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PicksController.cs" />
+    <Compile Include="Controllers\SEOController.cs" />
     <Compile Include="Helpers\ApacheEncryption.cs" />
     <Compile Include="Helpers\Email.cs" />
     <Compile Include="Helpers\HtmlHelpers.cs" />
@@ -870,6 +871,11 @@
     <Content Include="Views\Email\Template.html.cshtml" />
     <Content Include="Views\Members\CancelAutoTrading.cshtml" />
     <Content Include="Views\Members\AddAutoTrading.cshtml" />
+    <Content Include="Views\SEO\MomentumTrading.cshtml" />
+    <Content Include="Views\SEO\StockMarketAnalysis.cshtml" />
+    <Content Include="Views\SEO\BestDaytradingSite.cshtml" />
+    <Content Include="Views\SEO\StockRumors.cshtml" />
+    <Content Include="Views\SEO\StocksToBuy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

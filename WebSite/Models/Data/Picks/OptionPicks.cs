@@ -73,6 +73,23 @@ namespace WebSite.Models.Data.Picks
             decimal purchasePrice = this.Cost();
             decimal salePrice = this.Proceeds();
 
+            // If the position cost was 0 and retrun is positive, declare 100% profit, otherwise, return 100% loss.
+            if (purchasePrice == 0)
+            {
+                if (salePrice == 0)
+                {
+                    return 0;
+                }
+                else if (salePrice > 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
             return (salePrice - purchasePrice) * 100 / Math.Abs(purchasePrice);
         }
 

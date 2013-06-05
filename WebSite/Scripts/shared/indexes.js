@@ -2,7 +2,7 @@
 $(function ()
 {
     var intervalId = 0;
-    var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Change%2C%20PercentChange%2C%20LastTradeTime%20from%20yahoo.finance.quotes%20where%20symbol%20in%20('%5EIXIC'%2C%20'%5EGSPC'%2C%20'DIA')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
+    var url = "http://query.yahooapis.com/v1/public/yql?q=select%20LastTradePriceOnly%2C%20Change%2C%20PercentChange%2C%20LastTradeTime%20from%20yahoo.finance.quotes%20where%20symbol%20in%20('QQQ'%2C%20'SPY'%2C%20'DIA')&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?";
 
     updateIndexQuote = function (data, indexName)
     {

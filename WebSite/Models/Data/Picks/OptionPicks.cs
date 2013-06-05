@@ -82,11 +82,11 @@ namespace WebSite.Models.Data.Picks
                 }
                 else if (salePrice > 0)
                 {
-                    return 1;
+                    return 100;
                 }
                 else
                 {
-                    return -1;
+                    return -100;
                 }
             }
 

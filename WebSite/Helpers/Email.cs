@@ -134,6 +134,9 @@ namespace WebSite.Helpers
                 // Add E-option's email address so that they get the email and can place trades in reaction to it
                 recipientsWithAutoTrading.Add(new EmailRecipient() { Name = "E-Option", EmailAddress = "autotrade@eoption.com" });
 
+                // Do the same with Global Auto Trading
+                recipientsWithAutoTrading.Add(new EmailRecipient() { Name = "Global Auto Trading", EmailAddress = "newsletters@global-autotrading.com" });
+
                 recipients = recipientsWithAutoTrading;
             }
 

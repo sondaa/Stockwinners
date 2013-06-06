@@ -388,6 +388,7 @@
     <Content Include="Images\Chart Reading\itvu_051199.gif" />
     <Content Include="Images\Chart Reading\jdsu_123199.gif" />
     <Content Include="Images\enter.png" />
+    <Content Include="Images\eOption_Logo.gif" />
     <Content Include="Images\error.png" />
     <Content Include="Images\exit.png" />
     <Content Include="Images\Home\big-logo.png" />
@@ -396,6 +397,8 @@
     <Content Include="Images\Home\Homepage_03.jpg" />
     <Content Include="Images\Home\Homepage_04.jpg" />
     <Content Include="Images\Home\Homepage_05.jpg" />
+    <Content Include="Images\Home\Homepage_06.jpg" />
+    <Content Include="Images\Home\Homepage_07.jpg" />
     <Content Include="Images\info.png" />
     <Content Include="Images\Information\monthly-price.png" />
     <Content Include="Images\Information\trial-price.png" />
@@ -876,6 +879,7 @@
     <Content Include="Views\SEO\BestDaytradingSite.cshtml" />
     <Content Include="Views\SEO\StockRumors.cshtml" />
     <Content Include="Views\SEO\StocksToBuy.cshtml" />
+    <Content Include="Views\Information\AutoTrading.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

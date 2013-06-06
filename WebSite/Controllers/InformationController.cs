@@ -41,6 +41,11 @@ namespace WebSite.Controllers
             return View();
         }
 
+        public ActionResult AutoTrading()
+        {
+            return View();
+        }
+
         public ActionResult PhilosophyAndPerformance()
         {
             DatabaseContext db = _database;

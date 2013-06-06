@@ -766,6 +766,7 @@
     <Content Include="Scripts\upshot.min.js">
       <DependentUpon>upshot.js</DependentUpon>
     </Content>
+    <Content Include="sitemap.xml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

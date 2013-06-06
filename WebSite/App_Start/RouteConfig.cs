@@ -54,6 +54,9 @@ namespace WebSite
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            // For sitemap.xml
+            routes.MapRoute(name: "Sitemap", url: "sitemap.xml", defaults: new { controller = "Home", action = "Sitemap" });
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

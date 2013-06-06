@@ -53,8 +53,8 @@ namespace WebSite.Controllers
             Models.UI.Performance performance = new Models.UI.Performance();
 
             // Populate top trades
-            performance.TopRecentStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, stockPick.ClosingDate) < 60);
-            performance.TopRecentOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, optionPick.ClosingDate) < 60);
+            performance.TopRecentStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 180);
+            performance.TopRecentOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(optionPick.ClosingDate, DateTime.UtcNow) < 180);
 
             // Sort by performance, and then take the top 15 and then sort again by closing date
             performance.TopRecentStocks = performance.TopRecentStocks.OrderBy(stockPick => stockPick, new StockPick.StockPickComparer()).Take(15).OrderByDescending(stockPick => stockPick.ClosingDate);

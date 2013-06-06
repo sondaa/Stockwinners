@@ -35,6 +35,12 @@ namespace WebSite.Models.Data.Picks
         public int PickId { get; set; }
         public virtual Pick Pick { get; set; }
 
+        /// <summary>
+        /// Whether to show a closing summary of the position when sending out the update.
+        /// </summary>
+        [NotMapped]
+        public bool ShowClosingSummary { get; set; }
+
         public void Email()
         {
             // Ensure the pick is retrieved from the database before sending the email

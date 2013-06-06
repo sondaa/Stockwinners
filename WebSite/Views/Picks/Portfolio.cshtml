@@ -254,7 +254,7 @@ else
         <tr style="border-bottom-width: 0px;">
             <td style="vertical-align: top; padding: 5px;">
                 <img src="/Images/info.png" /></td>
-            <td style="vertical-align: middle; padding: 5px;">Since you are not logged in, you are only seeing our top performing stock and option positions within the last 60 days that have already been closed. To see our current portfolio with our stock and option selections, please register for a trial account or log in.</td>
+            <td style="vertical-align: middle; padding: 5px;">Since you are not logged in, you are only seeing our top performing stock and option positions within the last 180 days that have already been closed. To see our current portfolio with our stock and option selections, please register for a trial account or log in.</td>
         </tr>
         <tr style="border-bottom-width: 0px;">
             <td colspan="2">
@@ -275,8 +275,8 @@ else
         </tr>
     </table>
 
-    <h3>Stock positions closed within the last 60 days (top 15 trades)</h3>
+    <h3>Stock positions closed within the last 180 days (top 15 trades)</h3>
     @Html.Partial("_ClosedStockListPartial", Model.ClosedStocks)
-    <h3>Option positions closed within the last 60 days (top 15 trades)</h3>
+    <h3>Option positions closed within the last 180 days (top 15 trades)</h3>
     @Html.Partial("_ClosedOptionListPartial", Model.ClosedOptions)
 }

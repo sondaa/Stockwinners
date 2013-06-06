@@ -89,6 +89,11 @@ namespace WebSite.Controllers
             return this.View(userFeedback);
         }
 
+        public FileResult Sitemap()
+        {
+            return File("sitemap.xml", "application/rss+xml", "sitemap.xml");
+        }
+
         private class EmailRecipient : IEmailRecipient
         {
             public string Name { get; set; }

@@ -45,6 +45,9 @@ namespace WebSite.Areas.Administrator.Controllers
 
             if (ModelState.IsValid)
             {
+                // Trim any excess space in the symbol name in case present
+                optionPick.Symbol.Trim();
+
                 _database.OptionPicks.Add(optionPick);
                 _database.SaveChanges();
 

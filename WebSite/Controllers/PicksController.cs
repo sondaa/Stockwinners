@@ -25,7 +25,7 @@ namespace WebSite.Controllers
         {
             Models.UI.Portfolio portfolio = new Models.UI.Portfolio();
 
-            // If the user is logged in, then show the currently open selections, otherwise, show the last 15 top performing within the last 60 days
+            // If the user is logged in, then show the currently open selections, otherwise, show the last 15 top performing within the last 180 days
             if (Request.IsAuthenticated)
             {
                 portfolio.Stocks = _database.StockPicks.Include(s => s.Type).Where(stockPick => stockPick.IsPublished && !stockPick.ClosingDate.HasValue).OrderByDescending(stockPick => stockPick.PublishingDate.Value);
@@ -33,8 +33,8 @@ namespace WebSite.Controllers
             }
             else
             {
-                portfolio.ClosedStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, stockPick.ClosingDate) < 60);
-                portfolio.ClosedOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(DateTime.UtcNow, optionPick.ClosingDate) < 60);
+                portfolio.ClosedStocks = _database.StockPicks.Include(p => p.Type).Where(stockPick => stockPick.IsPublished && stockPick.ClosingDate.HasValue && EntityFunctions.DiffDays(stockPick.ClosingDate, DateTime.UtcNow) < 180);
+                portfolio.ClosedOptions = _database.OptionPicks.Include(o => o.Type).Include(o => o.Legs).Where(optionPick => optionPick.IsPublished && optionPick.ClosingDate.HasValue && EntityFunctions.DiffDays(optionPick.ClosingDate, DateTime.UtcNow) < 180);
 
                 // Sort by performance, and then take the top 15 and then sort again by closing date
                 portfolio.ClosedStocks = portfolio.ClosedStocks.OrderBy(stockPick => stockPick, new StockPick.StockPickComparer()).Take(15).OrderByDescending(stockPick => stockPick.ClosingDate);
@@ -82,13 +82,9 @@ namespace WebSite.Controllers
 
             Chart expiryGraph = optionPick.ExpiryGraph();
 
-            expiryGraph.Width = 400;
-            expiryGraph.Height = 400;
+            expiryGraph.Width = 500;
+            expiryGraph.Height = 333;
             expiryGraph.RenderType = RenderType.ImageTag;
-
-            expiryGraph.ChartAreas.Add(new ChartArea("Test"));
-            expiryGraph.ChartAreas[0].BackColor = System.Drawing.Color.White;
-            expiryGraph.BackColor = System.Drawing.Color.White;
 
             MemoryStream imageStream = new MemoryStream();
 

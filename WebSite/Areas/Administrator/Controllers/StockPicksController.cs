@@ -51,6 +51,9 @@ namespace WebSite.Areas.Administrator.Controllers
 
             if (ModelState.IsValid)
             {
+                // Trim any excess space from symbol name
+                stockPick.Symbol.Trim();
+
                 if (publishButton != null)
                 {
                     stockPick.Publish();

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+<url>
+  <loc>http://www.stockwinners.com/</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Home/Feedback</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/Login</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/ProductsAndServices</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/Login?ReturnUrl=%2fActiveTraders</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Picks/StockPicks</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Picks/OptionPicks</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Picks/Portfolio</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/PhilosophyAndPerformance</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/Pricing</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/Login?ReturnUrl=%2fMembers</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/Register</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/Market101</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/Options101</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/ChartReading</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/BuyingOnMargin</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/SiteMap</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/MembershipPolicy</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/PrivacyPolicy</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Information/ContactUs</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/ResetPassword</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/?aspxerrorpath=/ActiveTraders/Home</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/?aspxerrorpath=/secure/tech/chart.html</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/Account/Login?ReturnUrl=%2fMembers%2fSubscribe</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/def/short.txt</loc>
+</url>
+<url>
+  <loc>http://www.stockwinners.com/def/long.txt</loc>
+</url>
+</urlset>

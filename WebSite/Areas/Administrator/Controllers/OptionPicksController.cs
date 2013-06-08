@@ -134,9 +134,17 @@ namespace WebSite.Areas.Administrator.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(int id)
         {
-            OptionPick optionpick = _database.OptionPicks.Find(id);
-            _database.OptionPicks.Remove(optionpick);
+            OptionPick optionPick = _database.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
+
+            foreach (var leg in optionPick.Legs)
+            {
+                _database.OptionPickLegs.Remove(leg);
+            }
+
+            _database.OptionPicks.Remove(optionPick);
+
             _database.SaveChanges();
+
             return RedirectToAction("Index");
         }
 

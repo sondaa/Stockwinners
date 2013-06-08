@@ -303,7 +303,7 @@ namespace WebSite.Models.Data.Picks
             // Walk from center to both edges to be able to correctly calculate max and min points
 
             // Upper half
-            for (decimal price = halfPoint; price < this.MaximumStrike; price++)
+            for (decimal price = halfPoint; price <= this.MaximumStrike; price++)
             {
                 var valueAtPrice = Tuple.Create(price, this.ValueAtExpiry(price));
 
@@ -329,7 +329,7 @@ namespace WebSite.Models.Data.Picks
             }
 
             // Lower half
-            for (decimal price = halfPoint - 1; price > this.MinimumStrike; price--)
+            for (decimal price = halfPoint - 1; price >= this.MinimumStrike; price--)
             {
                 var valueAtPrice = Tuple.Create(price, this.ValueAtExpiry(price));
 

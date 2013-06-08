@@ -23,6 +23,9 @@
         <p>
             <input type="submit" name="publishButton" value="Save and publish to users." />
         </p>
+        <p>
+            <div id="portfolio-button">Add Portfolio</div>
+        </p>
     </fieldset>
 }
 
@@ -31,5 +34,26 @@
 </div>
 
 @section Scripts {
+    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+
+    <script type="text/javascript">
+        $(function ()
+        {
+            // Create a button out of the div
+            $("#portfolio-button").button().click(function (event)
+            {
+                // On click of the button, make a call to our API and add the received content to the editor
+                $.getJSON("/api/portfolio/overview", function (data)
+                {
+                    if (data)
+                    {
+                        tinymce.activeEditor.execCommand("mceInsertContent", false, data);
+                    }
+                });
+            });
+        });
+    </script>
+
 }

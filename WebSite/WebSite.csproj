@@ -199,6 +199,7 @@
     <Compile Include="Areas\Administrator\Controllers\SubscriptionTypesController.cs" />
     <Compile Include="Controllers\API\ActiveTradersController.cs" />
     <Compile Include="Controllers\API\PickSubscriptionController.cs" />
+    <Compile Include="Controllers\API\PortfolioController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\AuthorizeNetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

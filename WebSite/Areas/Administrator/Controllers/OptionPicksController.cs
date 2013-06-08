@@ -136,12 +136,9 @@ namespace WebSite.Areas.Administrator.Controllers
         {
             OptionPick optionPick = _database.OptionPicks.Include(o => o.Legs).Single(o => o.PickId == id);
 
-            foreach (var leg in optionPick.Legs)
-            {
-                _database.OptionPickLegs.Remove(leg);
-            }
+            optionPick.Legs.Clear();
 
-            _database.OptionPicks.Remove(optionPick);
+            _database.Entry(optionPick).State = EntityState.Deleted;
 
             _database.SaveChanges();
 

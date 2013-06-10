@@ -124,7 +124,7 @@ namespace WebSite.Controllers
             return this.View();
         }
 
-#if RELEASE
+#if !DEBUG
         [RequireHttps]
 #endif
         public ActionResult AddAutoTrading()
@@ -215,7 +215,7 @@ namespace WebSite.Controllers
             return this.RedirectToAction("Index");
         }
 
-#if RELEASE
+#if !DEBUG
         [RequireHttps]
 #endif
         [HttpPost]
@@ -275,7 +275,7 @@ namespace WebSite.Controllers
             return View(registrationInformation);
         }
 
-#if RELEASE
+#if !DEBUG
         [RequireHttps]
 #endif
         public ActionResult Subscribe()
@@ -291,7 +291,7 @@ namespace WebSite.Controllers
         }
 
         [HttpPost]
-#if RELEASE
+#if !DEBUG
         [RequireHttps]
 #endif
         public ActionResult Subscribe(SubscriptionRegistration registrationInformation)

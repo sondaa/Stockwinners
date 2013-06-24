@@ -22,7 +22,12 @@ namespace WebSite.Areas.Administrator.Controllers
 
         public ActionResult Index()
         {
-            return View(db.DailyAlerts.ToList());
+            return View(db.DailyAlerts.OrderByDescending(a => a.CreationDate).Take(10).ToList());
+        }
+
+        public ActionResult All()
+        {
+            return View("Index", db.DailyAlerts.OrderByDescending(a => a.CreationDate).ToList());
         }
 
         //

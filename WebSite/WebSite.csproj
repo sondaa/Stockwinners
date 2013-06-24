@@ -882,6 +882,10 @@
     <Content Include="Views\SEO\StockRumors.cshtml" />
     <Content Include="Views\SEO\StocksToBuy.cshtml" />
     <Content Include="Views\Information\AutoTrading.cshtml" />
+    <Content Include="Views\SEO\StockAdvice.cshtml" />
+    <Content Include="Views\SEO\StockMarketTipsAndInvestGuide.cshtml" />
+    <Content Include="Views\SEO\BestStockOnTheMarket.cshtml" />
+    <Content Include="Views\SEO\CallOptionStrategies.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

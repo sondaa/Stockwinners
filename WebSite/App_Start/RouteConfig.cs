@@ -46,6 +46,30 @@ namespace WebSite
                 defaults: new { controller = "SEO", action = "StocksToBuy" }
             );
 
+            routes.MapRoute(
+                name: "Best Stock on the Market",
+                url: "best-stock-on-the-market",
+                defaults: new { controller = "SEO", action = "BestStockOnTheMarket" }
+            );
+
+            routes.MapRoute(
+                name: "Call Option Strategies",
+                url: "call-option-strategies",
+                defaults: new { controller = "SEO", action = "CallOptionStrategies" }
+            );
+
+            routes.MapRoute(
+                name: "Stock Advice",
+                url: "stock-advice",
+                defaults: new { controller = "SEO", action = "StockAdvice" }
+            );
+
+            routes.MapRoute(
+                name: "Stock Market Tips and Invest Guide",
+                url: "stock-market-tips-and-invest-guide",
+                defaults: new { controller = "SEO", action = "StockMarketTipsAndInvestGuide" }
+            );
+
             #endregion
 
             routes.MapHttpRoute(

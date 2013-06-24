@@ -32,5 +32,25 @@ namespace WebSite.Controllers
         {
             return View();
         }
+
+        public ActionResult StockAdvice()
+        {
+            return View();
+        }
+
+        public ActionResult CallOptionStrategies()
+        {
+            return View();
+        }
+
+        public ActionResult StockMarketTipsAndInvestGuide()
+        {
+            return View();
+        }
+
+        public ActionResult BestStockOnTheMarket()
+        {
+            return View();
+        }
     }
 }

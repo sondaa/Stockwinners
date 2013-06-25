@@ -64,6 +64,12 @@ namespace WebSite.Controllers.API
                 }
 
                 string url = "http://www.stockwinners.com/Picks/StockPickDetail?stockPickId=" + stock.PickId;
+                decimal profit = ((quotes[stock.Symbol] - stock.EntryPrice) / stock.EntryPrice * 100);
+
+                if (!stock.IsLongPosition)
+                {
+                    profit = profit * -1;
+                }
                
                 builder.Append(string.Format(@"<tr style=""{0}"">
                     <td>{1}</td>
@@ -73,7 +79,7 @@ namespace WebSite.Controllers.API
                     <td>{5}</td>
                     <td>{6}</td>
                     <td style=""{7}"">{8}</td>
-                </tr>", background, stock.Symbol, stock.EntryPrice, quotes[stock.Symbol], ((quotes[stock.Symbol] - stock.EntryPrice) / stock.EntryPrice * 100).ToString("F") + "%", stock.PublishingDate.Value.ToShortDateString(), stock.Type.Name, stock.IsLongPosition ? longColor : shortColor, stock.IsLongPosition ? "Long" : "Short"));
+                </tr>", background, stock.Symbol, stock.EntryPrice, quotes[stock.Symbol], profit.ToString("F") + "%", stock.PublishingDate.Value.ToShortDateString(), stock.Type.Name, stock.IsLongPosition ? longColor : shortColor, stock.IsLongPosition ? "Long" : "Short"));
         
                 stockIndex++;
             }

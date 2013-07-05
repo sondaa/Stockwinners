@@ -91,7 +91,7 @@ else if (ViewBag.IsUsingCancelledSubscription)
 }
 else
 {
-    <span>You have an active @ViewBag.SubscriptionFrequency subscription. <a href="#" id="cancellation-link-a">Cancel Subscription</a></span>
+    <span>You have an active @ViewBag.SubscriptionFrequency subscription. @Html.ActionLink("Cancel Subscription", "CancelSubscription")</span>
     
     <h2 style="padding-top: 8px;">Add-Ons</h2>
     

@@ -1,8 +1,10 @@
 ﻿using AuthorizeNet;
+using Stockwinners.Email;
 using System;
 using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using WebSite.Database;
 using WebSite.Helpers.Authentication;
@@ -10,6 +12,7 @@ using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
 using WebSite.Models.Data;
 using WebSite.Models.Logic;
+using WebSite.Models.UI;
 
 namespace WebSite.Controllers
 {
@@ -466,7 +469,22 @@ namespace WebSite.Controllers
 
         public ActionResult CancelSubscription()
         {
+            return this.View(new CancelSubscription());
+        }
+
+        [HttpPost]
+        public ActionResult CancelSubscription(CancelSubscription model)
+        {
+            // If the user has not provided a reason for cancellation, then don't do anything
+            if (!ModelState.IsValid)
+            {
+                return this.View(model);
+            }
+
             WebSite.Models.User currentUser = Authentication.GetCurrentUser();
+
+            // Email the admins and let them know the reason
+            this.EmailAdminsAboutCancellation(model.Reason, currentUser);
 
             // Cancel the subscription at Authorize.NET
             ISubscriptionGateway gateway = GetSubscriptionGateway();
@@ -519,7 +537,31 @@ namespace WebSite.Controllers
             ViewBag.SubscriptionExpiryDate = subscriptionExpiryDate.ToLongDateString();
             ViewBag.ActivationDate = activationDate.ToLongDateString();
 
-            return View();
+            // Mark the subscription as cancelled
+            model.Cancelled = true;
+
+            return this.View(model);
+        }
+
+        private void EmailAdminsAboutCancellation(string cancellationReason, WebSite.Models.User user)
+        {
+            IEmailFactory emailFactory = System.Web.Mvc.DependencyResolver.Current.GetService(typeof(IEmailFactory)) as IEmailFactory;
+
+            // Create the email
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("<html><head></head><body><!-- BODY START --><p>A user has cancelled their subscription. <br/> First Name: ");
+            builder.Append(user.FirstName);
+            builder.Append("<br/>Last Name: ");
+            builder.Append(user.LastName);
+            builder.Append("<br/>Email: ");
+            builder.Append(user.EmailAddress);
+            builder.Append("</p><p>Reason: <br/>");
+            builder.Append(cancellationReason);
+            builder.Append("</p><!-- BODY END --></body></html>");
+
+            // Send the email now
+            emailFactory.CreateEmailForAdministrators(builder.ToString(), "Account Cancellation").Send();
         }
 
         private void SetupViewBagForIndex(WebSite.Models.User user)

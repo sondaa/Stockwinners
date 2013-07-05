@@ -1,8 +1,37 @@
+@model WebSite.Models.UI.CancelSubscription
 @{
     ViewBag.Title = "Cancel Subscription";
 }
 <h2>Membership Cancellation</h2>
+@if (!Model.Cancelled)
+{
+    using (Html.BeginForm())
+    {
+        <table style="width: 80%; margin: 0px auto;">
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <p>We are sorry that you have decided to cancel your subscription. Please provide a reason for your cancellation so that we can improve our services. We appreciate your business.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; text-align: center; vertical-align: top;">
+                            @Html.LabelFor(m => m.Reason)
+                        </td>
+                        <td style="width: 50%;">
+                            @Html.TextAreaFor(m => m.Reason, rows: 8, columns: 15, htmlAttributes: null)
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        @Html.HiddenFor(m => m.Cancelled)
+        <p style="text-align: right;"><input type="submit" value="Cancel" /></p>
+    }
+}
+else
+{
 <div>
 You have successfully cancelled your subscription. Your @ViewBag.SubscriptionFrequency subscription started on @ViewBag.ActivationDate and will expire on @ViewBag.SubscriptionExpiryDate. You'll be able to use the services until @ViewBag.SubscriptionExpiryDate using your current credentials.</div>
 <div></div>
+}
 <div style="text-align: right;"><img src="/Images/arrow-left-16.png" style="vertical-align: middle;" /> @Html.ActionLink("Change Notification Settings", "Index")</div>

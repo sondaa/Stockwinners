@@ -287,6 +287,7 @@
     <Compile Include="Models\Logic\AddonRegistration.cs" />
     <Compile Include="Models\Logic\SubscriptionRegistration.cs" />
     <Compile Include="Models\UI\Announcement.cs" />
+    <Compile Include="Models\UI\CancelSubscription.cs" />
     <Compile Include="Models\UI\ChangePassword.cs" />
     <Compile Include="Models\UI\ChangeEmail.cs" />
     <Compile Include="Models\UI\FeedbackModel.cs" />

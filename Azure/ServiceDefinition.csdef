@@ -18,7 +18,7 @@
       <Import moduleName="RemoteAccess" />
     </Imports>
     <Certificates>
-      <Certificate name="Stockwinners" storeLocation="LocalMachine" storeName="CA" />
+      <Certificate name="Stockwinners" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
   </WebRole>
   <WorkerRole name="WorkerRole" vmsize="ExtraSmall">

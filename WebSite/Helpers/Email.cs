@@ -137,6 +137,9 @@ namespace WebSite.Helpers
                 // Do the same with Global Auto Trading
                 recipientsWithAutoTrading.Add(new EmailRecipient() { Name = "Global Auto Trading", EmailAddress = "newsletters@global-autotrading.com" });
 
+                // And for AutoShares
+                recipientsWithAutoTrading.Add(new EmailRecipient() { Name = "AutoShares.com", EmailAddress = "alerts@autoshares.com" });
+
                 recipients = recipientsWithAutoTrading;
             }
 

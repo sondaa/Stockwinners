@@ -323,6 +323,12 @@ namespace WorkerRole.Jobs
                 }
             }
 
+            // Strip out parts that are only inside the body tag
+            int startIndex = contents.IndexOf("<body");
+            int endIndex = contents.IndexOf("</body>");
+
+            contents = contents.Substring(startIndex, endIndex - startIndex + 7);
+
             // try to get the S&P futures data from CNN
             string spLevel;
             string spDifference;
@@ -363,7 +369,7 @@ namespace WorkerRole.Jobs
             document.LoadHtml(contents);
 
             // Copy over interesting nodes
-            result.DocumentNode.AppendChildren(document.DocumentNode.SelectNodes("//div[@class='tile_group']"));
+            result.DocumentNode.AppendChildren(document.DocumentNode.SelectNodes("//div[contains(concat(' ', @class, ' '), ' tile_group ')]"));
 
             generatedTable.Append("<table style=\"width: 100%;\"><tr>");
 

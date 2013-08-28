@@ -132,11 +132,16 @@
         </tbody>
     </table>
 </p>
-<h2>Recent Top Performance</h2>
-<h3>Stock positions (top 15) closed within the past 180 days</h3>
+<h2>Recent Top Performance (past 180 days)</h2>
+<h3>Stock positions (top 15) closed</h3>
 @Html.Partial("_ClosedStockListPartial", Model.TopRecentStocks)
-<h3>Option positions (top 15) closed within the past 180 days</h3>
+<h3>Option positions (top 15) closed</h3>
 @Html.Partial("_ClosedOptionListPartial", Model.TopRecentOptions)
+<h3>Option Positions Win/Loss Ratio</h3>
+<table style="width: 40%; margin: 0 auto;">
+    <tr><td style="width: 33%; text-align: center;">Total</td><td style="width: 33%; text-align: center;">Winning</td><td style="width: 34%; text-align: center;">Losing</td></tr>
+    <tr><td style="text-align: center;">@(Model.WinningOptionPicksInPast180Days + Model.LosingOptionPicksInPast180Days)</td><td style="color: green; text-align: center;">@Model.WinningOptionPicksInPast180Days</td><td style="color: red; text-align: center;">@Model.LosingOptionPicksInPast180Days</td></tr>
+</table>
 <h2>Our Philosophy</h2>
 <p class="text-material">Our philosophy is to lock in profits on a stock, once it has gained ten percents. Investors who elect to keep positions open after that point should adjust stop-loss levels upward, to protect their gains. Never chase rumors. Never fall in love with a stock. Be ready to lock in profits. Always do your homework.</p>
 <p class="text-material">The true measure of any successful trading and/or investing is how much success YOU have! and how much money you can make from your own investments. Your success rate can and most likely will be different from our record. Past performance is no guaranty of future performance.</p>

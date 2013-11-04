@@ -53,13 +53,13 @@ namespace WorkerRole
             _scheduler.JobFactory = new NinjectJobFactory(_kernel);
 
             DateTimeOffset morning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
-                .AtHourMinuteAndSecond(5, 30, 0)
+                .AtHourMinuteAndSecond(7, 30, 0)
                 .Build();
 
             //DateTimeOffset morning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
             DateTimeOffset marketAlertTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
-                .AtHourMinuteAndSecond(7, 45, 0)
+                .AtHourMinuteAndSecond(8, 45, 0)
                 .Build();
 
             //DateTimeOffset marketAlertTimeInMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);

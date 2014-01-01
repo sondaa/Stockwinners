@@ -465,6 +465,7 @@
     <Content Include="Content\Performance\2011.xlsx" />
     <Content Include="Content\Performance\2012.xlsx" />
     <Content Include="Areas\Administrator\Views\Users\ChangeEmail.cshtml" />
+    <Content Include="Content\Performance\2013.xlsx" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />

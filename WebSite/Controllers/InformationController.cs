@@ -79,7 +79,7 @@ namespace WebSite.Controllers
 
             // Look for last entry that has both a non-zero investment amount and cash balance and use that as the return until this date
             DateTime today = SnapToStartOfDay(DateTime.UtcNow).AddDays(1);
-            Tuple<decimal, decimal, List<string>, List<string>> lastDay = null;
+            Tuple<decimal, decimal, List<string>, List<string>> lastDay = null;        
 
             while (true)
             {
@@ -91,6 +91,16 @@ namespace WebSite.Controllers
                 if (lastDay != null && lastDay.Item1 != 0 && lastDay.Item2 != 0)
                 {
                     break;
+                }
+
+                // If we ever go back all the way to the beginning of a year without any closed trades, this means
+                // that we have not had any trades for that year and no performance can really be calculated
+                if (today.Day == 1 && today.Month == 1)
+                {
+                    performance.YearToDatePerformance = 0.0m;
+                    performance.MonthlyPerformance = new List<Tuple<DateTime, decimal>>();
+
+                    return View(performance);
                 }
 
                 today = today.Subtract(TimeSpan.FromDays(1));

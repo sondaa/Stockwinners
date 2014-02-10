@@ -20,8 +20,8 @@ namespace Stockwinners.Email
         public IEmail CreateEmailForAdministrators(string contents, string subject)
         {
             return new SendGridEmail(contents, subject, new List<IEmailRecipient> { 
-                new EmailRecipient() { Name = "Ameen Tayyebi",EmailAddress = "ameen.tayyebi@gmail.com"},
-                new EmailRecipient() { Name = "Mehdi Ghaffari", EmailAddress = "s.mehdi.ghaffari@gmail.com"},
+                //new EmailRecipient() { Name = "Ameen Tayyebi",EmailAddress = "ameen.tayyebi@gmail.com"},
+                //new EmailRecipient() { Name = "Mehdi Ghaffari", EmailAddress = "s.mehdi.ghaffari@gmail.com"},
                 new EmailRecipient() { Name = "Mohammad Mohammadi", EmailAddress = "seyed@stockwinners.com"}
             });
         }

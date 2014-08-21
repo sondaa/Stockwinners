@@ -858,7 +858,7 @@
     <Content Include="Areas\Administrator\Views\AdministratorHome\Statistics.cshtml" />
     <Content Include="Views\Shared\_TrialSubscribePartial.cshtml" />
     <Content Include="Views\Information\PerformanceDetail.cshtml" />
-    <Content Include="WaIISHost.exe.config">
+    <Content Include="WebSite.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Views\Account\SubscriptionSuspendedEmail.html.cshtml" />

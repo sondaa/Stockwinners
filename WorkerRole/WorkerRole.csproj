@@ -139,6 +139,7 @@
       <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="packages.config" />
+    <None Include="WorkerRole.dll.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DependencyResolver\DependencyResolver.csproj">

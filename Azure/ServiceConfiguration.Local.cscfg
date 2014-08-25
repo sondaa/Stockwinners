@@ -11,7 +11,7 @@
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="58E8E2465CEA3C73738F11D078D98D7364DB6484" thumbprintAlgorithm="sha1" />
-      <Certificate name="Stockwinners" thumbprint="E09AD9D13D170DE1A9CD17D47D62FC322452216D" thumbprintAlgorithm="sha1" />
+      <Certificate name="Stockwinners" thumbprint="799951028E1E6E6C25091BD95B921DB6E7B81EA5" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <Role name="WorkerRole">

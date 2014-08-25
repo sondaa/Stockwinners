@@ -44,7 +44,15 @@ namespace WebSite
             if (authenticationCookie != null)
             {
                 // Check that the user has a valid account and if so update their last login time.
-                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authenticationCookie.Value);
+                FormsAuthenticationTicket ticket = null;
+                try
+                {
+                    ticket = FormsAuthentication.Decrypt(authenticationCookie.Value);
+                }
+                catch (Exception ex)
+                {
+                    ticket = null;
+                }
 
                 // Does the cookie contain a valid cookie?
                 if (ticket != null)

@@ -87,7 +87,7 @@
     // When the client reconnects, ensure that we start off of a clean state
     hubConnection.reconnected(function ()
     {
-        dataModel.resetItems();
+        // dataModel.resetItems();
 
         // Notify the server that we want to listen to items
         activeTradersHub.clientInitialize();

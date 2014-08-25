@@ -327,8 +327,8 @@ Zimbabwe";
             context.Countries.AddOrUpdate(
                 country => country.Name, 
                     (
-                        from countryName in countryList.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)
-                        select new Country() { Name = countryName }
+                        from countryName in countryList.Split(new string[] { "\n" }, StringSplitOptions.None)
+                        select new Country() { Name = countryName.Trim() }
                     )
                     .ToArray()
                 );

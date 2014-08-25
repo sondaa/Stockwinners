@@ -9,6 +9,8 @@ using WebSite.Models;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 
+using EntityState = System.Data.Entity.EntityState;
+
 namespace WebSite.Areas.Administrator.Controllers
 {
     [MembersOnly(Roles = PredefinedRoles.Administrator)]

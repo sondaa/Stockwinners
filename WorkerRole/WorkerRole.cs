@@ -52,6 +52,9 @@ namespace WorkerRole
             _scheduler = schedulerFactory.GetScheduler();
             _scheduler.JobFactory = new NinjectJobFactory(_kernel);
 
+            TimeZoneInfo easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            bool isDaylight = easternTimeZone.IsDaylightSavingTime(DateTime.Now);
+
             DateTimeOffset morning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
                 .AtHourMinuteAndSecond(7, 30, 0)
                 .Build();
@@ -59,7 +62,7 @@ namespace WorkerRole
             //DateTimeOffset morning = DateBuilder.FutureDate(10, IntervalUnit.Second);
 
             DateTimeOffset marketAlertTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
-                .AtHourMinuteAndSecond(8, 45, 0)
+                .AtHourMinuteAndSecond(isDaylight ? 7 : 8, 45, 0)
                 .Build();
 
             //DateTimeOffset marketAlertTimeInMorning = DateBuilder.FutureDate(10, IntervalUnit.Second);
@@ -67,7 +70,6 @@ namespace WorkerRole
             DateTimeOffset suspendedPaymentTimeInMorning = DateBuilder.NewDateInTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"))
                 .AtHourMinuteAndSecond(11, 0, 0)
                 .Build();
-
 
             // Schedule task for trial expiries
             IJobDetail trialExpiryJobDetail = JobBuilder.Create<TrialExpiredJob>().WithIdentity("Trial Expiry Emails").Build();

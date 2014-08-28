@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using WebSite.Database;
 using WebSite.Infrastructure.Attributes;
 using WebSite.Models;
-using System.Data.Objects;
 
 namespace WebSite.Areas.Administrator.Controllers
 {

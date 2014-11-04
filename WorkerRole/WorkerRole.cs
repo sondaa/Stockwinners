@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
-using Microsoft.WindowsAzure.StorageClient;
+using Microsoft.WindowsAzure.Storage;
 using Ninject;
 using Stockwinners.DependencyInjection;
 using Quartz;

@@ -5,7 +5,7 @@
     <AzureDeleteDeploymentOnFailure>False</AzureDeleteDeploymentOnFailure>
     <AzureDeploymentLabel>Azure</AzureDeploymentLabel>
     <AzureDeploymentReplacementMethod>AutomaticUpgrade</AzureDeploymentReplacementMethod>
-    <AzureSlot>Production</AzureSlot>
+    <AzureSlot>Staging</AzureSlot>
     <AzureEnableRemoteDesktop>False</AzureEnableRemoteDesktop>
     <AzureEnableWebDeploy>False</AzureEnableWebDeploy>
     <AzureFallbackToDeleteAndRecreateIfUpgradeFails>False</AzureFallbackToDeleteAndRecreateIfUpgradeFails>
@@ -19,6 +19,6 @@
     <AzureStorageAccountName>marketwinner</AzureStorageAccountName>
     <AzureAppendTimestampToDeploymentLabel>True</AzureAppendTimestampToDeploymentLabel>
     <EnableRemoteDebugger>True</EnableRemoteDebugger>
-    <RemoteDebuggerConnectorCertificateThumbprint>3722AD080E726BCB6A3B740DFA457EA19087F4B9</RemoteDebuggerConnectorCertificateThumbprint>
+    <RemoteDebuggerConnectorCertificateThumbprint>C8BDFEDF2309C0C15585D8C7986A9D3DEFE65C2C</RemoteDebuggerConnectorCertificateThumbprint>
   </PropertyGroup>
 </Project>

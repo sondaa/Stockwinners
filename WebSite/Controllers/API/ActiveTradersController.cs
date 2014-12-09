@@ -18,5 +18,12 @@ namespace WebSite.Controllers.API
             // Call into the active traders hub and return the current set of news elements
             return ActiveTradersHub.GetCurrentNewsItems().AsQueryable();
         }
+
+        [System.Web.Mvc.HttpGet]
+        [System.Web.Http.HttpGet]
+        public void Reset()
+        {
+            ActiveTradersHub.ResetConnection();
+        }
     }
 }

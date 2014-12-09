@@ -28,6 +28,8 @@ namespace WebSite.Hubs
         /// </summary>
         static Thread TCPThread;
 
+        static bool Reset;
+
         /// <summary>
         /// Track whether we are receiving news from fly on the wall.
         /// </summary>
@@ -55,6 +57,11 @@ namespace WebSite.Hubs
             }
 
             this.StartReceivingNews();
+        }
+
+        public static void ResetConnection()
+        {
+            Reset = true;
         }
 
         private void StartReceivingNews()
@@ -98,54 +105,63 @@ namespace WebSite.Hubs
 
         private void GrabNewsElementsForProduction()
         {
-            // Create a TCP connection to FlyOnTheWall servers
-            using (TcpClient tcpClient = new TcpClient(FlyOnTheWallServerAddress, FlyOnTheWallServerPort))
+            do
             {
-                NetworkStream stream = tcpClient.GetStream();
-
-                // Send the initial request which must have HTTP like headers
-                byte[] initialRequest = Encoding.ASCII.GetBytes("GET /SERVICE/STORY?NUM=0&u=stockwinners&p=stockwinners HTTP/1.0\r\n\r\n");
-                stream.Write(initialRequest, 0, initialRequest.Length);
-
-                // Used to track the data received so far (unprocessed data)
-                string dataReceived = string.Empty;
-
-                // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
-                int bytesRead = 0;
-                do
+                // Create a TCP connection to FlyOnTheWall servers
+                using (TcpClient tcpClient = new TcpClient(FlyOnTheWallServerAddress, FlyOnTheWallServerPort))
                 {
-                    // Read data in chunks of 1KB each.
-                    byte[] data = new byte[1024];
-                    bytesRead = stream.Read(data, 0, data.Length);
+                    NetworkStream stream = tcpClient.GetStream();
 
-                    dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
+                    // Send the initial request which must have HTTP like headers
+                    byte[] initialRequest = Encoding.ASCII.GetBytes("GET /SERVICE/STORY?NUM=0&u=stockwinners&p=stockwinners HTTP/1.0\r\n\r\n");
+                    stream.Write(initialRequest, 0, initialRequest.Length);
 
-                    // Messages sent from the server are delimited by \n
-                    for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
+                    // Used to track the data received so far (unprocessed data)
+                    string dataReceived = string.Empty;
+
+                    // Start receiving the data and loop indefinitely. NetworkStream.Read will block until data is available.
+                    int bytesRead = 0;
+                    do
                     {
-                        // Parse from the start of the accumulated data until the first \n found
-                        ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
+                        // Read data in chunks of 1KB each.
+                        byte[] data = new byte[1024];
+                        bytesRead = stream.Read(data, 0, data.Length);
 
-                        if (newsElement != null)
+                        dataReceived = dataReceived + Encoding.ASCII.GetString(data, 0, bytesRead);
+
+                        // Messages sent from the server are delimited by \n
+                        for (int splitterIndex = dataReceived.IndexOf('\n'); splitterIndex != -1; splitterIndex = dataReceived.IndexOf('\n'))
                         {
-                            // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
-                            // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
-                            this.AddNewNewsElement(newsElement, notifyClients: !stream.DataAvailable);
+                            // Parse from the start of the accumulated data until the first \n found
+                            ActiveTradersNewsElement newsElement = ParseActiveTradersElement(dataReceived.Substring(startIndex: 0, length: splitterIndex));
+
+                            if (newsElement != null)
+                            {
+                                // Only notify clients if we received a single update. This helps us distinguish from the cases where we are starting up the server
+                                // in which cases we would want to collect all existing messages without sending a notification to clients for each message.
+                                this.AddNewNewsElement(newsElement, notifyClients: !stream.DataAvailable);
+                            }
+
+                            // Remove the processed part of the massage from it (and also remove the \n) and continue processing
+                            // the rest
+                            dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
                         }
 
-                        // Remove the processed part of the massage from it (and also remove the \n) and continue processing
-                        // the rest
-                        dataReceived = dataReceived.Substring(splitterIndex + 1, dataReceived.Length - splitterIndex - 1);
-                    }
+                        if (!stream.DataAvailable)
+                        {
+                            // Wait 10 seconds for the next news element
+                            Thread.Sleep(10000);
+                        }
 
-                    if (!stream.DataAvailable)
-                    {
-                        // Wait 10 seconds for the next news element
-                        Thread.Sleep(10000);
+                        if (ActiveTradersHub.Reset)
+                        {
+                            ActiveTradersHub.Reset = false;
+                            break;
+                        }
                     }
-                } 
-                while (true);
-            }
+                    while (true);
+                }
+            } while (true);
         }
 
         private void GrabNewsElementsForTesting()

@@ -30,6 +30,9 @@ namespace WebSite.Database
         public DbSet<DailyAlert> DailyAlerts { get; set; }
         public DbSet<Figure> Figures { get; set; }
 
+        // CMS related
+        public DbSet<Homepage> Homepage { get; set; }
+
         // Picks related
         public DbSet<Pick> Picks { get; set; }
         public DbSet<PickUpdate> PickUpdates { get; set; }

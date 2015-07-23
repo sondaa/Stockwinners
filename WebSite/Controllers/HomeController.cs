@@ -6,6 +6,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using WebSite.Database;
 using WebSite.Helpers.Authentication;
 using WebSite.Models;
 using WebSite.Models.UI;
@@ -15,15 +16,27 @@ namespace WebSite.Controllers
     public class HomeController : WebSite.Infrastructure.ControllerBase
     {
         IEmailFactory _emailFactory;
+        DatabaseContext _database;
 
-        public HomeController(IEmailFactory emailFactory)
+        public HomeController(IEmailFactory emailFactory, DatabaseContext database)
         {
             _emailFactory = emailFactory;
+            _database = database;
         }
 
         public ActionResult Index()
         {
             ViewBag.Message = "Modify this template to kick-start your ASP.NET MVC application.";
+
+            // Load contents of the homepage from the database
+            if (_database.Homepage.Any())
+            {
+                ViewBag.Contents = _database.Homepage.First().Contents;
+            }
+            else
+            {
+                ViewBag.Contents = "";
+            }
 
             return View();
         }

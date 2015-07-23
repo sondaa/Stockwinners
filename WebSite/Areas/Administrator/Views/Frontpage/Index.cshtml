@@ -1,0 +1,31 @@
+@model WebSite.Models.Data.Homepage
+@{
+    ViewBag.Title = "Edit homepage";
+}
+<h2>Modify Homepage</h2>
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Homepage</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Contents)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contents)
+            @Html.ValidationMessageFor(model => model.Contents)
+        </div>
+        <p>
+            <input type="submit" name="saveButton" value="Save &amp; Publish to Homepage" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    <div>@Html.ActionLink("Administrator Home", "Index", "AdministratorHome", new { area = "Administrator" }, null)</div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

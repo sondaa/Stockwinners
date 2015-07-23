@@ -209,6 +209,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administrator\AdministratorAreaRegistration.cs" />
     <Compile Include="Areas\Administrator\Controllers\AdministratorHomeController.cs" />
+    <Compile Include="Areas\Administrator\Controllers\FrontpageController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPickLegController.cs" />
     <Compile Include="Areas\Administrator\Controllers\OptionPicksController.cs" />
     <Compile Include="Areas\Administrator\Controllers\PicksController.cs" />
@@ -277,6 +278,10 @@
     <Compile Include="Migrations\201304242217083_SubscriptionTypeForAddOns.Designer.cs">
       <DependentUpon>201304242217083_SubscriptionTypeForAddOns.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507230606212_AddingHomepage.cs" />
+    <Compile Include="Migrations\201507230606212_AddingHomepage.Designer.cs">
+      <DependentUpon>201507230606212_AddingHomepage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Data\DailyAlerts.cs" />
     <Compile Include="Models\Data\DatabaseContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -289,6 +294,7 @@
     <Compile Include="Infrastructure\MembershipProvider.cs" />
     <Compile Include="Infrastructure\RoleProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Data\Homepage.cs" />
     <Compile Include="Models\Data\NotificationSettings.cs" />
     <Compile Include="Models\Data\Picks\OptionPickLegExpirationMonth.cs" />
     <Compile Include="Models\Data\Picks\OptionPickLegType.cs" />
@@ -386,6 +392,7 @@
     <Content Include="Fonts\icons.woff" />
     <Content Include="Areas\Administrator\Views\Web.config" />
     <Content Include="Areas\Administrator\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Administrator\Views\Frontpage\Index.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPicks\Index.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPicks\Details.cshtml" />
     <Content Include="Areas\Administrator\Views\StockPicks\Create.cshtml" />
@@ -490,6 +497,7 @@
     <Content Include="Content\Performance\2012.xlsx" />
     <Content Include="Areas\Administrator\Views\Users\ChangeEmail.cshtml" />
     <Content Include="Content\Performance\2013.xlsx" />
+    <Content Include="Content\Performance\2014.xlsx" />
     <None Include="Scripts\jquery-1.8.0.intellisense.js" />
     <Content Include="Images\Subscriptions\follow-off.png" />
     <Content Include="Images\Subscriptions\follow-on.png" />
@@ -941,6 +949,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201304242217083_SubscriptionTypeForAddOns.resx">
       <DependentUpon>201304242217083_SubscriptionTypeForAddOns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507230606212_AddingHomepage.resx">
+      <DependentUpon>201507230606212_AddingHomepage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

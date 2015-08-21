@@ -115,7 +115,7 @@ namespace Stockwinners.Email
             SmtpClient smtp = new SmtpClient("smtp.dynect.net", 587);
 
             smtp.EnableSsl = true;
-            smtp.Credentials = new NetworkCredential("info@stockwinners.com", "B00ghalam00n");
+            smtp.Credentials = new NetworkCredential("info@stockwinners.com", "Stockw!nner3");
             smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
 
             return smtp;
